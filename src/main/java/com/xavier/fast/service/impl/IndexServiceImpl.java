@@ -1,8 +1,6 @@
 package com.xavier.fast.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
-import com.xavier.fast.entity.StoreList;
-import com.xavier.fast.mapper.StoreListMapper;
 import com.xavier.fast.service.IndexService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;

@@ -1,7 +1,5 @@
 package com.xavier.fast.service;
 
-import com.xavier.fast.entity.StoreList;
-
 import java.util.List;
 
 /**
