@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+            http://www.springframework.org/schema/beans/spring-beans.xsd
+           http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd"
+       default-autowire="byName" default-lazy-init="false">
+
+    <context:annotation-config/>
+    <context:component-scan base-package="com.xavier.fast"/>
+
+    <bean id="ds" class="com.alibaba.druid.pool.DruidDataSource" destroy-method="close">
+        <property name="driverClassName" value="${druid.driver-class}"/>
+        <property name="url" value="${druid.url}"/>
+        <!-- 数据库用户名 -->
+        <property name="username" value="${druid.username}"/>
+        <!-- 密码 -->
+        <property name="password" value="${druid.password}"/>
+        <!-- 连接初始值，连接池启动时创建的连接数量的初始值 -->
+        <property name="initialSize" value="${druid.initial-size}"/>
+        <property name="minIdle" value="${druid.min-idle}"/>
+        <property name="maxActive" value="${druid.max-active}"/>
+        <!-- 最大空闲值.当经过一个高峰时间后，
+        连接池可以慢慢将已经用不到的连接慢慢释放一部分，
+        一直减少到maxIdle为止 ，0时无限制  -->
+        <!-- 自动提交 -->
+        <property name="defaultAutoCommit" value="false"/>
+        <!-- 失效检查线程运行时间间隔，如果小于等于0，不会启动检查线程   -->
+        <property name="timeBetweenEvictionRunsMillis" value="3600000"/>
+        <!-- 大于0 ，进行连接空闲时间判断，或为0，对空闲的连接不进行验证；默认30分钟 -->
+        <property name="minEvictableIdleTimeMillis" value="3600000"/>
+        <!-- 几秒后会自我中断, removeAbandoned 必须为 true -->
+        <property name="removeAbandonedTimeout" value="10"/>
+        <!-- 是否记录中断事件, 默认为 false -->
+        <property name="logAbandoned" value="true"/>
+    </bean>
+
+    <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="dataSource" ref="ds"/>
+        <property name="mapperLocations" >
+            <list>
+                <value>classpath*:/mapper/**/*Mapper.xml</value>
+                <!--<value>classpath*:/mapper/**/*MapperExt.xml</value>-->
+            </list>
+        </property>
+        <property name="typeAliasesPackage" value="com.xavier.fast.entity" />
+        <!-- <property name="configLocation" value="mybatis-config.xml"/>-->
+    </bean>
+    <!--
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <property name="basePackage" value="com.bxm.adsmanager.dal.mapper"/>
+        <property name="sqlSessionFactoryBeanName" value="sqlSessionFactory"/>
+    </bean>
+    <tx:annotation-driven/>
+    <tx:annotation-driven transaction-manager="transactionManager" proxy-target-class="true" />
+    -->
+    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="ds"/>
+        <property name="rollbackOnCommitFailure" value="true"/>
+    </bean>
+
+</beans>

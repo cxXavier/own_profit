@@ -1,0 +1,1 @@
+kill `ps axu|grep fast_prod|grep -v grep |awk '{print $2}'`

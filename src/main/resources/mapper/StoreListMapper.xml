@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xavier.fast.mapper.StoreListMapper" >
+  <resultMap id="BaseResultMap" type="com.xavier.fast.entity.StoreList" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="imei" property="imei" jdbcType="VARCHAR" />
+    <result column="imsi" property="imsi" jdbcType="VARCHAR" />
+    <result column="phone" property="phone" jdbcType="VARCHAR" />
+    <result column="app_name" property="appName" jdbcType="VARCHAR" />
+    <result column="app_package" property="appPackage" jdbcType="VARCHAR" />
+    <result column="remake" property="remake" jdbcType="VARCHAR" />
+  </resultMap>
+  <resultMap id="ResultMapWithBLOBs" type="com.xavier.fast.entity.StoreList" extends="BaseResultMap" >
+    <result column="applist" property="applist" jdbcType="LONGVARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, imei, imsi, phone, app_name, app_package, remake
+  </sql>
+  <sql id="Blob_Column_List" >
+    applist
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from tbl_store_list
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from tbl_store_list
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.xavier.fast.entity.StoreList" >
+    <selectKey resultType="java.lang.Long" keyProperty="id" order="AFTER" >
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into tbl_store_list (imei, imsi, phone, 
+      app_name, app_package, remake, 
+      applist)
+    values (#{imei,jdbcType=VARCHAR}, #{imsi,jdbcType=VARCHAR}, #{phone,jdbcType=VARCHAR}, 
+      #{appName,jdbcType=VARCHAR}, #{appPackage,jdbcType=VARCHAR}, #{remake,jdbcType=VARCHAR}, 
+      #{applist,jdbcType=LONGVARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.xavier.fast.entity.StoreList" >
+    <selectKey resultType="java.lang.Long" keyProperty="id" order="AFTER" >
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into tbl_store_list
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="imei != null" >
+        imei,
+      </if>
+      <if test="imsi != null" >
+        imsi,
+      </if>
+      <if test="phone != null" >
+        phone,
+      </if>
+      <if test="appName != null" >
+        app_name,
+      </if>
+      <if test="appPackage != null" >
+        app_package,
+      </if>
+      <if test="remake != null" >
+        remake,
+      </if>
+      <if test="applist != null" >
+        applist,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="imei != null" >
+        #{imei,jdbcType=VARCHAR},
+      </if>
+      <if test="imsi != null" >
+        #{imsi,jdbcType=VARCHAR},
+      </if>
+      <if test="phone != null" >
+        #{phone,jdbcType=VARCHAR},
+      </if>
+      <if test="appName != null" >
+        #{appName,jdbcType=VARCHAR},
+      </if>
+      <if test="appPackage != null" >
+        #{appPackage,jdbcType=VARCHAR},
+      </if>
+      <if test="remake != null" >
+        #{remake,jdbcType=VARCHAR},
+      </if>
+      <if test="applist != null" >
+        #{applist,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.xavier.fast.entity.StoreList" >
+    update tbl_store_list
+    <set >
+      <if test="imei != null" >
+        imei = #{imei,jdbcType=VARCHAR},
+      </if>
+      <if test="imsi != null" >
+        imsi = #{imsi,jdbcType=VARCHAR},
+      </if>
+      <if test="phone != null" >
+        phone = #{phone,jdbcType=VARCHAR},
+      </if>
+      <if test="appName != null" >
+        app_name = #{appName,jdbcType=VARCHAR},
+      </if>
+      <if test="appPackage != null" >
+        app_package = #{appPackage,jdbcType=VARCHAR},
+      </if>
+      <if test="remake != null" >
+        remake = #{remake,jdbcType=VARCHAR},
+      </if>
+      <if test="applist != null" >
+        applist = #{applist,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.xavier.fast.entity.StoreList" >
+    update tbl_store_list
+    set imei = #{imei,jdbcType=VARCHAR},
+      imsi = #{imsi,jdbcType=VARCHAR},
+      phone = #{phone,jdbcType=VARCHAR},
+      app_name = #{appName,jdbcType=VARCHAR},
+      app_package = #{appPackage,jdbcType=VARCHAR},
+      remake = #{remake,jdbcType=VARCHAR},
+      applist = #{applist,jdbcType=LONGVARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.xavier.fast.entity.StoreList" >
+    update tbl_store_list
+    set imei = #{imei,jdbcType=VARCHAR},
+      imsi = #{imsi,jdbcType=VARCHAR},
+      phone = #{phone,jdbcType=VARCHAR},
+      app_name = #{appName,jdbcType=VARCHAR},
+      app_package = #{appPackage,jdbcType=VARCHAR},
+      remake = #{remake,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+
+
+  <!-- own created -->
+  <insert id="insertForeach" parameterType="java.util.List" useGeneratedKeys="false">
+    insert into tbl_store_list
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      imei,imsi,phone,applist,app_name,app_package,remake,
+    </trim>
+    values
+    <foreach collection="list" item="item" index="index" separator=",">
+      <trim prefix="(" suffix=")" suffixOverrides=",">
+        #{item.imei,jdbcType=VARCHAR},
+        #{item.imsi,jdbcType=VARCHAR},
+        #{item.phone,jdbcType=VARCHAR},
+        #{item.applist,jdbcType=VARCHAR},
+        #{item.appName,jdbcType=VARCHAR},
+        #{item.appPackage,jdbcType=VARCHAR},
+        #{item.remake,jdbcType=VARCHAR},
+      </trim>
+    </foreach>
+  </insert>
+  <select id="selectUserList" resultMap="BaseResultMap" parameterType="Map" >
+    select
+    phone,GROUP_CONCAT(app_name) app_name
+    from tbl_store_list
+    where
+    <trim prefix="(" suffix=")" suffixOverrides="or">
+      <foreach collection="ins" item="item" index="index" separator="or">
+        app_name = #{item}
+      </foreach>
+    </trim>
+    <if test="out != null" >
+      AND
+      app_name != #{out}
+    </if>
+    group by phone
+
+  </select>
+
+
+</mapper>

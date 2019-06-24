@@ -1,0 +1,1 @@
+nohup java -jar ../lib/own_profit-0.0.1.jar -Heap 512m -Dspring.profiles.active=../conf/application.properties 2 &>/dev/null&
