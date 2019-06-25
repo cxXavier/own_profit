@@ -1,5 +1,6 @@
 package com.xavier.fast.service.goods;
 
+import com.xavier.fast.model.base.RopRequestBody;
 import com.xavier.fast.model.base.RopResponse;
 import com.xavier.fast.model.goods.RopGoodsRequest;
 import com.xavier.fast.model.goods.RopGoodsResponse;
@@ -15,5 +16,5 @@ import com.xavier.fast.model.goods.RopGoodsResponse;
 */
 public interface IGoodsService {
 
-    public RopResponse<RopGoodsResponse> getGoodsDetail(RopGoodsRequest goodsRequest);
+    public RopResponse<RopGoodsResponse> getGoodsDetail(RopRequestBody<RopGoodsRequest> goodsRequest);
 }

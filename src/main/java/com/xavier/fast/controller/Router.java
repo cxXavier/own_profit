@@ -1,5 +1,6 @@
 package com.xavier.fast.controller;
 
+import com.xavier.fast.annotation.RopContextInit;
 import com.xavier.fast.model.base.RopRequest;
 import com.xavier.fast.model.base.RopResponse;
 import com.xavier.fast.utils.RopContext;
@@ -20,13 +21,10 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class Router {
 
-    private RopContext ropContext;
-
-    private String method;
-
+    @RopContextInit
     @RequestMapping("/router/rest")
     @ResponseBody
-    public Object router() {
+    public Object router(RopContext ropContext) {
         ServiceMethodHandler handler = ropContext.getServiceHandler();
         RopResponse<?> repResponse;
         try {

@@ -1,6 +1,7 @@
 package com.xavier.fast.service.goods.impl;
 
 import com.xavier.fast.annotation.ApiMethod;
+import com.xavier.fast.model.base.RopRequestBody;
 import com.xavier.fast.model.base.RopResponse;
 import com.xavier.fast.model.goods.RopGoodsRequest;
 import com.xavier.fast.model.goods.RopGoodsResponse;
@@ -20,7 +21,7 @@ import org.springframework.stereotype.Service;
 public class GoodsServiceImpl implements IGoodsService {
 
     @ApiMethod(method = "api.pinke.goods.getGoodsDetail", version = "1.0.0")
-    public RopResponse<RopGoodsResponse> getGoodsDetail(RopGoodsRequest goodsRequest) {
+    public RopResponse<RopGoodsResponse> getGoodsDetail(RopRequestBody<RopGoodsRequest> goodsRequest) {
 
         RopResponse<RopGoodsResponse> response = new RopResponse<>();
 
