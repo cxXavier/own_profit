@@ -10,7 +10,7 @@ public class PddConstants {
     public static final String GOODS_SEARCH = "pdd.ddk.goods.search";  // 商品查询
     public static final String GOODS_DETAIL = "pdd.ddk.goods.detail";  // 商品详情
     public static final String THEME_GOODS = "pdd.ddk.theme.goods.search";  // 主题商品查询
-
+    public static final String HOT_GOODS = "pdd.ddk.top.goods.list.query";  // 热销商品查询
     /**
      * 商品推广链接
      */
