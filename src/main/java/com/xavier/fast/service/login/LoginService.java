@@ -1,4 +1,4 @@
-package com.xavier.fast.service;
+package com.xavier.fast.service.login;
 
 import com.xavier.fast.entity.user.UserDto;
 import com.xavier.fast.entity.user.UserVo;

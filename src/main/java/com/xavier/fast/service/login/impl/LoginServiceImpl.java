@@ -1,4 +1,4 @@
-package com.xavier.fast.service.impl;
+package com.xavier.fast.service.login.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
@@ -11,13 +11,11 @@ import com.xavier.fast.entity.userFormid.UserFormid;
 import com.xavier.fast.mapper.UserFormidMapper;
 import com.xavier.fast.mapper.UserMapper;
 import com.xavier.fast.properties.WechatConfig;
-import com.xavier.fast.service.LoginService;
+import com.xavier.fast.service.login.LoginService;
 import com.xavier.fast.utils.DateUtil;
 import com.xavier.fast.utils.InviteCodeUtils;
 import com.xavier.fast.utils.OkHttpUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.dozer.Mapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;

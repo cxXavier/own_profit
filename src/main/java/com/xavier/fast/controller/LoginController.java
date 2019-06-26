@@ -2,7 +2,7 @@ package com.xavier.fast.controller;
 
 import com.xavier.fast.entity.user.UserDto;
 import com.xavier.fast.entity.user.UserVo;
-import com.xavier.fast.service.LoginService;
+import com.xavier.fast.service.login.LoginService;
 import com.xavier.fast.utils.ResultModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
