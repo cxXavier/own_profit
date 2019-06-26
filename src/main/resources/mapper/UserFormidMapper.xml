@@ -105,7 +105,7 @@
   </select>
 
   <insert id="save" useGeneratedKeys="true" keyProperty="id"
-          parameterType="com.bxm.shop.model.fomIdInfo.dao.FormIdInfoDao">
+          parameterType="com.xavier.fast.entity.userFormid.UserFormid">
     <selectKey resultType="long" keyProperty="id" order="AFTER">
       SELECT
       LAST_INSERT_ID()

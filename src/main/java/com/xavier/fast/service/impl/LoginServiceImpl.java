@@ -30,8 +30,8 @@ import java.util.Map;
 @Service
 public class LoginServiceImpl implements LoginService {
 
-    @Resource
-    private Mapper mapper;
+    //@Autowired
+    //private Mapper mapper;
 
     @Resource
     private UserMapper userMapper;
@@ -57,7 +57,7 @@ public class LoginServiceImpl implements LoginService {
         if(null == info){
             vo.setNewUser(true);
             info = new User();
-            mapper.map(dto,info);
+            //mapper.map(dto,info);
             info.setOpenid(vo.getOpenid());
             info.setUnionid(vo.getUnionid());
             //有邀请码时需要保留关联关系
@@ -87,7 +87,7 @@ public class LoginServiceImpl implements LoginService {
     @Override
     public void update(UserDto userdto) {
         User info = userMapper.getUserByOpenid(userdto.getOpenid());
-        mapper.map(userdto, info);  // null值不会复制,见com.bxm.shop.config.DozerBeanMapperConfig.mapper
+        //mapper.map(userdto, info);  // null值不会复制,见com.bxm.shop.config.DozerBeanMapperConfig.mapper
         //updater.hupdate(RedisConstants.User.getUserInfo(),info.getOpenid(),info, userExpireSec());
     }
 
