@@ -2,5 +2,14 @@
 <project version="4">
   <component name="Encoding">
     <file url="file://$PROJECT_DIR$" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/../shops" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/../shops/shops-api" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/../shops/shops-common" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/../shops/shops-dal" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/../shops/shops-facade" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/../shops/shops-integration" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/../shops/shops-model" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/../shops/shops-service" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/../shops/shops-timers" charset="UTF-8" />
   </component>
 </project>

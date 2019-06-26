@@ -7,6 +7,14 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="own_profit" />
+        <module name="shops-api" />
+        <module name="shops-common" />
+        <module name="shops-dal" />
+        <module name="shops-facade" />
+        <module name="shops-integration" />
+        <module name="shops-model" />
+        <module name="shops-service" />
+        <module name="shops-timers" />
       </profile>
     </annotationProcessing>
   </component>
