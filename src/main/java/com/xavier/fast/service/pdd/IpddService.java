@@ -1,9 +1,6 @@
 package com.xavier.fast.service.pdd;
 
-import com.xavier.fast.entity.pdd.Good;
-import com.xavier.fast.entity.pdd.GoodsList;
-import com.xavier.fast.entity.pdd.GoodsQueryRo;
-import com.xavier.fast.entity.pdd.HotGoodsQueryRo;
+import com.xavier.fast.entity.pdd.*;
 
 import java.util.List;
 
@@ -17,7 +14,7 @@ public interface IpddService {
     //商品详情查询
     Good queryGoodDetail(String goodId);
     //更新拼多多订单信息
-    void updateOrderMsg();
+    PddOrderList queryPddOrder(OrderQueryRo dto, Boolean retrunCount);
     //获取推广链接
-    void queryGoodsShareUrl();
+    OrderVo queryGoodsShareUrl(String goodsId,String openId);
 }

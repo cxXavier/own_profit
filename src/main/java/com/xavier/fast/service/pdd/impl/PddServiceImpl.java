@@ -1,11 +1,15 @@
 package com.xavier.fast.service.pdd.impl;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.google.common.collect.Lists;
 import com.xavier.fast.constants.PddConstants;
+import com.xavier.fast.constants.PingduoduoConstant;
 import com.xavier.fast.entity.pdd.*;
 import com.xavier.fast.properties.PinduoduoProperties;
 import com.xavier.fast.service.pdd.IpddService;
+import com.xavier.fast.utils.JSONStringUnderscoreToCamel;
 import com.xavier.fast.utils.OkHttpUtils;
 import com.xavier.fast.utils.ParamEncodeUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -17,10 +21,14 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class PddServiceImpl implements IpddService {
 
     private static final Logger log = LoggerFactory.getLogger(PddServiceImpl.class);
+
+    public static final Pattern PATTERN =Pattern.compile("(\\\\u(\\p{XDigit}{4}))");
 
     @Resource
     private PinduoduoProperties pinduoduoProperties;
@@ -34,7 +42,7 @@ public class PddServiceImpl implements IpddService {
         param.put("limit", goodsQueryRo.getPageSize().toString());
         param.put("sort_type", goodsQueryRo.getType().toString());
         param.put("type", PddConstants.HOT_GOODS);
-        param.put("p_id", "true");   // 固定只返回有优惠券的
+        param.put("p_id", pinduoduoProperties.getDefaultPid());   // 固定只返回有优惠券的
         try {
             GoodsList goodsList = post(param, GoodsList.class);
             if (goodsList == null) {
@@ -126,13 +134,82 @@ public class PddServiceImpl implements IpddService {
     }
 
     @Override
-    public void updateOrderMsg() {
-
+    public PddOrderList queryPddOrder(OrderQueryRo dto,Boolean retrunCount) {
+        if(null == retrunCount){
+            retrunCount = true;
+        }
+        Map<String,String> param = pinduoduoProperties.getCommonParam();
+        param.put(PingduoduoConstant.Param.TYPE, PddConstants.ORDER_INCREMENT_GET);
+        param.put(PingduoduoConstant.Param.START_UPDATE_TIME,dto.getStartUpdateTime()+"");
+        param.put(PingduoduoConstant.Param.END_UPDATE_TIME,dto.getEndUpdateTime()+"");
+        param.put(PingduoduoConstant.Param.PAGE,dto.getPageNum()+"");
+        param.put(PingduoduoConstant.Param.PAGE_SIZE,dto.getPageSize()+"");
+        param.put(PingduoduoConstant.Param.RETURN_COUNT,retrunCount.toString());
+        String sign = ParamEncodeUtils.getMd5Signature(param, pinduoduoProperties.getClientSecret());
+        param.put(PingduoduoConstant.Param.SIGN,sign);
+        String response = null;
+        try {
+            response = OkHttpUtils.post(PddConstants.URL, param);
+            response = unicodeToString(response);
+            if(null != response) {
+                JSONObject obj = JSON.parseObject(response);
+                if(null != obj && obj.getString("order_list_get_response") != null){
+                    String orderInfo = JSONStringUnderscoreToCamel.transform(obj.getString("order_list_get_response"));
+                    return JSON.parseObject(orderInfo,PddOrderList.class);
+                }
+            }
+        } catch (IOException e) {
+            log.error("CommonDoodsPromotionUrlIntegrationImpl.generate  Error",e);
+        }
+        return null;
     }
 
     @Override
-    public void queryGoodsShareUrl() {
+    public OrderVo queryGoodsShareUrl(String goodsId,String openId) {
+        //生成推广链接
+        OrderVo orderVo = generate(goodsId,openId);
+        //失败重试2次
+        for(int i=0;i<2;i++){
+            if(null == orderVo){
+                orderVo = generate(goodsId,openId);
+            }
+        }
+        orderVo.setOpenid(openId);
+        orderVo.setGoodsId(goodsId);
+        return orderVo;
+    }
 
+    public OrderVo generate(String goodsId,String customParam){
+        Map<String,String> param = pinduoduoProperties.getCommonParam();
+        param.put(PingduoduoConstant.Param.TYPE, PddConstants.COMMON_GOODS_PROMOTION);
+        param.put(PingduoduoConstant.Param.P_ID,pinduoduoProperties.getDefaultPid());
+        param.put(PingduoduoConstant.Param.GOODS_ID_LISTS,"["+goodsId+"]");
+        param.put(PingduoduoConstant.Param.CUSTOM_PARAMETERS,customParam);
+        param.put(PingduoduoConstant.Param.GENERATE_WE_APP, PingduoduoConstant.Param.TRUE);
+
+        String sign = ParamEncodeUtils.getMd5Signature(param, pinduoduoProperties.getClientSecret());
+        param.put(PingduoduoConstant.Param.SIGN,sign);
+        String response = null;
+        try {
+            response = OkHttpUtils.post(PddConstants.URL, param);
+            response = unicodeToString(response);
+            if(null != response) {
+                JSONObject obj = JSON.parseObject(response);
+                if(null != obj && obj.getJSONObject("goods_promotion_url_generate_response") != null){
+                    JSONArray jsonArray = obj.getJSONObject("goods_promotion_url_generate_response").
+                            getJSONArray("goods_promotion_url_list");
+                    if(null != jsonArray&& jsonArray.size()>0){
+                        JSONObject urlObj = (JSONObject) jsonArray.get(0);
+                        String weAppInfo = JSONStringUnderscoreToCamel.transform(urlObj.getString("we_app_info"));
+                        return JSON.parseObject(weAppInfo,OrderVo.class);
+                    }
+                }
+            }
+            log.error("CommonDoodsPromotionUrlIntegrationImpl.generate  Error response ",response);
+        } catch (IOException e) {
+            log.error("CommonDoodsPromotionUrlIntegrationImpl.generate  Error",e);
+        }
+        return null;
     }
 
 
@@ -148,6 +225,23 @@ public class PddServiceImpl implements IpddService {
             return JSONObject.parseObject(s, clazz);
         }
         return null;
+    }
+
+    /**
+     * unicode转中文
+     * @param str
+     * @return
+     */
+    public static String unicodeToString(String str) {
+
+        Matcher matcher = PATTERN.matcher(str);
+
+        char ch;
+        while (matcher.find()) {
+            ch = (char) Integer.parseInt(matcher.group(2), 16);
+            str = str.replace(matcher.group(1), ch + "");
+        }
+        return str;
     }
 
 }
