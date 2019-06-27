@@ -2,8 +2,18 @@ package com.xavier.fast.model.goods;
 
 import java.io.Serializable;
 
+/**
+* @Description:    商品
+* @Author:         Wang
+* @CreateDate:     2019/6/26 17:29
+* @UpdateUser:
+* @UpdateDate:     2019/6/26 17:29
+* @UpdateRemark:
+* @Version:        1.0
+*/
 public class RopGoodsResponse implements Serializable {
 
+    private static final long serialVersionUID = 2403548821287792717L;
     /**
      * 商品ID
      */
@@ -13,6 +23,11 @@ public class RopGoodsResponse implements Serializable {
      * 商品名称
      */
     private String goodsName;
+
+    /**
+     * 商品类型
+     */
+    private String goodsType;
 
     /**
      * 市场价(分)
@@ -45,6 +60,14 @@ public class RopGoodsResponse implements Serializable {
         this.goodsName = goodsName;
     }
 
+    public String getGoodsType() {
+        return goodsType;
+    }
+
+    public void setGoodsType(String goodsType) {
+        this.goodsType = goodsType;
+    }
+
     public Long getMarketPrice() {
         return marketPrice;
     }
@@ -67,5 +90,45 @@ public class RopGoodsResponse implements Serializable {
 
     public void setImgUrl(String imgUrl) {
         this.imgUrl = imgUrl;
+    }
+
+    /**
+    * @Description:    商品类型
+    * @Author:         Wang
+    * @CreateDate:     2019/6/26 17:35
+    * @UpdateUser:
+    * @UpdateDate:     2019/6/26 17:35
+    * @UpdateRemark:
+    * @Version:        1.0
+    */
+    public static enum GOODS_TYPE {
+        ELECTRICAL("电器", "ELECTRICAL"),
+        FRUITS("水果", "FRUITS"),
+        CLOTHING("服装", "CLOTHING");
+
+        private String cnName;
+
+        private String code;
+
+        GOODS_TYPE(String cnName, String code) {
+            this.cnName = cnName;
+            this.code = code;
+        }
+
+        public String getCnName() {
+            return cnName;
+        }
+
+        public void setCnName(String cnName) {
+            this.cnName = cnName;
+        }
+
+        public String getCode() {
+            return code;
+        }
+
+        public void setCode(String code) {
+            this.code = code;
+        }
     }
 }

@@ -1,6 +1,7 @@
 package com.xavier.fast.controller;
 
 import com.xavier.fast.annotation.RopContextInit;
+import com.xavier.fast.common.exception.ValidateException;
 import com.xavier.fast.model.base.RopRequest;
 import com.xavier.fast.model.base.RopResponse;
 import com.xavier.fast.utils.RopContext;
@@ -31,6 +32,9 @@ public class Router {
             repResponse = (RopResponse<?>)handler.getHandlerMethod().invoke(handler.getHandler(), ropContext.getRequestData());
         } catch (Exception e) {
             e.printStackTrace();
+            if(e.getCause() instanceof ValidateException){
+                return RopResponse.createFailedRep("-1", e.getCause().getMessage(), "1.0.0");
+            }
             return RopResponse.createFailedRep("-1", e.getMessage(), "1.0.0");
         }
         return repResponse;

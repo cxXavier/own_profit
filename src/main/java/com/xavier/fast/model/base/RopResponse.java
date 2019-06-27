@@ -13,6 +13,7 @@ import java.io.Serializable;
 */
 public class RopResponse <T> implements Serializable {
 
+    private static final long serialVersionUID = -7772178794345304873L;
     /**
      *
      */

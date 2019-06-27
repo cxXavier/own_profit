@@ -20,14 +20,21 @@ import org.springframework.stereotype.Service;
 @Service
 public class GoodsServiceImpl implements IGoodsService {
 
+    /**
+    * 商品详情接口
+    * @author      Wang
+    * @param       goodsRequest
+    * @return
+    * @exception
+    * @date        2019/6/26 15:15
+    */
     @ApiMethod(method = "api.pinke.goods.getGoodsDetail", version = "1.0.0")
     public RopResponse<RopGoodsResponse> getGoodsDetail(RopRequestBody<RopGoodsRequest> goodsRequest) {
 
-        RopResponse<RopGoodsResponse> response = new RopResponse<>();
-
         RopGoodsResponse goods = new RopGoodsResponse();
         goods.setGoodsId(11111L);
-        goods.setGoodsName("水果");
+        goods.setGoodsName("美的风扇");
+        goods.setGoodsType(RopGoodsResponse.GOODS_TYPE.ELECTRICAL.getCode());
 
         return RopResponse.createSuccessRep("1", "获取商品详情信息成功", "1.0.0", goods);
     }

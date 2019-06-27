@@ -15,6 +15,8 @@ import java.io.Serializable;
 */
 public class RopRequest implements Serializable {
 
+    private static final long serialVersionUID = 8619227409228167666L;
+
     /**
      * 方法名
      */
