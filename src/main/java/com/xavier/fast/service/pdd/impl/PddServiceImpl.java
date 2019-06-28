@@ -15,6 +15,7 @@ import com.xavier.fast.utils.ParamEncodeUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.io.IOException;
@@ -24,6 +25,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+@Service
 public class PddServiceImpl implements IpddService {
 
     private static final Logger log = LoggerFactory.getLogger(PddServiceImpl.class);
