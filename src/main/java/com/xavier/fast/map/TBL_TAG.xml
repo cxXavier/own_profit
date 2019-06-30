@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="TBL_TAG">
+    <resultMap id="BaseResultMap" type="com.xavier.fast.entity.tag.Tag">
+        <constructor>
+            <arg column="id" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+            <arg column="parentId" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+            <arg column="name" javaType="java.lang.String" jdbcType="VARCHAR"/>
+            <arg column="imageUrl" javaType="java.lang.String" jdbcType="VARCHAR"/>
+            <arg column="visible" javaType="java.lang.Byte" jdbcType="TINYINT"/>
+            <arg column="order" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+            <arg column="created" javaType="java.util.Date" jdbcType="TIMESTAMP"/>
+            <arg column="updated" javaType="java.util.Date" jdbcType="TIMESTAMP"/>
+        </constructor>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        ID, PARENTID, `NAME`, IMAGEURL, VISIBLE, `ORDER`, CREATED, UPDATED
+    </sql>
+
+    <sql id="Base_Query_Column_List">
+        <if test="id != null">
+            and id = #{id,jdbcType=INTEGER},
+        </if>
+        <if test="parentid != null">
+            and parentid = #{parentid,jdbcType=INTEGER},
+        </if>
+        <if test="name != null">
+            and `name` = #{name,jdbcType=VARCHAR},
+        </if>
+        <if test="imageurl != null">
+            and imageurl = #{imageurl,jdbcType=VARCHAR},
+        </if>
+        <if test="visible != null">
+            and visible = #{visible,jdbcType=TINYINT},
+        </if>
+        <if test="order != null">
+            and `order` = #{order,jdbcType=INTEGER},
+        </if>
+        <if test="created != null">
+            and created = #{created,jdbcType=TIMESTAMP},
+        </if>
+        <if test="updated != null">
+            and updated = #{updated,jdbcType=TIMESTAMP},
+        </if>
+    </sql>
+
+    <insert id="insert" parameterType="com.xavier.fast.entity.tag.Tag">
+    insert into tbl_tag (id, parentId, `name`, imageUrl, visible, `order`, created, updated)
+    values (#{id,jdbcType=INTEGER}, #{parentid,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, 
+      #{imageurl,jdbcType=VARCHAR}, #{visible,jdbcType=TINYINT}, #{order,jdbcType=INTEGER}, 
+      #{created,jdbcType=TIMESTAMP}, #{updated,jdbcType=TIMESTAMP})
+    </insert>
+
+    <insert id="insertSelective" parameterType="com.xavier.fast.entity.tag.Tag">
+        insert into tbl_tag
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="parentid != null">
+                parentId,
+            </if>
+            <if test="name != null">
+                `name`,
+            </if>
+            <if test="imageurl != null">
+                imageUrl,
+            </if>
+            <if test="visible != null">
+                visible,
+            </if>
+            <if test="order != null">
+                `order`,
+            </if>
+            <if test="created != null">
+                created,
+            </if>
+            <if test="updated != null">
+                updated,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=INTEGER},
+            </if>
+            <if test="parentid != null">
+                #{parentid,jdbcType=INTEGER},
+            </if>
+            <if test="name != null">
+                #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="imageurl != null">
+                #{imageurl,jdbcType=VARCHAR},
+            </if>
+            <if test="visible != null">
+                #{visible,jdbcType=TINYINT},
+            </if>
+            <if test="order != null">
+                #{order,jdbcType=INTEGER},
+            </if>
+            <if test="created != null">
+                #{created,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updated != null">
+                #{updated,jdbcType=TIMESTAMP},
+            </if>
+        </trim>
+    </insert>
+
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+        select
+        <include refid="Base_Column_List"/>
+        from tbl_tag
+        where ID = #{id, jdbcType=INTEGER}
+    </select>
+
+    <select id="queryTotalCount" parameterType="com.xavier.fast.entity.tag.Tag" resultType="Integer">
+        select
+        count(1)
+        from tbl_tag
+        <where>
+            1=1
+            <include refid="Base_Query_Column_List"/>
+        </where>
+    </select>
+
+    <select id="findTagList" parameterType="com.xavier.fast.entity.tag.Tag" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from tbl_tag
+        <where>
+            1=1
+            <include refid="Base_Query_Column_List"/>
+            <include refid="mysqlBasic.pageSearchLimit"/>
+        </where>
+    </select>
+
+</mapper>

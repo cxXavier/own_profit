@@ -10,7 +10,7 @@ import org.springframework.context.annotation.ImportResource;
 @SpringBootApplication
 @ComponentScan(value = "com.xavier")
 @ImportResource({"classpath:application-domain.xml"})
-@MapperScan("com.xavier.fast.mapper")
+//@MapperScan("com.xavier.fast.mapper")
 public class OwnApplication {
 
     public static void main(String[] args) {

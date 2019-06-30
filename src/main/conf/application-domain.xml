@@ -18,9 +18,11 @@
         <!-- 密码 -->
         <property name="password" value="${druid.password}"/>
         <!-- 连接初始值，连接池启动时创建的连接数量的初始值 -->
-        <property name="initialSize" value="${druid.initial-size}"/>
-        <property name="minIdle" value="${druid.min-idle}"/>
-        <property name="maxActive" value="${druid.max-active}"/>
+        <property name="initialSize" value="${spring.druid.initialSize}"/>
+        <property name="minIdle" value="${spring.druid.minIdle}"/>
+        <property name="maxActive" value="${spring.druid.maxActive}"/>
+        <property name="testWhileIdle" value="${spring.druid.testWhileIdle}"/>
+        <property name="validationQuery" value="${spring.druid.validationQuery}"/>
         <!-- 最大空闲值.当经过一个高峰时间后，
         连接池可以慢慢将已经用不到的连接慢慢释放一部分，
         一直减少到maxIdle为止 ，0时无限制  -->
@@ -40,7 +42,7 @@
         <property name="dataSource" ref="ds"/>
         <property name="mapperLocations" >
             <list>
-                <value>classpath*:/mapper/**/*Mapper.xml</value>
+                <value>classpath*:com/xavier/fast/map/**/*.xml</value>
                 <!--<value>classpath*:/mapper/**/*MapperExt.xml</value>-->
             </list>
         </property>
@@ -59,5 +61,7 @@
         <property name="dataSource" ref="ds"/>
         <property name="rollbackOnCommitFailure" value="true"/>
     </bean>
+
+    <import resource="classpath:applicationContext-profit-dao.xml"/>
 
 </beans>

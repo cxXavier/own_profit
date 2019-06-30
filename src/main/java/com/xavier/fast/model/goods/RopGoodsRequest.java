@@ -19,6 +19,9 @@ import java.io.Serializable;
 public class RopGoodsRequest extends RopRequest implements Serializable {
 
     private static final long serialVersionUID = -7881056399240504768L;
+
+
+
     /**
      * 商品ID
      */

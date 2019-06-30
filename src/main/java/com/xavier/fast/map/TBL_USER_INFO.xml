@@ -1,0 +1,239 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="TBL_USER_INFO" >
+  <resultMap id="BaseResultMap" type="com.xavier.fast.entity.user.User" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="avatar" property="avatar" jdbcType="VARCHAR" />
+    <result column="nickname" property="nickname" jdbcType="VARCHAR" />
+    <result column="gender" property="gender" jdbcType="BIT" />
+    <result column="mobile" property="mobile" jdbcType="VARCHAR" />
+    <result column="openid" property="openid" jdbcType="VARCHAR" />
+    <result column="unionid" property="unionid" jdbcType="VARCHAR" />
+    <result column="invite_code" property="inviteCode" jdbcType="VARCHAR" />
+    <result column="parent_openid" property="parentOpenid" jdbcType="VARCHAR" />
+    <result column="parent_unionid" property="parentUnionid" jdbcType="VARCHAR" />
+    <result column="grandparent_openid" property="grandparentOpenid" jdbcType="VARCHAR" />
+    <result column="grandparent_unionid" property="grandparentUnionid" jdbcType="VARCHAR" />
+    <result column="created" property="created" jdbcType="TIMESTAMP" />
+    <result column="updated" property="updated" jdbcType="TIMESTAMP" />
+    <result column="app_openid" property="appOpenid" jdbcType="VARCHAR" />
+    <result column="source" property="source" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, avatar, nickname, gender, mobile, openid, unionid, invite_code, parent_openid, 
+    parent_unionid, grandparent_openid, grandparent_unionid, created, updated, app_openid, 
+    source
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from tbl_user_info
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from tbl_user_info
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.xavier.fast.entity.user.User" >
+    <selectKey resultType="java.lang.Long" keyProperty="id" order="AFTER" >
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into tbl_user_info (avatar, nickname, gender, 
+      mobile, openid, unionid, 
+      invite_code, parent_openid, parent_unionid, 
+      grandparent_openid, grandparent_unionid, 
+      created, updated, app_openid, 
+      source)
+    values (#{avatar,jdbcType=VARCHAR}, #{nickname,jdbcType=VARCHAR}, #{gender,jdbcType=BIT}, 
+      #{mobile,jdbcType=VARCHAR}, #{openid,jdbcType=VARCHAR}, #{unionid,jdbcType=VARCHAR}, 
+      #{inviteCode,jdbcType=VARCHAR}, #{parentOpenid,jdbcType=VARCHAR}, #{parentUnionid,jdbcType=VARCHAR}, 
+      #{grandparentOpenid,jdbcType=VARCHAR}, #{grandparentUnionid,jdbcType=VARCHAR}, 
+      #{created,jdbcType=TIMESTAMP}, #{updated,jdbcType=TIMESTAMP}, #{appOpenid,jdbcType=VARCHAR}, 
+      #{source,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.xavier.fast.entity.user.User" >
+    <selectKey resultType="java.lang.Long" keyProperty="id" order="AFTER" >
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into tbl_user_info
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="avatar != null" >
+        avatar,
+      </if>
+      <if test="nickname != null" >
+        nickname,
+      </if>
+      <if test="gender != null" >
+        gender,
+      </if>
+      <if test="mobile != null" >
+        mobile,
+      </if>
+      <if test="openid != null" >
+        openid,
+      </if>
+      <if test="unionid != null" >
+        unionid,
+      </if>
+      <if test="inviteCode != null" >
+        invite_code,
+      </if>
+      <if test="parentOpenid != null" >
+        parent_openid,
+      </if>
+      <if test="parentUnionid != null" >
+        parent_unionid,
+      </if>
+      <if test="grandparentOpenid != null" >
+        grandparent_openid,
+      </if>
+      <if test="grandparentUnionid != null" >
+        grandparent_unionid,
+      </if>
+      <if test="created != null" >
+        created,
+      </if>
+      <if test="updated != null" >
+        updated,
+      </if>
+      <if test="appOpenid != null" >
+        app_openid,
+      </if>
+      <if test="source != null" >
+        source,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="avatar != null" >
+        #{avatar,jdbcType=VARCHAR},
+      </if>
+      <if test="nickname != null" >
+        #{nickname,jdbcType=VARCHAR},
+      </if>
+      <if test="gender != null" >
+        #{gender,jdbcType=BIT},
+      </if>
+      <if test="mobile != null" >
+        #{mobile,jdbcType=VARCHAR},
+      </if>
+      <if test="openid != null" >
+        #{openid,jdbcType=VARCHAR},
+      </if>
+      <if test="unionid != null" >
+        #{unionid,jdbcType=VARCHAR},
+      </if>
+      <if test="inviteCode != null" >
+        #{inviteCode,jdbcType=VARCHAR},
+      </if>
+      <if test="parentOpenid != null" >
+        #{parentOpenid,jdbcType=VARCHAR},
+      </if>
+      <if test="parentUnionid != null" >
+        #{parentUnionid,jdbcType=VARCHAR},
+      </if>
+      <if test="grandparentOpenid != null" >
+        #{grandparentOpenid,jdbcType=VARCHAR},
+      </if>
+      <if test="grandparentUnionid != null" >
+        #{grandparentUnionid,jdbcType=VARCHAR},
+      </if>
+      <if test="created != null" >
+        #{created,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updated != null" >
+        #{updated,jdbcType=TIMESTAMP},
+      </if>
+      <if test="appOpenid != null" >
+        #{appOpenid,jdbcType=VARCHAR},
+      </if>
+      <if test="source != null" >
+        #{source,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.xavier.fast.entity.user.User" >
+    update tbl_user_info
+    <set >
+      <if test="avatar != null" >
+        avatar = #{avatar,jdbcType=VARCHAR},
+      </if>
+      <if test="nickname != null" >
+        nickname = #{nickname,jdbcType=VARCHAR},
+      </if>
+      <if test="gender != null" >
+        gender = #{gender,jdbcType=BIT},
+      </if>
+      <if test="mobile != null" >
+        mobile = #{mobile,jdbcType=VARCHAR},
+      </if>
+      <if test="openid != null" >
+        openid = #{openid,jdbcType=VARCHAR},
+      </if>
+      <if test="unionid != null" >
+        unionid = #{unionid,jdbcType=VARCHAR},
+      </if>
+      <if test="inviteCode != null" >
+        invite_code = #{inviteCode,jdbcType=VARCHAR},
+      </if>
+      <if test="parentOpenid != null" >
+        parent_openid = #{parentOpenid,jdbcType=VARCHAR},
+      </if>
+      <if test="parentUnionid != null" >
+        parent_unionid = #{parentUnionid,jdbcType=VARCHAR},
+      </if>
+      <if test="grandparentOpenid != null" >
+        grandparent_openid = #{grandparentOpenid,jdbcType=VARCHAR},
+      </if>
+      <if test="grandparentUnionid != null" >
+        grandparent_unionid = #{grandparentUnionid,jdbcType=VARCHAR},
+      </if>
+      <if test="created != null" >
+        created = #{created,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updated != null" >
+        updated = #{updated,jdbcType=TIMESTAMP},
+      </if>
+      <if test="appOpenid != null" >
+        app_openid = #{appOpenid,jdbcType=VARCHAR},
+      </if>
+      <if test="source != null" >
+        source = #{source,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.xavier.fast.entity.user.User" >
+    update tbl_user_info
+    set avatar = #{avatar,jdbcType=VARCHAR},
+      nickname = #{nickname,jdbcType=VARCHAR},
+      gender = #{gender,jdbcType=BIT},
+      mobile = #{mobile,jdbcType=VARCHAR},
+      openid = #{openid,jdbcType=VARCHAR},
+      unionid = #{unionid,jdbcType=VARCHAR},
+      invite_code = #{inviteCode,jdbcType=VARCHAR},
+      parent_openid = #{parentOpenid,jdbcType=VARCHAR},
+      parent_unionid = #{parentUnionid,jdbcType=VARCHAR},
+      grandparent_openid = #{grandparentOpenid,jdbcType=VARCHAR},
+      grandparent_unionid = #{grandparentUnionid,jdbcType=VARCHAR},
+      created = #{created,jdbcType=TIMESTAMP},
+      updated = #{updated,jdbcType=TIMESTAMP},
+      app_openid = #{appOpenid,jdbcType=VARCHAR},
+      source = #{source,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+
+
+  <!--own-->
+  <select id="getUserByOpenid" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select
+    <include refid="Base_Column_List" />
+    from tbl_user_info
+    where openid = #{openid,jdbcType=VARCHAR}
+  </select>
+  <select id="getUserByInviteCode" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select
+    <include refid="Base_Column_List" />
+    from tbl_user_info
+    where invite_code = #{invite_code,jdbcType=VARCHAR}
+  </select>
+</mapper>
