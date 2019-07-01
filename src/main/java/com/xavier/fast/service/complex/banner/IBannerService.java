@@ -18,5 +18,5 @@ import java.util.List;
 */
 public interface IBannerService {
 
-    public RopResponse<List<RopImageResponse>> getImgList(RopRequestBody<RopImageRequest> goodsRequest);
+    public RopResponse<RopImageResponse> getImgList(RopRequestBody<RopImageRequest> goodsRequest);
 }

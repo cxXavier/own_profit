@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="TBL_IMG">
+    <resultMap id="BaseResultMap" type="com.xavier.fast.entity.img.Image">
+        <id column="ID" property="id" jdbcType="INTEGER"/>
+        <result column="img_name" property="imgName" jdbcType="INTEGER"/>
+        <result column="img_url" property="imgUrl" jdbcType="VARCHAR"/>
+        <result column="thumbnail_url" property="thumbnailUrl" jdbcType="VARCHAR"/>
+        <result column="img_type" property="imgType" jdbcType="VARCHAR"/>
+        <result column="visible" property="visible" jdbcType="TINYINT"/>
+        <result column="order" property="order" jdbcType="INTEGER"/>
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+        <result column="update_time" property="updateTime" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        ID, IMG_NAME, IMG_URL, THUMBNAIL_URL, IMG_TYPE, VISIBLE, `ORDER`, CREATE_TIME, UPDATE_TIME
+    </sql>
+
+    <sql id="Base_Query_Column_List">
+        <if test="id != null">
+            and ID = #{id,jdbcType=INTEGER}
+        </if>
+        <if test="imgName != null">
+            and IMG_NAME = #{imgName,jdbcType=VARCHAR}
+        </if>
+        <if test="imgUrl != null">
+            and IMG_URL = #{imgUrl,jdbcType=VARCHAR}
+        </if>
+        <if test="thumbnailUrl != null">
+            and THUMBNAIL_URL = #{thumbnailUrl,jdbcType=VARCHAR}
+        </if>
+        <if test="imgType != null">
+            and IMG_TYPE = #{imgType,jdbcType=VARCHAR}
+        </if>
+        <if test="visible != null">
+            and VISIBLE = #{visible,jdbcType=TINYINT}
+        </if>
+        <if test="order != null">
+            and `ORDER` = #{order,jdbcType=INTEGER}
+        </if>
+        <if test="createTime != null">
+            and CREATE_TIME = #{createTime,jdbcType=TIMESTAMP}
+        </if>
+        <if test="updateTime != null">
+            and UPDATE_TIME = #{updateTime,jdbcType=TIMESTAMP}
+        </if>
+    </sql>
+
+    <insert id="insert" parameterType="com.xavier.fast.entity.tag.Tag">
+    INSERT INTO TBL_IMG (IMG_NAME, IMG_URL, THUMBNAIL_URL, IMG_TYPE, VISIBLE, `ORDER`, CREATE_TIME, UPDATE_TIME)
+    values (#{imgName,jdbcType=VARCHAR}, #{imgUrl,jdbcType=VARCHAR}, #{thumbnailUrl,jdbcType=VARCHAR},
+      #{imgType,jdbcType=VARCHAR}, #{visible,jdbcType=TINYINT}, #{order,jdbcType=INTEGER},
+      #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP})
+    </insert>
+
+    <insert id="insertSelective" parameterType="com.xavier.fast.entity.img.Image">
+        INSERT INTO TBL_IMG
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="imgName != null">
+                IMG_NAME,
+            </if>
+            <if test="imgUrl != null">
+                IMG_URL,
+            </if>
+            <if test="thumbnailUrl != null">
+                THUMBNAIL_URL,
+            </if>
+            <if test="imgType != null">
+                IMG_TYPE,
+            </if>
+            <if test="visible != null">
+                VISIBLE,
+            </if>
+            <if test="order != null">
+                `ORDER`,
+            </if>
+            <if test="createTime != null">
+                CREATE_TIME,
+            </if>
+            <if test="updateTime != null">
+                UPDATE_TIME,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="imgName != null">
+                #{imgName,jdbcType=VARCHAR},
+            </if>
+            <if test="imgUrl != null">
+                #{imgUrl,jdbcType=VARCHAR},
+            </if>
+            <if test="thumbnailUrl != null">
+                #{thumbnailUrl,jdbcType=VARCHAR},
+            </if>
+            <if test="imgType != null">
+                #{imgType,jdbcType=VARCHAR},
+            </if>
+            <if test="visible != null">
+                #{visible,jdbcType=TINYINT},
+            </if>
+            <if test="order != null">
+                #{order,jdbcType=INTEGER},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateTime != null">
+                {updateTime,jdbcType=TIMESTAMP},
+            </if>
+        </trim>
+    </insert>
+
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+        select
+        <include refid="Base_Column_List"/>
+        from tbl_img
+        where ID = #{id, jdbcType=INTEGER}
+    </select>
+
+    <select id="queryTotalCount" parameterType="com.xavier.fast.entity.img.Image" resultType="Integer">
+        select
+        count(1)
+        from tbl_img
+        <where>
+            1=1
+            <include refid="Base_Query_Column_List"/>
+        </where>
+    </select>
+
+    <select id="findImgList" parameterType="com.xavier.fast.entity.img.Image" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from tbl_img
+        <where>
+            visible = 1
+            <include refid="Base_Query_Column_List"/>
+        </where>
+    </select>
+
+    <update id="update" parameterType="com.xavier.fast.entity.img.Image">
+        update tbl_img
+        <set>
+            <if test="id != null">
+                ID = #{id,jdbcType=INTEGER},
+            </if>
+            <if test="imgName != null">
+                IMG_NAME = #{imgName,jdbcType=VARCHAR},
+            </if>
+            <if test="imgUrl != null">
+                IMG_URL = #{imgUrl,jdbcType=VARCHAR},
+            </if>
+            <if test="thumbnailUrl != null">
+                THUMBNAIL_URL = #{thumbnailUrl,jdbcType=VARCHAR},
+            </if>
+            <if test="imgType != null">
+                IMG_TYPE = #{imgType,jdbcType=VARCHAR},
+            </if>
+            <if test="visible != null">
+                VISIBLE = #{visible,jdbcType=TINYINT},
+            </if>
+            <if test="order != null">
+                `ORDER` = #{order,jdbcType=INTEGER},
+            </if>
+            <if test="createTime != null">
+                CREATE_TIME = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateTime != null">
+                UPDATE_TIME = #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+    </update>
+
+</mapper>

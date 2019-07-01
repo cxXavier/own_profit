@@ -1,6 +1,9 @@
 package com.xavier.fast.model.img;
 
+import com.xavier.fast.entity.img.Image;
+
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * @Description:    图片
@@ -14,45 +17,14 @@ import java.io.Serializable;
 public class RopImageResponse implements Serializable {
 
     private static final long serialVersionUID = -6798662839902365266L;
-    /**
-     * 图片名称
-     */
-    private String imgName;
 
-    /**
-     * 图片链接
-     */
-    private String imgUrl;
+    private List<Image> imageList;
 
-    public RopImageResponse() {
+    public List<Image> getImageList() {
+        return imageList;
     }
 
-    public RopImageResponse(String imgName, String imgUrl) {
-        this.imgName = imgName;
-        this.imgUrl = imgUrl;
-    }
-
-    public String getImgName() {
-        return imgName;
-    }
-
-    public void setImgName(String imgName) {
-        this.imgName = imgName;
-    }
-
-    public String getImgUrl() {
-        return imgUrl;
-    }
-
-    public void setImgUrl(String imgUrl) {
-        this.imgUrl = imgUrl;
-    }
-
-    @Override
-    public String toString() {
-        return "RopImageResponse{" +
-                "imgName='" + imgName + '\'' +
-                ", imgUrl='" + imgUrl + '\'' +
-                '}';
+    public void setImageList(List<Image> imageList) {
+        this.imageList = imageList;
     }
 }

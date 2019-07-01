@@ -17,4 +17,14 @@ public class RopImageRequest extends RopRequest implements Serializable {
 
 
     private static final long serialVersionUID = -4986166352042555263L;
+
+    private String imgType;
+
+    public String getImgType() {
+        return imgType;
+    }
+
+    public void setImgType(String imgType) {
+        this.imgType = imgType;
+    }
 }
