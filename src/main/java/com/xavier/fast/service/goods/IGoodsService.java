@@ -2,10 +2,7 @@ package com.xavier.fast.service.goods;
 
 import com.xavier.fast.model.base.RopRequestBody;
 import com.xavier.fast.model.base.RopResponse;
-import com.xavier.fast.model.goods.RopGoodsCatsRequest;
-import com.xavier.fast.model.goods.RopGoodsCatsResponse;
-import com.xavier.fast.model.goods.RopGoodsRequest;
-import com.xavier.fast.model.goods.RopGoodsResponse;
+import com.xavier.fast.model.goods.*;
 
 /**
 * @Description:    商品服务
@@ -29,6 +26,26 @@ public interface IGoodsService {
     public RopResponse<RopGoodsCatsResponse> getGoodsCats(RopRequestBody<RopGoodsCatsRequest> goodsCatsRequest);
 
     /**
+    * 获取热门商品
+    * @author      
+    * @param       goodsRequest
+    * @return      
+    * @exception   
+    * @date        2019/6/30 23:03
+    */
+    public RopResponse<RopGoodsListResponse> getHotGoodsList(RopRequestBody<RopHotGoodsRequest> goodsRequest);
+
+    /**
+    * 获取商品列表
+    * @author      Wang
+    * @param       goodsRequest
+    * @return
+    * @exception
+    * @date        2019/7/1 0:01
+    */
+    public RopResponse<RopGoodsListResponse> getGoodsList(RopRequestBody<RopGoodsListRequest> goodsRequest);
+
+    /**
     * 获取商品详情
     * @author      Wang
     * @param       goodsRequest
@@ -36,5 +53,5 @@ public interface IGoodsService {
     * @exception
     * @date        2019/6/28 15:13
     */
-    public RopResponse<RopGoodsResponse> getGoodsDetail(RopRequestBody<RopGoodsRequest> goodsRequest);
+    public RopResponse<RopGoodsDetailResponse> getGoodsDetail(RopRequestBody<RopGoodsDetailRequest> goodsRequest);
 }

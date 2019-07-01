@@ -1,6 +1,6 @@
 package com.xavier.fast.model.search;
 
-import com.xavier.fast.model.goods.RopGoodsResponse;
+import com.xavier.fast.model.goods.RopGoodsListResponse;
 
 import java.io.Serializable;
 import java.util.List;
@@ -21,7 +21,7 @@ public class RopSearchResponse implements Serializable {
     /**
      * 商品列表
      */
-    private List<RopGoodsResponse> goodsList;
+    private List<RopGoodsListResponse> goodsList;
 
     private Integer pageSize;
 
@@ -31,11 +31,11 @@ public class RopSearchResponse implements Serializable {
 
     private Boolean hasNextPage;
 
-    public List<RopGoodsResponse> getGoodsList() {
+    public List<RopGoodsListResponse> getGoodsList() {
         return goodsList;
     }
 
-    public void setGoodsList(List<RopGoodsResponse> goodsList) {
+    public void setGoodsList(List<RopGoodsListResponse> goodsList) {
         this.goodsList = goodsList;
     }
 

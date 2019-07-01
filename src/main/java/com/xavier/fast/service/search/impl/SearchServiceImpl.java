@@ -3,7 +3,7 @@ package com.xavier.fast.service.search.impl;
 import com.xavier.fast.annotation.ApiMethod;
 import com.xavier.fast.model.base.RopRequestBody;
 import com.xavier.fast.model.base.RopResponse;
-import com.xavier.fast.model.goods.RopGoodsResponse;
+import com.xavier.fast.model.goods.RopGoodsListResponse;
 import com.xavier.fast.model.search.RopSearchRequest;
 import com.xavier.fast.model.search.RopSearchResponse;
 import com.xavier.fast.service.search.ISearchService;
@@ -28,11 +28,11 @@ public class SearchServiceImpl implements ISearchService {
     public RopResponse<RopSearchResponse> searchGoods(RopRequestBody<RopSearchRequest> searchRequest) {
 
         RopSearchResponse searchResponse = new RopSearchResponse();
-        List<RopGoodsResponse> goodsList = new ArrayList<>();
-        RopGoodsResponse goods = new RopGoodsResponse();
-        goods.setGoodsId(11111L);
-        goods.setGoodsName("美的风扇");
-        goods.setGoodsType(RopGoodsResponse.GOODS_TYPE.ELECTRICAL.getCode());
+        List<RopGoodsListResponse> goodsList = new ArrayList<>();
+        RopGoodsListResponse goods = new RopGoodsListResponse();
+//        goods.setGoodsId(11111L);
+//        goods.setGoodsName("美的风扇");
+//        goods.setGoodsType(RopGoodsListResponse.GOODS_TYPE.ELECTRICAL.getCode());
         goodsList.add(goods);
         searchResponse.setGoodsList(goodsList);
 

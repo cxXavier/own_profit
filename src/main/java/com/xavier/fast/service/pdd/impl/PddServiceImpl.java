@@ -36,7 +36,7 @@ public class PddServiceImpl implements IpddService {
     private PinduoduoProperties pinduoduoProperties;
 
     @Override
-    public GoodsList.GoodsSearchResponse queryHotGoods(HotGoodsQueryRo goodsQueryRo) {
+    public HotGoodsList.HotGoodsSearchResponse queryHotGoods(HotGoodsQueryRo goodsQueryRo) {
         Map<String, String> param = new HashMap<>();
 
         Integer offset = goodsQueryRo.getPageSize()*(goodsQueryRo.getPageNum() + 1);
@@ -46,21 +46,21 @@ public class PddServiceImpl implements IpddService {
         param.put("type", PddConstants.HOT_GOODS);
         param.put("p_id", pinduoduoProperties.getDefaultPid());   // 固定只返回有优惠券的
         try {
-            GoodsList goodsList = post(param, GoodsList.class);
+            HotGoodsList goodsList = post(param, HotGoodsList.class);
             if (goodsList == null) {
                 log.warn("查询拼多多获取商品列表接口返回空值");
-                return new GoodsList.GoodsSearchResponse();
+                return new HotGoodsList.HotGoodsSearchResponse();
             }
             if (goodsList.getErrorResponse() != null) {
                 log.warn("查询拼多多获取商品列表接口返回错误信息{},queryRo={}", goodsList, goodsQueryRo);
-                return new GoodsList.GoodsSearchResponse();
+                return new HotGoodsList.HotGoodsSearchResponse();
             }
-            GoodsList.GoodsSearchResponse result = goodsList.getResponse();
+            HotGoodsList.HotGoodsSearchResponse result = goodsList.getResponse();
             return result;
         } catch (IOException e) {
             log.error("查询拼多多获取商品列表接口发生异常:", e);
         }
-        return new GoodsList.GoodsSearchResponse();
+        return new HotGoodsList.HotGoodsSearchResponse();
     }
 
     @Override

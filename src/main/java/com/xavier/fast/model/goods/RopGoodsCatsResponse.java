@@ -1,5 +1,7 @@
 package com.xavier.fast.model.goods;
 
+import com.xavier.fast.entity.tag.Tag;
+
 import java.io.Serializable;
 import java.util.List;
 
@@ -18,13 +20,13 @@ public class RopGoodsCatsResponse implements Serializable {
     /**
      * 商品类目列表
      */
-    private List<?> catsList;
+    private List<Tag> catsList;
 
-    public List<?> getCatsList() {
+    public List<Tag> getCatsList() {
         return catsList;
     }
 
-    public void setCatsList(List<?> catsList) {
+    public void setCatsList(List<Tag> catsList) {
         this.catsList = catsList;
     }
 }

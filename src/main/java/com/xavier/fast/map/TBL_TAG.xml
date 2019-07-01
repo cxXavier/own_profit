@@ -130,7 +130,7 @@
         <include refid="Base_Column_List"/>
         from tbl_tag
         <where>
-            1=1
+            visible = 1
             <include refid="Base_Query_Column_List"/>
             <include refid="mysqlBasic.pageSearchLimit"/>
         </where>

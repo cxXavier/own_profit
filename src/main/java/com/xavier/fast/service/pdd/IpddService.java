@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface IpddService {
     //爆款获取商品
-    GoodsList.GoodsSearchResponse queryHotGoods(HotGoodsQueryRo goodsQueryRo);
+    HotGoodsList.HotGoodsSearchResponse queryHotGoods(HotGoodsQueryRo goodsQueryRo);
     //通过分类或关键词查询商品列表
     GoodsList.GoodsSearchResponse queryGoodsList(GoodsQueryRo goodsQueryRo);
     //通过商品ID查询商品列表
