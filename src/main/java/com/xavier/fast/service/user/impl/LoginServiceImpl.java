@@ -1,7 +1,8 @@
-package com.xavier.fast.service.login.impl;
+package com.xavier.fast.service.user.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.xavier.fast.annotation.ApiMethod;
 import com.xavier.fast.constants.WeChatConstants;
 import com.xavier.fast.dao.UserFormidMapper;
 import com.xavier.fast.dao.UserMapper;
@@ -10,12 +11,17 @@ import com.xavier.fast.entity.user.UserDto;
 import com.xavier.fast.entity.user.UserVo;
 import com.xavier.fast.entity.user.WechatLoginReturn;
 import com.xavier.fast.entity.userFormid.UserFormid;
+import com.xavier.fast.model.base.RopRequestBody;
+import com.xavier.fast.model.base.RopResponse;
+import com.xavier.fast.model.login.RopLoginRequest;
+import com.xavier.fast.model.login.RopLoginResponse;
 import com.xavier.fast.properties.WechatConfig;
-import com.xavier.fast.service.login.LoginService;
+import com.xavier.fast.service.user.LoginService;
 import com.xavier.fast.utils.DateUtil;
 import com.xavier.fast.utils.InviteCodeUtils;
 import com.xavier.fast.utils.OkHttpUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -28,9 +34,6 @@ import java.util.Map;
 @Service
 public class LoginServiceImpl implements LoginService {
 
-    //@Autowired
-    //private Mapper mapper;
-
     @Resource
     private UserMapper userMapper;
 
@@ -39,6 +42,52 @@ public class LoginServiceImpl implements LoginService {
 
     @Resource
     private UserFormidMapper userFormidMapper;
+
+    @ApiMethod(method = "api.pinke.user.login", version = "1.0.0")
+    public RopResponse<RopLoginResponse> login(RopRequestBody<RopLoginRequest> loginRequest) {
+        RopLoginResponse response = new RopLoginResponse();
+        UserDto dto = new UserDto();
+        BeanUtils.copyProperties(loginRequest.getT(), dto);
+        WechatLoginReturn loginObj = wechartLogin(dto.getCode());
+        if(null == loginObj.getOpenid()){
+            return RopResponse.createFailedRep("-1", "openId为空", "1.0.0");
+        }
+        UserVo vo = new UserVo();
+        vo.setOpenid(loginObj.getOpenid());
+        vo.setUnionid(loginObj.getUnioinid());
+        vo.setSessionId(loginObj.getSessionkey());
+        //验证是否为新用户
+        User info = userMapper.getUserByOpenid(vo.getOpenid());
+        if(null == info){
+            vo.setNewUser(true);
+            info = new User();
+            //mapper.map(dto,info);
+            info.setOpenid(vo.getOpenid());
+            info.setUnionid(vo.getUnionid());
+            //有邀请码时需要保留关联关系
+            if(StringUtils.isNotBlank(dto.getInviteCode())) {
+                User parentUser = userMapper.getUserByInviteCode(dto.getInviteCode());
+                if(null != parentUser){
+                    info.setParentOpenid(parentUser.getOpenid());
+                    info.setParentUnionid(parentUser.getUnionid());
+                    info.setGrandparentOpenid(parentUser.getParentOpenid());
+                    info.setGrandparentUnionid(parentUser.getGrandparentUnionid());
+                }
+            }
+            userMapper.insertSelective(info);
+            //生成邀请码
+            String inviteCode = InviteCodeUtils.generate(info.getId());
+            info.setInviteCode(inviteCode);
+        } else {
+            userMapper.updateByPrimaryKeySelective(info);
+        }
+        //保存用户session信息
+        //updater.update(RedisConstants.User.getSessionId(vo.getOpenid(),vo.getSessionId()),"",RedisConstants.User.SESSION_TIME);
+        vo.setInviteCode(info.getInviteCode());
+        vo.setMobile(info.getMobile());
+        response.setUserInfo(vo);
+        return RopResponse.createSuccessRep("1", "登陆成功", "1.0.0", response);
+    }
 
     @Override
     public UserVo login(UserDto dto) {
