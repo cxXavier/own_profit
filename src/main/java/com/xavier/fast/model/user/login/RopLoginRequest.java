@@ -1,4 +1,4 @@
-package com.xavier.fast.model.login;
+package com.xavier.fast.model.user.login;
 
 import com.xavier.fast.annotation.validate.NotEmpty;
 import com.xavier.fast.model.base.RopRequest;

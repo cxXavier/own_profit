@@ -1,0 +1,282 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="TBL_ORDER">
+    <resultMap id="BaseResultMap" type="com.xavier.fast.entity.order.Order">
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="pdd_order_id" property="pddOrderId" jdbcType="VARCHAR"/>
+        <result column="order_status" property="orderStatus" jdbcType="VARCHAR"/>
+        <result column="duo_coupon_amount" property="duoCouponAmount" jdbcType="INTEGER"/>
+        <result column="goods_id" property="goodsId" jdbcType="VARCHAR"/>
+        <result column="goods_name" property="goodsName" jdbcType="VARCHAR"/>
+        <result column="goods_price" property="goodsPrice" jdbcType="INTEGER"/>
+        <result column="goods_quantity" property="goodsQuantity" jdbcType="INTEGER"/>
+        <result column="goods_thumbnail_url" property="goodsThumbnailUrl" jdbcType="VARCHAR"/>
+        <result column="order_amount" property="orderAmount" jdbcType="INTEGER"/>
+        <result column="order_create_time" property="orderCreateTime" jdbcType="TIMESTAMP"/>
+        <result column="order_modify_at" property="orderModifyAt" jdbcType="TIMESTAMP"/>
+        <result column="order_pay_time" property="orderPayTime" jdbcType="TIMESTAMP"/>
+        <result column="order_receive_time" property="orderReceiveTime" jdbcType="TIMESTAMP"/>
+        <result column="order_settle_time" property="orderSettleTime" jdbcType="TIMESTAMP"/>
+        <result column="order_status_desc" property="orderStatusDesc" jdbcType="VARCHAR"/>
+        <result column="order_verify_time" property="orderVerifyTime" jdbcType="TIMESTAMP"/>
+        <result column="promotion_amount" property="promotionAmount" jdbcType="INTEGER"/>
+        <result column="promotion_rate" property="promotionRate" jdbcType="INTEGER"/>
+        <result column="return_status" property="returnStatus" jdbcType="TINYINT"/>
+        <result column="open_id" property="openId" jdbcType="VARCHAR"/>
+        <result column="unioin_id" property="unioinId" jdbcType="VARCHAR"/>
+        <result column="parent_open_id" property="parentOpenId" jdbcType="VARCHAR"/>
+        <result column="parent_unioin_id" property="parentUnionId" jdbcType="VARCHAR"/>
+        <result column="cash_back_status" property="cashBackStatus" jdbcType="TINYINT"/>
+        <result column="contribution_flower" property="contributionFlower" jdbcType="INTEGER"/>
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+        <result column="update_time" property="updateTime" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        ID, PDD_ORDER_ID, ORDER_STATUS, DUO_COUPON_AMOUNT, GOODS_ID, GOODS_NAME, GOODS_PRICE,
+        GOODS_QUANTITY, GOODS_THUMBNAIL_URL, ORDER_AMOUNT, ORDER_CREATE_TIME, ORDER_MODIFY_AT,
+        ORDER_PAY_TIME, ORDER_RECEIVE_TIME, ORDER_SETTLE_TIME, ORDER_STATUS_DESC, ORDER_VERIFY_TIME,
+        PROMOTION_AMOUNT, PROMOTION_RATE, RETURN_STATUS, OPEN_ID, UNIOIN_ID, PARENT_OPEN_ID,
+        PARENT_UNIOIN_ID, CASH_BACK_STATUS, CONTRIBUTION_FLOWER, CREATE_TIME, UPDATE_TIME
+    </sql>
+
+    <sql id="Base_Query_Column_List">
+        <if test="id != null">
+            and ID = #{id,jdbcType=INTEGER}
+        </if>
+        <if test="pddOrderId != null">
+            and PDD_ORDER_ID = #{pddOrderId,jdbcType=VARCHAR}
+        </if>
+        <if test="orderStatus != null">
+            and ORDER_STATUS = #{orderStatus,jdbcType=VARCHAR}
+        </if>
+        <if test="duoCouponAmount != null">
+            and DUO_COUPON_AMOUNT = #{duoCouponAmount,jdbcType=INTEGER}
+        </if>
+        <if test="goodsId != null">
+            and GOODS_ID = #{goodsId,jdbcType=VARCHAR}
+        </if>
+        <if test="goodsName != null">
+            and GOODS_NAME = #{goodsName,jdbcType=VARCHAR}
+        </if>
+        <if test="goodsPrice != null">
+            and GOODS_PRICE = #{goodsPrice,jdbcType=INTEGER}
+        </if>
+        <if test="goodsQuantity != null">
+            and GOODS_QUANTITY = #{goodsQuantity,jdbcType=INTEGER}
+        </if>
+        <if test="goodsThumbnailUrl != null">
+            and GOODS_THUMBNAIL_URL = #{goodsThumbnailUrl,jdbcType=VARCHAR}
+        </if>
+        <if test="orderAmount != null">
+            and ORDER_AMOUNT = #{orderAmount,jdbcType=INTEGER}
+        </if>
+        <if test="orderCreateTime != null">
+            and ORDER_CREATE_TIME = #{orderCreateTime,jdbcType=TIMESTAMP}
+        </if>
+        <if test="orderModifyAt != null">
+            and ORDER_MODIFY_AT = #{orderModifyAt,jdbcType=TIMESTAMP}
+        </if>
+        <if test="orderPayTime != null">
+            and ORDER_PAY_TIME = #{orderPayTime,jdbcType=TIMESTAMP}
+        </if>
+        <if test="orderReceiveTime != null">
+            and ORDER_RECEIVE_TIME = #{orderReceiveTime,jdbcType=TIMESTAMP}
+        </if>
+        <if test="orderSettleTime != null">
+            and ORDER_SETTLE_TIME = #{orderSettleTime,jdbcType=TIMESTAMP}
+        </if>
+        <if test="orderStatusDesc != null">
+            and ORDER_STATUS_DESC = #{orderStatusDesc,jdbcType=VARCHAR}
+        </if>
+        <if test="orderVerifyTime != null">
+            and ORDER_VERIFY_TIME = #{orderVerifyTime,jdbcType=TIMESTAMP}
+        </if>
+        <if test="promotionAmount != null">
+            and PROMOTION_AMOUNT = #{promotionAmount,jdbcType=INTEGER}
+        </if>
+        <if test="promotionRate != null">
+            and PROMOTION_RATE = #{promotionRate,jdbcType=INTEGER}
+        </if>
+        <if test="returnStatus != null">
+            and RETURN_STATUS = #{returnStatus,jdbcType=TINYINT}
+        </if>
+        <if test="openId != null">
+            and OPEN_ID = #{openId,jdbcType=VARCHAR}
+        </if>
+        <if test="unioinId != null">
+            and UNIOIN_ID = #{unioinId,jdbcType=VARCHAR}
+        </if>
+        <if test="parentOpenId != null">
+            and PARENT_OPEN_ID = #{parentOpenId,jdbcType=VARCHAR}
+        </if>
+        <if test="parentUnionId != null">
+            and PARENT_UNIOIN_ID = #{parentUnionId,jdbcType=VARCHAR}
+        </if>
+        <if test="cashBackStatus != null">
+            and CASH_BACK_STATUS = #{cashBackStatus,jdbcType=TINYINT}
+        </if>
+        <if test="contributionFlower != null">
+            and CONTRIBUTION_FLOWER = #{contributionFlower,jdbcType=INTEGER}
+        </if>
+        <if test="createTime != null">
+            and CREATE_TIME = #{createTime,jdbcType=TIMESTAMP}
+        </if>
+        <if test="updateTime != null">
+            and UPDATE_TIME = #{updateTime,jdbcType=TIMESTAMP}
+        </if>
+        <if test="openIds != null">
+            and OPEN_ID IN
+            <foreach item="openId" collection="openIds" open="(" separator="," close=")">
+                #{openId}
+            </foreach>
+        </if>
+    </sql>
+
+    <insert id="insert" parameterType="com.xavier.fast.entity.order.Order">
+      INSERT INTO TBL_ORDER (
+        PDD_ORDER_ID, ORDER_STATUS, DUO_COUPON_AMOUNT, GOODS_ID, GOODS_NAME, GOODS_PRICE,
+        GOODS_QUANTITY, GOODS_THUMBNAIL_URL, ORDER_AMOUNT, ORDER_CREATE_TIME, ORDER_MODIFY_AT,
+        ORDER_PAY_TIME, ORDER_RECEIVE_TIME, ORDER_SETTLE_TIME, ORDER_STATUS_DESC, ORDER_VERIFY_TIME,
+        PROMOTION_AMOUNT, PROMOTION_RATE, RETURN_STATUS, OPEN_ID, UNIOIN_ID, PARENT_OPEN_ID,
+        PARENT_UNIOIN_ID, CASH_BACK_STATUS, CONTRIBUTION_FLOWER, CREATE_TIME, UPDATE_TIME
+      )
+      values (
+        #{pddOrderId,jdbcType=VARCHAR}, #{orderStatus,jdbcType=VARCHAR}, #{duoCouponAmount,jdbcType=INTEGER},
+        #{goodsId,jdbcType=VARCHAR}, #{goodsName,jdbcType=VARCHAR}, #{goodsPrice,jdbcType=INTEGER},
+        #{goodsQuantity,jdbcType=INTEGER}, #{goodsThumbnailUrl,jdbcType=VARCHAR}, #{orderAmount,jdbcType=INTEGER},
+        #{orderCreateTime,jdbcType=TIMESTAMP}, #{orderModifyAt,jdbcType=TIMESTAMP}, #{orderPayTime,jdbcType=TIMESTAMP},
+        #{orderReceiveTime,jdbcType=TIMESTAMP}, #{orderSettleTime,jdbcType=TIMESTAMP}, #{orderStatusDesc,jdbcType=VARCHAR},
+        #{orderVerifyTime,jdbcType=TIMESTAMP}, #{promotionAmount,jdbcType=INTEGER}, #{promotionRate,jdbcType=INTEGER},
+        #{returnStatus,jdbcType=TINYINT}, #{openId,jdbcType=VARCHAR}, #{unioinId,jdbcType=VARCHAR}, #{parentOpenId,jdbcType=VARCHAR},
+        #{parentUnionId,jdbcType=VARCHAR},#{cashBackStatus,jdbcType=TINYINT}, #{contributionFlower,jdbcType=INTEGER},
+        #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}
+      )
+    </insert>
+
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM TBL_ORDER
+        WHERE ID = #{id, jdbcType=INTEGER}
+    </select>
+
+    <select id="queryTotalCount" parameterType="com.xavier.fast.entity.order.Order" resultType="Integer">
+        SELECT
+        COUNT(1)
+        FROM TBL_ORDER
+        <where>
+            1=1
+            <include refid="Base_Query_Column_List"/>
+        </where>
+    </select>
+
+    <select id="findOrderList" parameterType="com.xavier.fast.entity.order.Order" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM TBL_ORDER
+        <where>
+            <include refid="Base_Query_Column_List"/>
+        </where>
+    </select>
+
+    <update id="update" parameterType="com.xavier.fast.entity.order.Order">
+        UPDATE TBL_ORDER
+        <set>
+            <if test="id != null">
+                ID = #{id,jdbcType=INTEGER},
+            </if>
+            <if test="pddOrderId != null">
+                PDD_ORDER_ID = #{pddOrderId,jdbcType=VARCHAR},
+            </if>
+            <if test="orderStatus != null">
+                ORDER_STATUS = #{orderStatus,jdbcType=VARCHAR},
+            </if>
+            <if test="duoCouponAmount != null">
+                DUO_COUPON_AMOUNT = #{duoCouponAmount,jdbcType=INTEGER},
+            </if>
+            <if test="goodsId != null">
+                GOODS_ID = #{goodsId,jdbcType=VARCHAR},
+            </if>
+            <if test="goodsName != null">
+                GOODS_NAME = #{goodsName,jdbcType=VARCHAR},
+            </if>
+            <if test="goodsPrice != null">
+                GOODS_PRICE = #{goodsPrice,jdbcType=INTEGER},
+            </if>
+            <if test="goodsQuantity != null">
+                GOODS_QUANTITY = #{goodsQuantity,jdbcType=INTEGER},
+            </if>
+            <if test="goodsThumbnailUrl != null">
+                GOODS_THUMBNAIL_URL = #{goodsThumbnailUrl,jdbcType=VARCHAR},
+            </if>
+            <if test="orderAmount != null">
+                ORDER_AMOUNT = #{orderAmount,jdbcType=INTEGER},
+            </if>
+            <if test="orderCreateTime != null">
+                ORDER_CREATE_TIME = #{orderCreateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="orderModifyAt != null">
+                ORDER_MODIFY_AT = #{orderModifyAt,jdbcType=TIMESTAMP},
+            </if>
+            <if test="orderPayTime != null">
+                ORDER_PAY_TIME = #{orderPayTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="orderReceiveTime != null">
+                ORDER_RECEIVE_TIME = #{orderReceiveTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="orderSettleTime != null">
+                ORDER_SETTLE_TIME = #{orderSettleTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="orderStatusDesc != null">
+                ORDER_STATUS_DESC = #{orderStatusDesc,jdbcType=VARCHAR},
+            </if>
+            <if test="orderVerifyTime != null">
+                ORDER_VERIFY_TIME = #{orderVerifyTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="promotionAmount != null">
+                PROMOTION_AMOUNT = #{promotionAmount,jdbcType=INTEGER},
+            </if>
+            <if test="promotionRate != null">
+                PROMOTION_RATE = #{promotionRate,jdbcType=INTEGER},
+            </if>
+            <if test="returnStatus != null">
+                RETURN_STATUS = #{returnStatus,jdbcType=TINYINT},
+            </if>
+            <if test="openId != null">
+                OPEN_ID = #{openId,jdbcType=VARCHAR},
+            </if>
+            <if test="unioinId != null">
+                UNIOIN_ID = #{unioinId,jdbcType=VARCHAR},
+            </if>
+            <if test="parentOpenId != null">
+                PARENT_OPEN_ID = #{parentOpenId,jdbcType=VARCHAR},
+            </if>
+            <if test="parentUnionId != null">
+                PARENT_UNIOIN_ID = #{parentUnionId,jdbcType=VARCHAR},
+            </if>
+            <if test="cashBackStatus != null">
+                CASH_BACK_STATUS = #{cashBackStatus,jdbcType=TINYINT},
+            </if>
+            <if test="contributionFlower != null">
+                CONTRIBUTION_FLOWER = #{contributionFlower,jdbcType=INTEGER},
+            </if>
+            <if test="createTime != null">
+                CREATE_TIME = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateTime != null">
+                UPDATE_TIME = #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+    </update>
+
+    <select id="findOrderListByParams" parameterType="java.util.List" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM TBL_ORDER
+        <where>
+            <include refid="Base_Query_Column_List"/>
+        </where>
+    </select>
+
+</mapper>

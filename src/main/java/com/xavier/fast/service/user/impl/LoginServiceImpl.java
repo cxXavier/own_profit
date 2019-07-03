@@ -13,10 +13,10 @@ import com.xavier.fast.entity.user.WechatLoginReturn;
 import com.xavier.fast.entity.userFormid.UserFormid;
 import com.xavier.fast.model.base.RopRequestBody;
 import com.xavier.fast.model.base.RopResponse;
-import com.xavier.fast.model.login.RopLoginRequest;
-import com.xavier.fast.model.login.RopLoginResponse;
+import com.xavier.fast.model.user.login.RopLoginRequest;
+import com.xavier.fast.model.user.login.RopLoginResponse;
 import com.xavier.fast.properties.WechatConfig;
-import com.xavier.fast.service.user.LoginService;
+import com.xavier.fast.service.user.ILoginService;
 import com.xavier.fast.utils.DateUtil;
 import com.xavier.fast.utils.InviteCodeUtils;
 import com.xavier.fast.utils.OkHttpUtils;
@@ -32,7 +32,7 @@ import java.util.List;
 import java.util.Map;
 
 @Service
-public class LoginServiceImpl implements LoginService {
+public class LoginServiceImpl implements ILoginService {
 
     @Resource
     private UserMapper userMapper;
@@ -43,8 +43,8 @@ public class LoginServiceImpl implements LoginService {
     @Resource
     private UserFormidMapper userFormidMapper;
 
-    @ApiMethod(method = "api.pinke.user.login", version = "1.0.0")
-    public RopResponse<RopLoginResponse> login(RopRequestBody<RopLoginRequest> loginRequest) {
+    @ApiMethod(method = "api.pinke.user.login.userLogin", version = "1.0.0")
+    public RopResponse<RopLoginResponse> userLogin(RopRequestBody<RopLoginRequest> loginRequest) {
         RopLoginResponse response = new RopLoginResponse();
         UserDto dto = new UserDto();
         BeanUtils.copyProperties(loginRequest.getT(), dto);
