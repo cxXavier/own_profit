@@ -94,4 +94,5 @@ public class UserFlower implements Serializable {
     public static enum COST_TYPE{
         INCREASE,DECREASE
     }
+
 }

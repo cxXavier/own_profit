@@ -18,11 +18,12 @@
         <result column="updated" property="updated" jdbcType="TIMESTAMP"/>
         <result column="app_openid" property="appOpenid" jdbcType="VARCHAR"/>
         <result column="source" property="source" jdbcType="VARCHAR"/>
+        <result column="rel_name" property="relName" jdbcType="VARCHAR"/>
     </resultMap>
     <sql id="Base_Column_List">
         id, avatar, nickname, gender, mobile, openid, unionid, invite_code, parent_openid,
         parent_unionid, grandparent_openid, grandparent_unionid, created, updated, app_openid,
-        source
+        source, rel_name
     </sql>
 
     <sql id="Base_Query_Column_List">
@@ -74,6 +75,9 @@
         <if test="source != null">
             and source = #{source,jdbcType=VARCHAR}
         </if>
+        <if test="relName != null">
+            and rel_name = #{relName,jdbcType=VARCHAR}
+        </if>
     </sql>
 
     <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long">
@@ -90,18 +94,15 @@
         <selectKey resultType="java.lang.Long" keyProperty="id" order="AFTER">
             SELECT LAST_INSERT_ID()
         </selectKey>
-        insert into tbl_user_info (avatar, nickname, gender,
-        mobile, openid, unionid,
-        invite_code, parent_openid, parent_unionid,
-        grandparent_openid, grandparent_unionid,
-        created, updated, app_openid,
-        source)
+        insert into tbl_user_info (avatar, nickname, gender, mobile, openid, unionid,
+        invite_code, parent_openid, parent_unionid, grandparent_openid, grandparent_unionid,
+        created, updated, app_openid, source, rel_name)
         values (#{avatar,jdbcType=VARCHAR}, #{nickname,jdbcType=VARCHAR}, #{gender,jdbcType=BIT},
         #{mobile,jdbcType=VARCHAR}, #{openid,jdbcType=VARCHAR}, #{unionid,jdbcType=VARCHAR},
         #{inviteCode,jdbcType=VARCHAR}, #{parentOpenid,jdbcType=VARCHAR}, #{parentUnionid,jdbcType=VARCHAR},
         #{grandparentOpenid,jdbcType=VARCHAR}, #{grandparentUnionid,jdbcType=VARCHAR},
         #{created,jdbcType=TIMESTAMP}, #{updated,jdbcType=TIMESTAMP}, #{appOpenid,jdbcType=VARCHAR},
-        #{source,jdbcType=VARCHAR})
+        #{source,jdbcType=VARCHAR}, #{relName,jdbcType=VARCHAR})
     </insert>
     <insert id="insertSelective" parameterType="com.xavier.fast.entity.user.User">
         <selectKey resultType="java.lang.Long" keyProperty="id" order="AFTER">
@@ -154,6 +155,9 @@
             <if test="source != null">
                 source,
             </if>
+            <if test="relName != null">
+                rel_name,
+            </if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="avatar != null">
@@ -200,6 +204,9 @@
             </if>
             <if test="source != null">
                 #{source,jdbcType=VARCHAR},
+            </if>
+            <if test="relName != null">
+                #{relName,jdbcType=VARCHAR},
             </if>
         </trim>
     </insert>
@@ -251,6 +258,9 @@
             <if test="source != null">
                 source = #{source,jdbcType=VARCHAR},
             </if>
+            <if test="relName != null">
+                rel_name = #{relName,jdbcType=VARCHAR},
+            </if>
         </set>
         where id = #{id,jdbcType=BIGINT}
     </update>
@@ -270,7 +280,8 @@
           created = #{created,jdbcType=TIMESTAMP},
           updated = #{updated,jdbcType=TIMESTAMP},
           app_openid = #{appOpenid,jdbcType=VARCHAR},
-          source = #{source,jdbcType=VARCHAR}
+          source = #{source,jdbcType=VARCHAR},
+          rel_name = #{relName,jdbcType=VARCHAR}
         where id = #{id,jdbcType=BIGINT}
     </update>
 

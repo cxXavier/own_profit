@@ -35,6 +35,8 @@ public class User {
 
     private String source;
 
+    private String relName;
+
     public Long getId() {
         return id;
     }
@@ -161,5 +163,13 @@ public class User {
 
     public void setSource(String source) {
         this.source = source == null ? null : source.trim();
+    }
+
+    public String getRelName() {
+        return relName;
+    }
+
+    public void setRelName(String relName) {
+        this.relName = relName;
     }
 }

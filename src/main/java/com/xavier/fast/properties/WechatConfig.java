@@ -79,6 +79,8 @@ public class WechatConfig {
      */
     private  String incomeTemplateId = "LwlRGwVWwNaVAuV_um8Z_nGbKOOHK9fIR8mt6FMRC7I";
 
+    private String apiKey;
+
     public String getJscode2sessionUrl() {
         return jscode2sessionUrl;
     }
@@ -189,5 +191,13 @@ public class WechatConfig {
 
     public void setIncomeTemplateId(String incomeTemplateId) {
         this.incomeTemplateId = incomeTemplateId;
+    }
+
+    public String getApiKey() {
+        return apiKey;
+    }
+
+    public void setApiKey(String apiKey) {
+        this.apiKey = apiKey;
     }
 }

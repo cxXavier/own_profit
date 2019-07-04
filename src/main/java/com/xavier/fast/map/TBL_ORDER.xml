@@ -21,13 +21,14 @@
         <result column="order_verify_time" property="orderVerifyTime" jdbcType="TIMESTAMP"/>
         <result column="promotion_amount" property="promotionAmount" jdbcType="INTEGER"/>
         <result column="promotion_rate" property="promotionRate" jdbcType="INTEGER"/>
-        <result column="return_status" property="returnStatus" jdbcType="TINYINT"/>
+        <result column="return_status" property="returnStatus" jdbcType="INTEGER"/>
         <result column="open_id" property="openId" jdbcType="VARCHAR"/>
         <result column="unioin_id" property="unioinId" jdbcType="VARCHAR"/>
         <result column="parent_open_id" property="parentOpenId" jdbcType="VARCHAR"/>
         <result column="parent_unioin_id" property="parentUnionId" jdbcType="VARCHAR"/>
-        <result column="cash_back_status" property="cashBackStatus" jdbcType="TINYINT"/>
+        <result column="cash_back_status" property="cashBackStatus" jdbcType="INTEGER"/>
         <result column="contribution_flower" property="contributionFlower" jdbcType="INTEGER"/>
+        <result column="cash_back_version" property="cashBackVersion" jdbcType="INTEGER"/>
         <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
         <result column="update_time" property="updateTime" jdbcType="TIMESTAMP"/>
     </resultMap>
@@ -37,7 +38,7 @@
         GOODS_QUANTITY, GOODS_THUMBNAIL_URL, ORDER_AMOUNT, ORDER_CREATE_TIME, ORDER_MODIFY_AT,
         ORDER_PAY_TIME, ORDER_RECEIVE_TIME, ORDER_SETTLE_TIME, ORDER_STATUS_DESC, ORDER_VERIFY_TIME,
         PROMOTION_AMOUNT, PROMOTION_RATE, RETURN_STATUS, OPEN_ID, UNIOIN_ID, PARENT_OPEN_ID,
-        PARENT_UNIOIN_ID, CASH_BACK_STATUS, CONTRIBUTION_FLOWER, CREATE_TIME, UPDATE_TIME
+        PARENT_UNIOIN_ID, CASH_BACK_STATUS, CONTRIBUTION_FLOWER, CASH_BACK_VERSION, CREATE_TIME, UPDATE_TIME
     </sql>
 
     <sql id="Base_Query_Column_List">
@@ -99,7 +100,7 @@
             and PROMOTION_RATE = #{promotionRate,jdbcType=INTEGER}
         </if>
         <if test="returnStatus != null">
-            and RETURN_STATUS = #{returnStatus,jdbcType=TINYINT}
+            and RETURN_STATUS = #{returnStatus,jdbcType=INTEGER}
         </if>
         <if test="openId != null">
             and OPEN_ID = #{openId,jdbcType=VARCHAR}
@@ -114,10 +115,13 @@
             and PARENT_UNIOIN_ID = #{parentUnionId,jdbcType=VARCHAR}
         </if>
         <if test="cashBackStatus != null">
-            and CASH_BACK_STATUS = #{cashBackStatus,jdbcType=TINYINT}
+            and CASH_BACK_STATUS = #{cashBackStatus,jdbcType=INTEGER}
         </if>
         <if test="contributionFlower != null">
             and CONTRIBUTION_FLOWER = #{contributionFlower,jdbcType=INTEGER}
+        </if>
+        <if test="cashBackVersion != null">
+            and CASH_BACK_VERSION = #{cashBackVersion,jdbcType=INTEGER}
         </if>
         <if test="createTime != null">
             and CREATE_TIME = #{createTime,jdbcType=TIMESTAMP}
@@ -139,7 +143,7 @@
         GOODS_QUANTITY, GOODS_THUMBNAIL_URL, ORDER_AMOUNT, ORDER_CREATE_TIME, ORDER_MODIFY_AT,
         ORDER_PAY_TIME, ORDER_RECEIVE_TIME, ORDER_SETTLE_TIME, ORDER_STATUS_DESC, ORDER_VERIFY_TIME,
         PROMOTION_AMOUNT, PROMOTION_RATE, RETURN_STATUS, OPEN_ID, UNIOIN_ID, PARENT_OPEN_ID,
-        PARENT_UNIOIN_ID, CASH_BACK_STATUS, CONTRIBUTION_FLOWER, CREATE_TIME, UPDATE_TIME
+        PARENT_UNIOIN_ID, CASH_BACK_STATUS, CONTRIBUTION_FLOWER, CASH_BACK_VERSION, CREATE_TIME, UPDATE_TIME
       )
       values (
         #{pddOrderId,jdbcType=VARCHAR}, #{orderStatus,jdbcType=VARCHAR}, #{duoCouponAmount,jdbcType=INTEGER},
@@ -148,9 +152,9 @@
         #{orderCreateTime,jdbcType=TIMESTAMP}, #{orderModifyAt,jdbcType=TIMESTAMP}, #{orderPayTime,jdbcType=TIMESTAMP},
         #{orderReceiveTime,jdbcType=TIMESTAMP}, #{orderSettleTime,jdbcType=TIMESTAMP}, #{orderStatusDesc,jdbcType=VARCHAR},
         #{orderVerifyTime,jdbcType=TIMESTAMP}, #{promotionAmount,jdbcType=INTEGER}, #{promotionRate,jdbcType=INTEGER},
-        #{returnStatus,jdbcType=TINYINT}, #{openId,jdbcType=VARCHAR}, #{unioinId,jdbcType=VARCHAR}, #{parentOpenId,jdbcType=VARCHAR},
-        #{parentUnionId,jdbcType=VARCHAR},#{cashBackStatus,jdbcType=TINYINT}, #{contributionFlower,jdbcType=INTEGER},
-        #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}
+        #{returnStatus,jdbcType=INTEGER}, #{openId,jdbcType=VARCHAR}, #{unioinId,jdbcType=VARCHAR}, #{parentOpenId,jdbcType=VARCHAR},
+        #{parentUnionId,jdbcType=VARCHAR},#{cashBackStatus,jdbcType=INTEGER}, #{contributionFlower,jdbcType=INTEGER},
+        #{cashBackVersion,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}
       )
     </insert>
 
@@ -241,7 +245,7 @@
                 PROMOTION_RATE = #{promotionRate,jdbcType=INTEGER},
             </if>
             <if test="returnStatus != null">
-                RETURN_STATUS = #{returnStatus,jdbcType=TINYINT},
+                RETURN_STATUS = #{returnStatus,jdbcType=INTEGER},
             </if>
             <if test="openId != null">
                 OPEN_ID = #{openId,jdbcType=VARCHAR},
@@ -256,10 +260,13 @@
                 PARENT_UNIOIN_ID = #{parentUnionId,jdbcType=VARCHAR},
             </if>
             <if test="cashBackStatus != null">
-                CASH_BACK_STATUS = #{cashBackStatus,jdbcType=TINYINT},
+                CASH_BACK_STATUS = #{cashBackStatus,jdbcType=INTEGER},
             </if>
             <if test="contributionFlower != null">
                 CONTRIBUTION_FLOWER = #{contributionFlower,jdbcType=INTEGER},
+            </if>
+            <if test="cashBackVersion != null">
+                CASH_BACK_VERSION = #{cashBackVersion,jdbcType=INTEGER},
             </if>
             <if test="createTime != null">
                 CREATE_TIME = #{createTime,jdbcType=TIMESTAMP},
@@ -278,5 +285,15 @@
             <include refid="Base_Query_Column_List"/>
         </where>
     </select>
+
+    <update id="updateOrderCashBackStatus" parameterType="java.util.Map">
+      UPDATE
+        TBL_ORDER
+      SET
+        CASH_BACK_STATUS = 1,
+        CASH_BACK_VERSION = CASH_BACK_VERSION + 1
+      WHERE ID = #{id,jdbcType=INTEGER}
+      AND CASH_BACK_VERSION = #{cashBackVersion,jdbcType=INTEGER}
+    </update>
 
 </mapper>

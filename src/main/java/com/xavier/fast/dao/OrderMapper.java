@@ -37,4 +37,16 @@ public class OrderMapper extends MyBatisDao {
     public List<Order> findOrderListByParams(Map<String, Object> params) {
         return super.queryForList("findOrderListByParams", params);
     }
+
+    /**
+    * 更新订单提现状态
+    * @author      Wang
+    * @param       params
+    * @return
+    * @exception
+    * @date        2019/7/4 17:45
+    */
+    public int updateOrderCashBackStatus(Map<String, Object> params){
+        return super.update("updateOrderCashBackStatus", params);
+    }
 }

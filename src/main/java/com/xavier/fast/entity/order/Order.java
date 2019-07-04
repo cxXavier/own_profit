@@ -124,14 +124,19 @@ public class Order implements Serializable {
     private String parentUnionId;
 
     /**
-     * 提现状态
+     * 提现状态(0-未提现，1-已提现)
      */
-    private Byte cashBackStatus;
+    private Integer cashBackStatus;
 
     /**
      * 贡献鲜花数量
      */
     private Integer contributionFlower;
+
+    /**
+     * 提现版本号（乐观锁用）
+     */
+    private Integer cashBackVersion;
 
     private Date createTime;
 
@@ -329,11 +334,11 @@ public class Order implements Serializable {
         this.parentUnionId = parentUnionId;
     }
 
-    public Byte getCashBackStatus() {
+    public Integer getCashBackStatus() {
         return cashBackStatus;
     }
 
-    public void setCashBackStatus(Byte cashBackStatus) {
+    public void setCashBackStatus(Integer cashBackStatus) {
         this.cashBackStatus = cashBackStatus;
     }
 
@@ -359,5 +364,13 @@ public class Order implements Serializable {
 
     public void setUpdateTime(Date updateTime) {
         this.updateTime = updateTime;
+    }
+
+    public Integer getCashBackVersion() {
+        return cashBackVersion;
+    }
+
+    public void setCashBackVersion(Integer cashBackVersion) {
+        this.cashBackVersion = cashBackVersion;
     }
 }

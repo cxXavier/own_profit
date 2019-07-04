@@ -47,7 +47,7 @@
         </if>
     </sql>
 
-    <insert id="insert" parameterType="com.xavier.fast.entity.tag.Tag">
+    <insert id="insert" parameterType="com.xavier.fast.entity.img.Image">
     INSERT INTO TBL_IMG (IMG_NAME, IMG_URL, THUMBNAIL_URL, IMG_TYPE, VISIBLE, `ORDER`, CREATE_TIME, UPDATE_TIME)
     values (#{imgName,jdbcType=VARCHAR}, #{imgUrl,jdbcType=VARCHAR}, #{thumbnailUrl,jdbcType=VARCHAR},
       #{imgType,jdbcType=VARCHAR}, #{visible,jdbcType=TINYINT}, #{order,jdbcType=INTEGER},

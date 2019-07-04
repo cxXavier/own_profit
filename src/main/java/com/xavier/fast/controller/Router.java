@@ -1,6 +1,7 @@
 package com.xavier.fast.controller;
 
 import com.xavier.fast.annotation.RopContextInit;
+import com.xavier.fast.annotation.TokenValidate;
 import com.xavier.fast.common.exception.ValidateException;
 import com.xavier.fast.model.base.RopRequest;
 import com.xavier.fast.model.base.RopResponse;
@@ -22,6 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class Router {
 
+    //@TokenValidate
     @RopContextInit
     @RequestMapping("/router/rest")
     @ResponseBody
