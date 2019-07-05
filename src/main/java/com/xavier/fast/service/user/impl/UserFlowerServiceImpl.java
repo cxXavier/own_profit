@@ -10,6 +10,7 @@ import com.xavier.fast.entity.user.User;
 import com.xavier.fast.entity.user.UserFlower;
 import com.xavier.fast.model.base.RopRequestBody;
 import com.xavier.fast.model.base.RopResponse;
+import com.xavier.fast.model.base.RopResponseBody;
 import com.xavier.fast.model.user.flower.RopFlowerRequest;
 import com.xavier.fast.model.user.flower.RopFlowerResponse;
 import com.xavier.fast.model.user.flower.RopPrenticeResponse;
@@ -54,7 +55,7 @@ public class UserFlowerServiceImpl implements IUserFlowerService {
     * @date        2019/7/2 19:41
     */
     @ApiMethod(method = "api.pinke.user.flower.getPrenticeListWithFlowers", version = "1.0.0")
-    public RopResponse<RopPrenticeResponse> getPrenticeListWithFlowers(RopRequestBody<RopFlowerRequest> flowerRequest) {
+    public RopResponse<RopResponseBody> getPrenticeListWithFlowers(RopRequestBody<RopFlowerRequest> flowerRequest) {
 
         String openId = flowerRequest.getT().getOpenId();
         String unionId = flowerRequest.getT().getUnionId();
@@ -65,7 +66,7 @@ public class UserFlowerServiceImpl implements IUserFlowerService {
         params.put("parentUnionid", unionId);
         List<User> userList = userMapper.getUserListByParams(params);
         if(CollectionUtils.isEmpty(userList)){
-            return RopResponse.createFailedRep("-1", "暂无徒弟", "1.0.0");
+            return RopResponse.createFailedRep("", "暂无徒弟", "1.0.0");
         }
 
         //查询徒弟订单
@@ -77,7 +78,7 @@ public class UserFlowerServiceImpl implements IUserFlowerService {
         params.put("openIds", openIds);
         List<Order> orderList = orderMapper.findOrderListByParams(params);
         if(CollectionUtils.isEmpty(orderList)){
-            return RopResponse.createFailedRep("-1", "暂无徒弟订单", "1.0.0");
+            return RopResponse.createFailedRep("", "暂无徒弟订单", "1.0.0");
         }
 
 
@@ -97,7 +98,7 @@ public class UserFlowerServiceImpl implements IUserFlowerService {
 //            }
 //        }
 
-        RopPrenticeResponse response = new RopPrenticeResponse();
+        RopResponseBody response = new RopResponseBody();
         List<Prentice> prenticeList = new ArrayList<>();
         Prentice prentice = new Prentice();
 
@@ -112,8 +113,8 @@ public class UserFlowerServiceImpl implements IUserFlowerService {
             prenticeList.add(prentice);
         }
 
-        response.setPrenticeList(prenticeList);
-        return RopResponse.createSuccessRep("1", "查询徒弟列表成功", "1.0.0", response);
+        response.setDataList(prenticeList);
+        return RopResponse.createSuccessRep("", "查询徒弟列表成功", "1.0.0", response);
     }
 
     /**
@@ -131,10 +132,10 @@ public class UserFlowerServiceImpl implements IUserFlowerService {
         u.setOpenId(flowerRequest.getT().getOpenId());
         List<UserFlower> flowerList = userFlowerMapper.findUserFlowerList(u);
         if(CollectionUtils.isEmpty(flowerList)){
-            return RopResponse.createFailedRep("-1", "暂无鲜花明细", "1.0.0");
+            return RopResponse.createFailedRep("", "暂无鲜花明细", "1.0.0");
         }
         response.setFlowerList(flowerList);
-        return RopResponse.createSuccessRep("1", "查询徒弟列表成功", "1.0.0", response);
+        return RopResponse.createSuccessRep("", "查询徒弟列表成功", "1.0.0", response);
     }
 
     /**

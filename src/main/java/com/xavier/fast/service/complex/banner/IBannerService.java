@@ -2,6 +2,7 @@ package com.xavier.fast.service.complex.banner;
 
 import com.xavier.fast.model.base.RopRequestBody;
 import com.xavier.fast.model.base.RopResponse;
+import com.xavier.fast.model.base.RopResponseBody;
 import com.xavier.fast.model.img.RopImageRequest;
 import com.xavier.fast.model.img.RopImageResponse;
 
@@ -18,5 +19,5 @@ import java.util.List;
 */
 public interface IBannerService {
 
-    public RopResponse<RopImageResponse> getImgList(RopRequestBody<RopImageRequest> goodsRequest);
+    public RopResponse<RopResponseBody> getImgList(RopRequestBody<RopImageRequest> imgRequest);
 }

@@ -50,7 +50,7 @@ public class LoginServiceImpl implements ILoginService {
         BeanUtils.copyProperties(loginRequest.getT(), dto);
         WechatLoginReturn loginObj = wechartLogin(dto.getCode());
         if(null == loginObj.getOpenid()){
-            return RopResponse.createFailedRep("-1", "openId为空", "1.0.0");
+            return RopResponse.createFailedRep("", "openId为空", "1.0.0");
         }
         UserVo vo = new UserVo();
         vo.setOpenid(loginObj.getOpenid());
@@ -86,7 +86,7 @@ public class LoginServiceImpl implements ILoginService {
         vo.setInviteCode(info.getInviteCode());
         vo.setMobile(info.getMobile());
         response.setUserInfo(vo);
-        return RopResponse.createSuccessRep("1", "登陆成功", "1.0.0", response);
+        return RopResponse.createSuccessRep("登陆成功", "登陆成功", "1.0.0", response);
     }
 
     @Override

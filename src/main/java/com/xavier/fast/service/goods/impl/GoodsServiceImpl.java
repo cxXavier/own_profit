@@ -6,6 +6,7 @@ import com.xavier.fast.entity.pdd.*;
 import com.xavier.fast.entity.tag.Tag;
 import com.xavier.fast.model.base.RopRequestBody;
 import com.xavier.fast.model.base.RopResponse;
+import com.xavier.fast.model.base.RopResponseBody;
 import com.xavier.fast.model.goods.*;
 import com.xavier.fast.service.goods.IGoodsService;
 import com.xavier.fast.service.pdd.IpddService;
@@ -42,15 +43,15 @@ public class GoodsServiceImpl implements IGoodsService {
     * @date        2019/6/30 15:53
     */
     @ApiMethod(method = "api.pinke.goods.getGoodsCats", version = "1.0.0")
-    public RopResponse<RopGoodsCatsResponse> getGoodsCats(RopRequestBody<RopGoodsCatsRequest> goodsCatsRequest) {
+    public RopResponse<RopResponseBody> getGoodsCats(RopRequestBody<RopGoodsCatsRequest> goodsCatsRequest) {
 
         List<Tag> tags = tagMapper.findTagList(new Tag());
         if(CollectionUtils.isEmpty(tags)){
-           return RopResponse.createFailedRep("-1", "获取类目数据失败", "1.0.0");
+           return RopResponse.createFailedRep("","获取类目数据失败", "1.0.0");
         }
-        RopGoodsCatsResponse catsResponse = new RopGoodsCatsResponse();
-        catsResponse.setCatsList(tags);
-        return RopResponse.createSuccessRep("1", "获取类目数据成功", "1.0.0", catsResponse);
+        RopResponseBody catsResponse = new RopResponseBody();
+        catsResponse.setDataList(tags);
+        return RopResponse.createSuccessRep("", "获取类目数据成功", "1.0.0", catsResponse);
     }
 
     /**
@@ -62,9 +63,9 @@ public class GoodsServiceImpl implements IGoodsService {
     * @date        2019/6/30 23:06
     */
     @ApiMethod(method = "api.pinke.goods.getHotGoodsList", version = "1.0.0")
-    public RopResponse<RopGoodsListResponse> getHotGoodsList(RopRequestBody<RopHotGoodsRequest> goodsRequest) {
+    public RopResponse<RopResponseBody> getHotGoodsList(RopRequestBody<RopHotGoodsRequest> goodsRequest) {
 
-        RopGoodsListResponse response = new RopGoodsListResponse();
+        RopResponseBody response = new RopResponseBody();
 
         HotGoodsQueryRo goodsQueryRo = new HotGoodsQueryRo();
         goodsQueryRo.setType(goodsRequest.getT().getType());
@@ -72,12 +73,12 @@ public class GoodsServiceImpl implements IGoodsService {
 
         HotGoodsList.HotGoodsSearchResponse goodsSearchResponse = pddService.queryHotGoods(goodsQueryRo);
         if (goodsSearchResponse == null || CollectionUtils.isEmpty(goodsSearchResponse.getGoodsList())) {
-            return RopResponse.createFailedRep("-1", "获取热门商品失败", "1.0.0");
+            return RopResponse.createFailedRep("", "获取热门商品失败", "1.0.0");
         }
         List<Good> goodList = goodsSearchResponse.getGoodsList();
-        response.setGoodList(goodList);
+        response.setDataList(goodList);
 
-        return RopResponse.createSuccessRep("1", "获取热门商品成功", "1.0.0", response);
+        return RopResponse.createSuccessRep("", "获取热门商品成功", "1.0.0", response);
     }
 
     /**
@@ -89,9 +90,9 @@ public class GoodsServiceImpl implements IGoodsService {
      * @date        2019/6/30 23:06
      */
     @ApiMethod(method = "api.pinke.goods.getGoodsList", version = "1.0.0")
-    public RopResponse<RopGoodsListResponse> getGoodsList(RopRequestBody<RopGoodsListRequest> goodsRequest) {
+    public RopResponse<RopResponseBody> getGoodsList(RopRequestBody<RopGoodsListRequest> goodsRequest) {
 
-        RopGoodsListResponse response = new RopGoodsListResponse();
+        RopResponseBody response = new RopResponseBody();
 
         GoodsQueryRo goodsQueryRo = new GoodsQueryRo();
         goodsQueryRo.setTagId(goodsRequest.getT().getTagId());
@@ -101,12 +102,12 @@ public class GoodsServiceImpl implements IGoodsService {
         goodsQueryRo.setPageNum(goodsRequest.getT().getPageNum());
         GoodsList.GoodsSearchResponse goodsSearchResponse = pddService.queryGoodsList(goodsQueryRo);
         if (goodsSearchResponse == null || CollectionUtils.isEmpty(goodsSearchResponse.getGoodsList())) {
-            return RopResponse.createFailedRep("-1", "获取商品列表失败", "1.0.0");
+            return RopResponse.createFailedRep("", "获取商品列表失败", "1.0.0");
         }
         List<Good> goodList = goodsSearchResponse.getGoodsList();
-        response.setGoodList(goodList);
+        response.setDataList(goodList);
 
-        return RopResponse.createSuccessRep("1", "获取商品列表成功", "1.0.0", response);
+        return RopResponse.createSuccessRep("", "获取商品列表成功", "1.0.0", response);
     }
 
     /**
@@ -123,9 +124,9 @@ public class GoodsServiceImpl implements IGoodsService {
         RopGoodsDetailResponse response = new RopGoodsDetailResponse();
         Good good = pddService.queryGoodDetail(goodsRequest.getT().getGoodsId().toString());
         if(good == null){
-            return RopResponse.createFailedRep("-1", "获取商品详情信息失败", "1.0.0");
+            return RopResponse.createFailedRep("", "获取商品详情信息失败", "1.0.0");
         }
         response.setGood(good);
-        return RopResponse.createSuccessRep("1", "获取商品详情信息成功", "1.0.0", response);
+        return RopResponse.createSuccessRep("", "获取商品详情信息成功", "1.0.0", response);
     }
 }

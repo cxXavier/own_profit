@@ -18,6 +18,9 @@ public class RopImageRequest extends RopRequest implements Serializable {
 
     private static final long serialVersionUID = -4986166352042555263L;
 
+    /**
+     * 图片类型
+     */
     private String imgType;
 
     public String getImgType() {

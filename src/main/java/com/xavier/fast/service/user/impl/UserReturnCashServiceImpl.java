@@ -71,16 +71,16 @@ public class UserReturnCashServiceImpl implements IUserReturnCashService {
         //查询用户
         User user = userMapper.getUserByOpenid(openId);
         if(user == null){
-            return RopResponse.createFailedRep("-1", "当前用户不存在", "1.0.0");
+            return RopResponse.createFailedRep("", "当前用户不存在", "1.0.0");
         }
 
         //查询当前用户的订单
         Order order = orderMapper.selectByPrimaryKey(orderId);
         if(order == null){
-            return RopResponse.createFailedRep("-1", "当前用户暂无订单", "1.0.0");
+            return RopResponse.createFailedRep("", "当前用户暂无订单", "1.0.0");
         }
         if(order.getCashBackStatus() == 1){
-            return RopResponse.createFailedRep("-1", "当前订单已经提现，请勿重复操作", "1.0.0");
+            return RopResponse.createFailedRep("", "当前订单已经提现，请勿重复操作", "1.0.0");
         }
 
         //查询鲜花开支明细
@@ -88,14 +88,14 @@ public class UserReturnCashServiceImpl implements IUserReturnCashService {
         paramFlower.setOpenId(openId);
         List<UserFlower> flowerList = userFlowerMapper.findUserFlowerList(paramFlower);
         if(CollectionUtils.isEmpty(flowerList)){
-            return RopResponse.createFailedRep("-1", "暂无可用鲜花", "1.0.0");
+            return RopResponse.createFailedRep("", "暂无可用鲜花", "1.0.0");
         }
         //计算鲜花余额
         int residueFlowers = this.calFlower(flowerList);
         //提现需要鲜花数4倍
         int needFlowers = order.getContributionFlower() * 4;
         if(residueFlowers < needFlowers){
-            return RopResponse.createFailedRep("-1",
+            return RopResponse.createFailedRep("",
                     "当前可用鲜花不足，可用鲜花：" + residueFlowers + "朵，还需要鲜花："
                     + (needFlowers - residueFlowers) + "朵", "1.0.0");
         }
@@ -107,19 +107,19 @@ public class UserReturnCashServiceImpl implements IUserReturnCashService {
             restMap = transfers(openId, orderId, user.getRelName(), order.getOrderAmount());
         } catch (Exception e) {
             e.printStackTrace();
-            return RopResponse.createFailedRep("-1", e.getMessage(), "1.0.0");
+            return RopResponse.createFailedRep("", e.getMessage(), "1.0.0");
         }
 
         if(MapUtils.isEmpty(restMap)){
-            return RopResponse.createFailedRep("-1", "转账失败", "1.0.0");
+            return RopResponse.createFailedRep("", "转账失败", "1.0.0");
         }
         if("FAIL".equals(restMap.get("return_code"))){
-            return RopResponse.createFailedRep("-1", "转账失败，失败原因"
+            return RopResponse.createFailedRep("", "转账失败，失败原因"
                     + restMap.get("return_msg"), "1.0.0");
         }
         if(restMap.get("return_code").equals("SUCCESS")){
             if("FAIL".equals(restMap.get("result_code"))){
-                return RopResponse.createFailedRep("-1", "转账失败，失败原因"
+                return RopResponse.createFailedRep("", "转账失败，失败原因"
                         + restMap.get("err_code_des"), "1.0.0");
             }
             if("SUCCESS".equals(restMap.get("result_code"))){
@@ -159,7 +159,7 @@ public class UserReturnCashServiceImpl implements IUserReturnCashService {
 
         RopReturnCashResponse response = new RopReturnCashResponse();
 
-        return RopResponse.createSuccessRep("1", "转账成功", "1.0.0", response);
+        return RopResponse.createSuccessRep("", "转账成功", "1.0.0", response);
     }
 
     /**

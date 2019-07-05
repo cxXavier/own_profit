@@ -47,14 +47,14 @@
             <appender-ref ref="CONSOLE"/>
             <appender-ref ref="FILE"/>
         </root>
-        <logger name="com.bxm.counter" level="DEBUG"/>
+        <logger name="com.xavier.fast" level="DEBUG"/>
     </springProfile>
     <springProfile name="test">
         <root level="INFO">
             <appender-ref ref="CONSOLE"/>
             <appender-ref ref="FILE"/>
         </root>
-        <logger name="com.bxm.counter" level="DEBUG"/>
+        <logger name="com.xavier.fast" level="DEBUG"/>
     </springProfile>
     <springProfile name="pre">
         <root level="INFO">

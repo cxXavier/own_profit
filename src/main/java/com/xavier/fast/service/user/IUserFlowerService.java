@@ -2,6 +2,7 @@ package com.xavier.fast.service.user;
 
 import com.xavier.fast.model.base.RopRequestBody;
 import com.xavier.fast.model.base.RopResponse;
+import com.xavier.fast.model.base.RopResponseBody;
 import com.xavier.fast.model.user.flower.RopFlowerRequest;
 import com.xavier.fast.model.user.flower.RopFlowerResponse;
 import com.xavier.fast.model.user.flower.RopPrenticeResponse;
@@ -25,7 +26,7 @@ public interface IUserFlowerService {
     * @exception
     * @date        2019/7/2 19:39
     */
-    public RopResponse<RopPrenticeResponse> getPrenticeListWithFlowers(RopRequestBody<RopFlowerRequest> flowerRequest);
+    public RopResponse<RopResponseBody> getPrenticeListWithFlowers(RopRequestBody<RopFlowerRequest> flowerRequest);
 
     /**
     * 用户鲜花开支

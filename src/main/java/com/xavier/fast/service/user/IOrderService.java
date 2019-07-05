@@ -2,6 +2,7 @@ package com.xavier.fast.service.user;
 
 import com.xavier.fast.model.base.RopRequestBody;
 import com.xavier.fast.model.base.RopResponse;
+import com.xavier.fast.model.base.RopResponseBody;
 import com.xavier.fast.model.user.order.RopOrderDetailRequest;
 import com.xavier.fast.model.user.order.RopOrderDetailResponse;
 import com.xavier.fast.model.user.order.RopOrderListRequest;
@@ -26,7 +27,7 @@ public interface IOrderService {
     * @exception
     * @date        2019/7/3 10:29
     */
-    public RopResponse<RopOrderListResponse> getOrderList(RopRequestBody<RopOrderListRequest> orderListRequest);
+    public RopResponse<RopResponseBody> getOrderList(RopRequestBody<RopOrderListRequest> orderListRequest);
 
     /**
     * 订单详情

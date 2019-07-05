@@ -35,9 +35,9 @@ public class Router {
         } catch (Exception e) {
             e.printStackTrace();
             if(e.getCause() instanceof ValidateException){
-                return RopResponse.createFailedRep("-1", e.getCause().getMessage(), "1.0.0");
+                return RopResponse.createFailedRep("", e.getCause().getMessage(), "1.0.0");
             }
-            return RopResponse.createFailedRep("-1", e.getMessage(), "1.0.0");
+            return RopResponse.createFailedRep("", e.getMessage(), "1.0.0");
         }
         return repResponse;
     }

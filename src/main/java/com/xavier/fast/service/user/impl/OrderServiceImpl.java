@@ -5,6 +5,7 @@ import com.xavier.fast.dao.OrderMapper;
 import com.xavier.fast.entity.order.Order;
 import com.xavier.fast.model.base.RopRequestBody;
 import com.xavier.fast.model.base.RopResponse;
+import com.xavier.fast.model.base.RopResponseBody;
 import com.xavier.fast.model.user.order.RopOrderDetailRequest;
 import com.xavier.fast.model.user.order.RopOrderDetailResponse;
 import com.xavier.fast.model.user.order.RopOrderListRequest;
@@ -40,16 +41,16 @@ public class OrderServiceImpl implements IOrderService {
     * @date        2019/7/3 10:35
     */
     @ApiMethod(method = "api.pinke.user.order.getOrderList", version = "1.0.0")
-    public RopResponse<RopOrderListResponse> getOrderList(RopRequestBody<RopOrderListRequest> orderListRequest) {
-        RopOrderListResponse response = new RopOrderListResponse();
+    public RopResponse<RopResponseBody> getOrderList(RopRequestBody<RopOrderListRequest> orderListRequest) {
+        RopResponseBody response = new RopResponseBody();
         Order order = new Order();
         order.setOpenId(orderListRequest.getT().getOpenId());
         List<Order> orderList = orderMapper.findOrderList(order);
         if(CollectionUtils.isEmpty(orderList)){
-            return RopResponse.createFailedRep("-1", "暂无订单", "1.0.0");
+            return RopResponse.createFailedRep("", "暂无订单", "1.0.0");
         }
-        response.setOrderList(orderList);
-        return RopResponse.createSuccessRep("1", "查询订单列表成功", "1.0.0", response);
+        response.setDataList(orderList);
+        return RopResponse.createSuccessRep("", "查询订单列表成功", "1.0.0", response);
     }
 
     /**
@@ -65,9 +66,9 @@ public class OrderServiceImpl implements IOrderService {
         RopOrderDetailResponse response = new RopOrderDetailResponse();
         Order order = orderMapper.selectByPrimaryKey(orderDetailRequest.getT().getOrderId());
         if(order == null){
-            return RopResponse.createFailedRep("-1", "暂无订单", "1.0.0");
+            return RopResponse.createFailedRep("", "暂无订单", "1.0.0");
         }
         response.setOrder(order);
-        return RopResponse.createSuccessRep("1", "查询订单详情成功", "1.0.0", response);
+        return RopResponse.createSuccessRep("", "查询订单详情成功", "1.0.0", response);
     }
 }

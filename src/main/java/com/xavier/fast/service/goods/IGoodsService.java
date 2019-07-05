@@ -2,6 +2,7 @@ package com.xavier.fast.service.goods;
 
 import com.xavier.fast.model.base.RopRequestBody;
 import com.xavier.fast.model.base.RopResponse;
+import com.xavier.fast.model.base.RopResponseBody;
 import com.xavier.fast.model.goods.*;
 
 /**
@@ -23,7 +24,7 @@ public interface IGoodsService {
     * @exception
     * @date        2019/6/28 15:05
     */
-    public RopResponse<RopGoodsCatsResponse> getGoodsCats(RopRequestBody<RopGoodsCatsRequest> goodsCatsRequest);
+    public RopResponse<RopResponseBody> getGoodsCats(RopRequestBody<RopGoodsCatsRequest> goodsCatsRequest);
 
     /**
     * 获取热门商品
@@ -33,7 +34,7 @@ public interface IGoodsService {
     * @exception   
     * @date        2019/6/30 23:03
     */
-    public RopResponse<RopGoodsListResponse> getHotGoodsList(RopRequestBody<RopHotGoodsRequest> goodsRequest);
+    public RopResponse<RopResponseBody> getHotGoodsList(RopRequestBody<RopHotGoodsRequest> goodsRequest);
 
     /**
     * 获取商品列表
@@ -43,7 +44,7 @@ public interface IGoodsService {
     * @exception
     * @date        2019/7/1 0:01
     */
-    public RopResponse<RopGoodsListResponse> getGoodsList(RopRequestBody<RopGoodsListRequest> goodsRequest);
+    public RopResponse<RopResponseBody> getGoodsList(RopRequestBody<RopGoodsListRequest> goodsRequest);
 
     /**
     * 获取商品详情
