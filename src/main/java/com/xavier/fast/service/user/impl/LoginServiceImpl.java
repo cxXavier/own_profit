@@ -210,6 +210,7 @@ public class LoginServiceImpl implements ILoginService {
         try {
             response = OkHttpUtils.post(wechatConfig.getJscode2sessionUrl(),params);
         } catch (IOException e) {
+            e.printStackTrace();
         }
         WechatLoginReturn wechartLogin = new WechatLoginReturn();
         if(null != response) {

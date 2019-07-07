@@ -39,10 +39,10 @@ public class WechatConfig {
     /**
      * 公众号ID
      */
-    private String appId = "wx570f34ccd5e1e73f";
+    private String appId = "wx5fd5dbb4208a04a4";
 
 
-    private String appSecret = "4c75cd7bd386345964a5eb22bdd830a1";
+    private String appSecret = "7ba320e663819ea166ad6c05862ae8f8";
 
     /**
      * 微信支付分配的商户号
