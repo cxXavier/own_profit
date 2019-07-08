@@ -13,9 +13,10 @@ import com.xavier.fast.model.base.RopResponse;
 import com.xavier.fast.model.base.RopResponseBody;
 import com.xavier.fast.model.user.flower.RopFlowerRequest;
 import com.xavier.fast.model.user.flower.RopFlowerResponse;
-import com.xavier.fast.model.user.flower.RopPrenticeResponse;
 import com.xavier.fast.service.user.IUserFlowerService;
 import org.apache.commons.collections.CollectionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -36,6 +37,7 @@ import java.util.Map;
 @Service
 public class UserFlowerServiceImpl implements IUserFlowerService {
 
+    private Logger log = LoggerFactory.getLogger(UserFlowerServiceImpl.class);
 
     @Resource
     private UserMapper userMapper;
@@ -60,6 +62,8 @@ public class UserFlowerServiceImpl implements IUserFlowerService {
         String openId = flowerRequest.getT().getOpenId();
         String unionId = flowerRequest.getT().getUnionId();
 
+        log.info("openId=" + openId + ",unionId=" + unionId);
+
         //查询徒弟列表
         Map<String, Object> params = new HashMap<>();
         params.put("parentOpenid", openId);
@@ -68,7 +72,7 @@ public class UserFlowerServiceImpl implements IUserFlowerService {
         if(CollectionUtils.isEmpty(userList)){
             return RopResponse.createFailedRep("", "暂无徒弟", "1.0.0");
         }
-
+        log.info("userList.size=" + userList.size());
         //查询徒弟订单
         List<String> openIds = new ArrayList<>();
         for(User u : userList){
