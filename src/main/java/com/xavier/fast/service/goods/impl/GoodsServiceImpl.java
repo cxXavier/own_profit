@@ -14,7 +14,9 @@ import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
 * @Description:    商品服务类
@@ -45,10 +47,24 @@ public class GoodsServiceImpl implements IGoodsService {
     @ApiMethod(method = "api.pinke.goods.getGoodsCats", version = "1.0.0")
     public RopResponse<RopResponseBody> getGoodsCats(RopRequestBody<RopGoodsCatsRequest> goodsCatsRequest) {
 
-        List<Tag> tags = tagMapper.findTagList(new Tag());
+        //查询父类目
+        Tag tag = new Tag();
+        tag.setParentId(goodsCatsRequest.getT().getParentCatId().intValue());
+        List<Tag> tags = tagMapper.findTagList(tag);
         if(CollectionUtils.isEmpty(tags)){
-           return RopResponse.createFailedRep("","获取类目数据失败", "1.0.0");
+           return RopResponse.createFailedRep("","获取主类目数据失败", "1.0.0");
         }
+
+        //查询子类目
+        for(Tag t : tags){
+            tag = new Tag();
+            tag.setParentId(t.getId());
+            List<Tag> subTags = tagMapper.findTagList(tag);
+            if(CollectionUtils.isNotEmpty(subTags)){
+                t.setSubTags(subTags);
+            }
+        }
+
         RopResponseBody catsResponse = new RopResponseBody();
         catsResponse.setDataList(tags);
         return RopResponse.createSuccessRep("", "获取类目数据成功", "1.0.0", catsResponse);

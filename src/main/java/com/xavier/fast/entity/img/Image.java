@@ -25,7 +25,7 @@ public class Image implements Serializable{
     /**
      * 主图
      */
-    private String imgUrl;
+    private String imageUrl;
 
     /**
      * 缩略图
@@ -40,12 +40,22 @@ public class Image implements Serializable{
     /**
      * 是否可见,1为可见
      */
-    private Byte visible;
+    private Integer visible;
 
     /**
      * 排序
      */
     private Integer order;
+
+    /**
+     * 跳转地址
+     */
+    private String linkUrl;
+
+    /**
+     * 跳转类型
+     */
+    private String linkType;
 
     /**
      * 创建时间
@@ -60,11 +70,11 @@ public class Image implements Serializable{
     public Image() {
     }
 
-    public Image(Integer id, String imgName, String imgUrl, String thumbnailUrl,
-                 String imgType, Byte visible, Integer order, Date createTime, Date updateTime) {
+    public Image(Integer id, String imgName, String imageUrl, String thumbnailUrl,
+                 String imgType, Integer visible, Integer order, Date createTime, Date updateTime) {
         this.id = id;
         this.imgName = imgName;
-        this.imgUrl = imgUrl;
+        this.imageUrl = imageUrl;
         this.thumbnailUrl = thumbnailUrl;
         this.imgType = imgType;
         this.visible = visible;
@@ -89,12 +99,12 @@ public class Image implements Serializable{
         this.imgName = imgName;
     }
 
-    public String getImgUrl() {
-        return imgUrl;
+    public String getImageUrl() {
+        return imageUrl;
     }
 
-    public void setImgUrl(String imgUrl) {
-        this.imgUrl = imgUrl;
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 
     public String getThumbnailUrl() {
@@ -113,11 +123,11 @@ public class Image implements Serializable{
         this.imgType = imgType;
     }
 
-    public Byte getVisible() {
+    public Integer getVisible() {
         return visible;
     }
 
-    public void setVisible(Byte visible) {
+    public void setVisible(Integer visible) {
         this.visible = visible;
     }
 
@@ -127,6 +137,22 @@ public class Image implements Serializable{
 
     public void setOrder(Integer order) {
         this.order = order;
+    }
+
+    public String getLinkUrl() {
+        return linkUrl;
+    }
+
+    public void setLinkUrl(String linkUrl) {
+        this.linkUrl = linkUrl;
+    }
+
+    public String getLinkType() {
+        return linkType;
+    }
+
+    public void setLinkType(String linkType) {
+        this.linkType = linkType;
     }
 
     public Date getCreateTime() {

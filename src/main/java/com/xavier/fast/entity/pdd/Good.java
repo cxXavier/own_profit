@@ -1,6 +1,7 @@
 package com.xavier.fast.entity.pdd;
 
 import com.alibaba.fastjson.annotation.JSONField;
+import com.xavier.fast.utils.CalFlowerUtils;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -86,7 +87,6 @@ public class Good implements Serializable {
     @JSONField(name = "coupon_remain_quantity")
     private Long couponRemainQuantity; // 优惠券剩余数量
 
-
     @JSONField(name = "coupon_end_time")
     private Long couponEndTime;    // 优惠券失效时间，UNIX时间戳
 
@@ -126,4 +126,42 @@ public class Good implements Serializable {
     @JSONField(name = "opt_ids")
     private List<Integer> optIds;  // 商品标签id
 
+    /**
+     * 贡献鲜花数
+     */
+    private Integer contributionFlower;
+
+    /**
+     * 提现需要鲜花数
+     */
+    private Integer cashCostFlower;
+
+    /**
+     * 券后价
+     */
+    private Long priceAfterCoupon;
+
+    public Integer getContributionFlower() {
+        return CalFlowerUtils.calContributionFlower(getPriceAfterCoupon());
+    }
+
+    public void setContributionFlower(Integer contributionFlower) {
+        this.contributionFlower = contributionFlower;
+    }
+
+    public Integer getCashCostFlower() {
+        return CalFlowerUtils.calCashFlower(getPriceAfterCoupon());
+    }
+
+    public void setCashCostFlower(Integer cashCostFlower) {
+        this.cashCostFlower = cashCostFlower;
+    }
+
+    public Long getPriceAfterCoupon() {
+        return minNormalPrice - couponDiscount;
+    }
+
+    public void setPriceAfterCoupon(Long priceAfterCoupon) {
+        this.priceAfterCoupon = priceAfterCoupon;
+    }
 }

@@ -2,6 +2,7 @@ package com.xavier.fast.entity.tag;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 /**
 * @Description:    标签（类目）
@@ -21,7 +22,7 @@ public class Tag implements Serializable {
     /**
      * 父id
      */
-    private Integer parentid;
+    private Integer parentId;
 
     /**
      * 标签名
@@ -31,12 +32,12 @@ public class Tag implements Serializable {
     /**
      * 分类图片地址
      */
-    private String imageurl;
+    private String imageUrl;
 
     /**
      * 是否可见,1为可见
      */
-    private Byte visible;
+    private Integer visible;
 
     /**
      * 排序
@@ -57,12 +58,17 @@ public class Tag implements Serializable {
 
     private Long endRow;
 
-    public Tag(Integer id, Integer parentid, String name, String imageurl,
-               Byte visible, Integer order, Date created, Date updated) {
+    /**
+     * 子类目
+     */
+    private List<Tag> subTags;
+
+    public Tag(Integer id, Integer parentId, String name, String imageUrl,
+               Integer visible, Integer order, Date created, Date updated) {
         this.id = id;
-        this.parentid = parentid;
+        this.parentId = parentId;
         this.name = name;
-        this.imageurl = imageurl;
+        this.imageUrl = imageUrl;
         this.visible = visible;
         this.order = order;
         this.created = created;
@@ -81,12 +87,12 @@ public class Tag implements Serializable {
         this.id = id;
     }
 
-    public Integer getParentid() {
-        return parentid;
+    public Integer getParentId() {
+        return parentId;
     }
 
-    public void setParentid(Integer parentid) {
-        this.parentid = parentid;
+    public void setParentId(Integer parentId) {
+        this.parentId = parentId;
     }
 
     public String getName() {
@@ -94,22 +100,22 @@ public class Tag implements Serializable {
     }
 
     public void setName(String name) {
-        this.name = name == null ? null : name.trim();
+        this.name = name;
     }
 
-    public String getImageurl() {
-        return imageurl;
+    public String getImageUrl() {
+        return imageUrl;
     }
 
-    public void setImageurl(String imageurl) {
-        this.imageurl = imageurl == null ? null : imageurl.trim();
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 
-    public Byte getVisible() {
+    public Integer getVisible() {
         return visible;
     }
 
-    public void setVisible(Byte visible) {
+    public void setVisible(Integer visible) {
         this.visible = visible;
     }
 
@@ -151,5 +157,13 @@ public class Tag implements Serializable {
 
     public void setEndRow(Long endRow) {
         this.endRow = endRow;
+    }
+
+    public List<Tag> getSubTags() {
+        return subTags;
+    }
+
+    public void setSubTags(List<Tag> subTags) {
+        this.subTags = subTags;
     }
 }

@@ -4,17 +4,19 @@
     <resultMap id="BaseResultMap" type="com.xavier.fast.entity.img.Image">
         <id column="ID" property="id" jdbcType="INTEGER"/>
         <result column="img_name" property="imgName" jdbcType="INTEGER"/>
-        <result column="img_url" property="imgUrl" jdbcType="VARCHAR"/>
+        <result column="img_url" property="imageUrl" jdbcType="VARCHAR"/>
         <result column="thumbnail_url" property="thumbnailUrl" jdbcType="VARCHAR"/>
         <result column="img_type" property="imgType" jdbcType="VARCHAR"/>
-        <result column="visible" property="visible" jdbcType="TINYINT"/>
+        <result column="visible" property="visible" jdbcType="INTEGER"/>
         <result column="order" property="order" jdbcType="INTEGER"/>
+        <result column="link_url" property="linkUrl" jdbcType="VARCHAR"/>
+        <result column="link_type" property="linkType" jdbcType="VARCHAR"/>
         <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
         <result column="update_time" property="updateTime" jdbcType="TIMESTAMP"/>
     </resultMap>
 
     <sql id="Base_Column_List">
-        ID, IMG_NAME, IMG_URL, THUMBNAIL_URL, IMG_TYPE, VISIBLE, `ORDER`, CREATE_TIME, UPDATE_TIME
+        ID, IMG_NAME, IMG_URL, THUMBNAIL_URL, IMG_TYPE, VISIBLE, `ORDER`, LINK_URL, LINK_TYPE, CREATE_TIME, UPDATE_TIME
     </sql>
 
     <sql id="Base_Query_Column_List">
@@ -24,8 +26,8 @@
         <if test="imgName != null">
             and IMG_NAME = #{imgName,jdbcType=VARCHAR}
         </if>
-        <if test="imgUrl != null">
-            and IMG_URL = #{imgUrl,jdbcType=VARCHAR}
+        <if test="imageUrl != null">
+            and IMG_URL = #{imageUrl,jdbcType=VARCHAR}
         </if>
         <if test="thumbnailUrl != null">
             and THUMBNAIL_URL = #{thumbnailUrl,jdbcType=VARCHAR}
@@ -34,10 +36,16 @@
             and IMG_TYPE = #{imgType,jdbcType=VARCHAR}
         </if>
         <if test="visible != null">
-            and VISIBLE = #{visible,jdbcType=TINYINT}
+            and VISIBLE = #{visible,jdbcType=INTEGER}
         </if>
         <if test="order != null">
             and `ORDER` = #{order,jdbcType=INTEGER}
+        </if>
+        <if test="linkUrl != null">
+            and LINK_URL = #{linkUrl,jdbcType=VARCHAR}
+        </if>
+        <if test="linkType != null">
+            and LINK_TYPE = #{linkType,jdbcType=VARCHAR}
         </if>
         <if test="createTime != null">
             and CREATE_TIME = #{createTime,jdbcType=TIMESTAMP}
@@ -48,10 +56,11 @@
     </sql>
 
     <insert id="insert" parameterType="com.xavier.fast.entity.img.Image">
-    INSERT INTO TBL_IMG (IMG_NAME, IMG_URL, THUMBNAIL_URL, IMG_TYPE, VISIBLE, `ORDER`, CREATE_TIME, UPDATE_TIME)
-    values (#{imgName,jdbcType=VARCHAR}, #{imgUrl,jdbcType=VARCHAR}, #{thumbnailUrl,jdbcType=VARCHAR},
-      #{imgType,jdbcType=VARCHAR}, #{visible,jdbcType=TINYINT}, #{order,jdbcType=INTEGER},
-      #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP})
+    INSERT INTO TBL_IMG (IMG_NAME, IMG_URL, THUMBNAIL_URL, IMG_TYPE, VISIBLE, `ORDER`,
+          LINK_URL, LINK_TYPE, CREATE_TIME, UPDATE_TIME)
+    values (#{imgName,jdbcType=VARCHAR}, #{imageUrl,jdbcType=VARCHAR}, #{thumbnailUrl,jdbcType=VARCHAR},
+      #{imgType,jdbcType=VARCHAR}, #{visible,jdbcType=INTEGER}, #{order,jdbcType=INTEGER},
+      #{linkUrl,jdbcType=VARCHAR}, #{linkType,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP})
     </insert>
 
     <insert id="insertSelective" parameterType="com.xavier.fast.entity.img.Image">
@@ -60,7 +69,7 @@
             <if test="imgName != null">
                 IMG_NAME,
             </if>
-            <if test="imgUrl != null">
+            <if test="imageUrl != null">
                 IMG_URL,
             </if>
             <if test="thumbnailUrl != null">
@@ -75,6 +84,12 @@
             <if test="order != null">
                 `ORDER`,
             </if>
+            <if test="linkUrl != null">
+                LINK_URL,
+            </if>
+            <if test="linkType != null">
+                LINK_TYPE,
+            </if>
             <if test="createTime != null">
                 CREATE_TIME,
             </if>
@@ -86,8 +101,8 @@
             <if test="imgName != null">
                 #{imgName,jdbcType=VARCHAR},
             </if>
-            <if test="imgUrl != null">
-                #{imgUrl,jdbcType=VARCHAR},
+            <if test="imageUrl != null">
+                #{imageUrl,jdbcType=VARCHAR},
             </if>
             <if test="thumbnailUrl != null">
                 #{thumbnailUrl,jdbcType=VARCHAR},
@@ -96,10 +111,16 @@
                 #{imgType,jdbcType=VARCHAR},
             </if>
             <if test="visible != null">
-                #{visible,jdbcType=TINYINT},
+                #{visible,jdbcType=INTEGER},
             </if>
             <if test="order != null">
                 #{order,jdbcType=INTEGER},
+            </if>
+            <if test="linkUrl != null">
+                #{linkUrl,jdbcType=VARCHAR},
+            </if>
+            <if test="linkType != null">
+                #{linkType,jdbcType=VARCHAR},
             </if>
             <if test="createTime != null">
                 #{createTime,jdbcType=TIMESTAMP},
@@ -146,8 +167,8 @@
             <if test="imgName != null">
                 IMG_NAME = #{imgName,jdbcType=VARCHAR},
             </if>
-            <if test="imgUrl != null">
-                IMG_URL = #{imgUrl,jdbcType=VARCHAR},
+            <if test="imageUrl != null">
+                IMG_URL = #{imageUrl,jdbcType=VARCHAR},
             </if>
             <if test="thumbnailUrl != null">
                 THUMBNAIL_URL = #{thumbnailUrl,jdbcType=VARCHAR},
@@ -156,10 +177,16 @@
                 IMG_TYPE = #{imgType,jdbcType=VARCHAR},
             </if>
             <if test="visible != null">
-                VISIBLE = #{visible,jdbcType=TINYINT},
+                VISIBLE = #{visible,jdbcType=INTEGER},
             </if>
             <if test="order != null">
                 `ORDER` = #{order,jdbcType=INTEGER},
+            </if>
+            <if test="linkUrl != null">
+                LINK_URL = #{linkUrl,jdbcType=VARCHAR},
+            </if>
+            <if test="linkType != null">
+                LINK_TYPE = #{linkType,jdbcType=VARCHAR},
             </if>
             <if test="createTime != null">
                 CREATE_TIME = #{createTime,jdbcType=TIMESTAMP},
