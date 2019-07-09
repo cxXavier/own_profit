@@ -18,15 +18,28 @@ public class RopPrenticeResponse implements Serializable {
     private static final long serialVersionUID = -152484453209932985L;
 
     /**
+     * 我的鲜花数
+     */
+    private Integer totalFlowers;
+
+    /**
      * 徒弟列表
      */
-    private List<Prentice> prenticeList;
+    private List<Prentice> dataList;
 
-    public List<Prentice> getPrenticeList() {
-        return prenticeList;
+    public List<Prentice> getDataList() {
+        return dataList;
     }
 
-    public void setPrenticeList(List<Prentice> prenticeList) {
-        this.prenticeList = prenticeList;
+    public void setDataList(List<Prentice> dataList) {
+        this.dataList = dataList;
+    }
+
+    public Integer getTotalFlowers() {
+        return totalFlowers;
+    }
+
+    public void setTotalFlowers(Integer totalFlowers) {
+        this.totalFlowers = totalFlowers;
     }
 }

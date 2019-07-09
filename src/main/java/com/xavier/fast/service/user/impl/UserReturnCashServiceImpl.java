@@ -15,10 +15,7 @@ import com.xavier.fast.model.user.cash.RopReturnCashRequest;
 import com.xavier.fast.model.user.cash.RopReturnCashResponse;
 import com.xavier.fast.properties.WechatConfig;
 import com.xavier.fast.service.user.IUserReturnCashService;
-import com.xavier.fast.utils.ClientCustomSSL;
-import com.xavier.fast.utils.SignUtils;
-import com.xavier.fast.utils.WechatUtils;
-import com.xavier.fast.utils.XmlUtils;
+import com.xavier.fast.utils.*;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
 import org.springframework.stereotype.Service;
@@ -91,7 +88,7 @@ public class UserReturnCashServiceImpl implements IUserReturnCashService {
             return RopResponse.createFailedRep("", "暂无可用鲜花", "1.0.0");
         }
         //计算鲜花余额
-        int residueFlowers = this.calFlower(flowerList);
+        int residueFlowers = CalFlowerUtils.calTotalFlowers(flowerList);
         //提现需要鲜花数4倍
         int needFlowers = order.getContributionFlower() * 4;
         if(residueFlowers < needFlowers){
@@ -160,29 +157,6 @@ public class UserReturnCashServiceImpl implements IUserReturnCashService {
         RopReturnCashResponse response = new RopReturnCashResponse();
 
         return RopResponse.createSuccessRep("", "转账成功", "1.0.0", response);
-    }
-
-    /**
-     * 计算鲜花余额
-     * @param flowerList
-     * @return
-     */
-    private int calFlower(List<UserFlower> flowerList){
-        int result = 0;
-        if(CollectionUtils.isNotEmpty(flowerList)){
-            int inCount = 0;
-            int deCount = 0;
-            for(UserFlower flower : flowerList){
-                if(UserFlower.COST_TYPE.INCREASE.name().equals(flower.getCostType())){
-                    inCount += flower.getFlowers();
-                }else if(UserFlower.COST_TYPE.DECREASE.name().equals(flower.getCostType())){
-                    deCount += flower.getFlowers();
-                }
-            }
-            //总鲜花=收入-支出
-            result = inCount - deCount;
-        }
-        return result;
     }
 
     /**

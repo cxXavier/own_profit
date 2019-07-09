@@ -9,7 +9,7 @@ public class User {
 
     private String nickname;
 
-    private Boolean gender;
+    private Integer gender;
 
     private String mobile;
 
@@ -61,11 +61,11 @@ public class User {
         this.nickname = nickname == null ? null : nickname.trim();
     }
 
-    public Boolean getGender() {
+    public Integer getGender() {
         return gender;
     }
 
-    public void setGender(Boolean gender) {
+    public void setGender(Integer gender) {
         this.gender = gender;
     }
 

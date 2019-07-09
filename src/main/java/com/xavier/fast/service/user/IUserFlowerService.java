@@ -26,7 +26,7 @@ public interface IUserFlowerService {
     * @exception
     * @date        2019/7/2 19:39
     */
-    public RopResponse<RopResponseBody> getPrenticeListWithFlowers(RopRequestBody<RopFlowerRequest> flowerRequest);
+    public RopResponse<RopPrenticeResponse> getPrenticeListWithFlowers(RopRequestBody<RopFlowerRequest> flowerRequest);
 
     /**
     * 用户鲜花开支

@@ -5,7 +5,7 @@
         <id column="id" property="id" jdbcType="BIGINT"/>
         <result column="avatar" property="avatar" jdbcType="VARCHAR"/>
         <result column="nickname" property="nickname" jdbcType="VARCHAR"/>
-        <result column="gender" property="gender" jdbcType="BIT"/>
+        <result column="gender" property="gender" jdbcType="INTEGER"/>
         <result column="mobile" property="mobile" jdbcType="VARCHAR"/>
         <result column="openid" property="openid" jdbcType="VARCHAR"/>
         <result column="unionid" property="unionid" jdbcType="VARCHAR"/>
@@ -37,7 +37,7 @@
             and nickname = #{nickname,jdbcType=VARCHAR}
         </if>
         <if test="gender != null">
-            and gender = #{gender,jdbcType=BIT}
+            and gender = #{gender,jdbcType=INTEGER}
         </if>
         <if test="mobile != null">
             and mobile = #{mobile,jdbcType=VARCHAR}
@@ -97,7 +97,7 @@
         insert into tbl_user_info (avatar, nickname, gender, mobile, openid, unionid,
         invite_code, parent_openid, parent_unionid, grandparent_openid, grandparent_unionid,
         created, updated, app_openid, source, rel_name)
-        values (#{avatar,jdbcType=VARCHAR}, #{nickname,jdbcType=VARCHAR}, #{gender,jdbcType=BIT},
+        values (#{avatar,jdbcType=VARCHAR}, #{nickname,jdbcType=VARCHAR}, #{gender,jdbcType=INTEGER},
         #{mobile,jdbcType=VARCHAR}, #{openid,jdbcType=VARCHAR}, #{unionid,jdbcType=VARCHAR},
         #{inviteCode,jdbcType=VARCHAR}, #{parentOpenid,jdbcType=VARCHAR}, #{parentUnionid,jdbcType=VARCHAR},
         #{grandparentOpenid,jdbcType=VARCHAR}, #{grandparentUnionid,jdbcType=VARCHAR},
@@ -167,7 +167,7 @@
                 #{nickname,jdbcType=VARCHAR},
             </if>
             <if test="gender != null">
-                #{gender,jdbcType=BIT},
+                #{gender,jdbcType=INTEGER},
             </if>
             <if test="mobile != null">
                 #{mobile,jdbcType=VARCHAR},
@@ -220,7 +220,7 @@
                 nickname = #{nickname,jdbcType=VARCHAR},
             </if>
             <if test="gender != null">
-                gender = #{gender,jdbcType=BIT},
+                gender = #{gender,jdbcType=INTEGER},
             </if>
             <if test="mobile != null">
                 mobile = #{mobile,jdbcType=VARCHAR},
@@ -268,7 +268,7 @@
         update tbl_user_info
         set avatar = #{avatar,jdbcType=VARCHAR},
           nickname = #{nickname,jdbcType=VARCHAR},
-          gender = #{gender,jdbcType=BIT},
+          gender = #{gender,jdbcType=INTEGER},
           mobile = #{mobile,jdbcType=VARCHAR},
           openid = #{openid,jdbcType=VARCHAR},
           unionid = #{unionid,jdbcType=VARCHAR},

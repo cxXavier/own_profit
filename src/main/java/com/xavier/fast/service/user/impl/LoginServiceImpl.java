@@ -15,6 +15,7 @@ import com.xavier.fast.model.base.RopRequestBody;
 import com.xavier.fast.model.base.RopResponse;
 import com.xavier.fast.model.user.login.RopLoginRequest;
 import com.xavier.fast.model.user.login.RopLoginResponse;
+import com.xavier.fast.model.user.login.RopUserRequest;
 import com.xavier.fast.properties.WechatConfig;
 import com.xavier.fast.service.user.ILoginService;
 import com.xavier.fast.utils.DateUtil;
@@ -87,6 +88,21 @@ public class LoginServiceImpl implements ILoginService {
         vo.setMobile(info.getMobile());
         response.setUserInfo(vo);
         return RopResponse.createSuccessRep("登陆成功", "登陆成功", "1.0.0", response);
+    }
+
+    @ApiMethod(method = "api.pinke.user.login.updateUser", version = "1.0.0")
+    public RopResponse<String> updateUser(RopRequestBody<RopUserRequest> loginRequest) {
+        User info = new User();
+        info.setId(loginRequest.getT().getuId().longValue());
+        info.setAvatar(loginRequest.getT().getAvatar());
+        info.setNickname(loginRequest.getT().getNickname());
+        info.setGender(loginRequest.getT().getGender());
+        info.setMobile(loginRequest.getT().getMobile());
+        int updateCount = userMapper.updateByPrimaryKeySelective(info);
+        if(updateCount <= 0){
+            return RopResponse.createFailedRep("", "修改用户信息失败", "1.0.0");
+        }
+        return RopResponse.createSuccessRep("", "修改用户信息成功", "1.0.0", "");
     }
 
     @Override

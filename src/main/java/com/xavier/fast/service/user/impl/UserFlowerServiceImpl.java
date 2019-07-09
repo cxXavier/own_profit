@@ -5,25 +5,28 @@ import com.xavier.fast.dao.OrderMapper;
 import com.xavier.fast.dao.UserFlowerMapper;
 import com.xavier.fast.dao.UserMapper;
 import com.xavier.fast.entity.order.Order;
+import com.xavier.fast.entity.pdd.OrderQueryRo;
+import com.xavier.fast.entity.pdd.PddOrderList;
 import com.xavier.fast.entity.user.Prentice;
 import com.xavier.fast.entity.user.User;
 import com.xavier.fast.entity.user.UserFlower;
 import com.xavier.fast.model.base.RopRequestBody;
 import com.xavier.fast.model.base.RopResponse;
-import com.xavier.fast.model.base.RopResponseBody;
 import com.xavier.fast.model.user.flower.RopFlowerRequest;
 import com.xavier.fast.model.user.flower.RopFlowerResponse;
+import com.xavier.fast.model.user.flower.RopPrenticeResponse;
+import com.xavier.fast.service.pdd.IpddService;
 import com.xavier.fast.service.user.IUserFlowerService;
+import com.xavier.fast.utils.CalFlowerUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 /**
 * @Description:    用户鲜花
@@ -48,6 +51,9 @@ public class UserFlowerServiceImpl implements IUserFlowerService {
     @Resource
     private UserFlowerMapper userFlowerMapper;
 
+    @Resource
+    private IpddService pddService;
+
     /**
     * 徒弟鲜花列表
     * @author      Wang
@@ -57,12 +63,33 @@ public class UserFlowerServiceImpl implements IUserFlowerService {
     * @date        2019/7/2 19:41
     */
     @ApiMethod(method = "api.pinke.user.flower.getPrenticeListWithFlowers", version = "1.0.0")
-    public RopResponse<RopResponseBody> getPrenticeListWithFlowers(RopRequestBody<RopFlowerRequest> flowerRequest) {
+    public RopResponse<RopPrenticeResponse> getPrenticeListWithFlowers(RopRequestBody<RopFlowerRequest> flowerRequest) {
+        RopPrenticeResponse response = new RopPrenticeResponse();
 
         String openId = flowerRequest.getT().getOpenId();
         String unionId = flowerRequest.getT().getUnionId();
 
         log.info("openId=" + openId + ",unionId=" + unionId);
+
+        //查询我的鲜花数
+        UserFlower uf = new UserFlower();
+        uf.setOpenId(openId);
+        List<UserFlower> flowerList = userFlowerMapper.findUserFlowerList(uf);
+        if(CollectionUtils.isNotEmpty(flowerList)){
+            response.setTotalFlowers(CalFlowerUtils.calTotalFlowers(flowerList));
+        }
+
+        OrderQueryRo dto = new OrderQueryRo();
+        try {
+            Date date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse("2019-07-09 10:00:00");
+            dto.setStartUpdateTime(date.getTime() / 1000);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        dto.setEndUpdateTime(System.currentTimeMillis()  / 1000);
+        dto.setPageNum(1);
+        dto.setPageSize(20);
+        PddOrderList list = pddService.queryPddOrder(dto, true);
 
         //查询徒弟列表
         Map<String, Object> params = new HashMap<>();
@@ -72,7 +99,7 @@ public class UserFlowerServiceImpl implements IUserFlowerService {
         if(CollectionUtils.isEmpty(userList)){
             return RopResponse.createFailedRep("", "暂无徒弟", "1.0.0");
         }
-        log.info("userList.size=" + userList.size());
+
         //查询徒弟订单
         List<String> openIds = new ArrayList<>();
         for(User u : userList){
@@ -86,23 +113,6 @@ public class UserFlowerServiceImpl implements IUserFlowerService {
         }
 
 
-//        //查询徒弟订单
-//        Order order = new Order();
-//        order.setParentOpenId(openId);
-//        order.setParentUnionId(unionId);
-//        List<Order> orderList = orderMapper.findOrderList(order);
-//        if(CollectionUtils.isEmpty(orderList)){
-//            return RopResponse.createFailedRep("-1", "暂无徒弟订单", "1.0.0");
-//        }
-//        Map<String, Integer> flowerMap = new HashMap<>();
-//
-//        for(Order o : orderList){
-//            if("".equals(o.getOpenId()) && "".equals(o.getUnionId())){
-//
-//            }
-//        }
-
-        RopResponseBody response = new RopResponseBody();
         List<Prentice> prenticeList = new ArrayList<>();
         Prentice prentice = new Prentice();
 

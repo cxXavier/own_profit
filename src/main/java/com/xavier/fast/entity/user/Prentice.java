@@ -34,6 +34,8 @@ public class Prentice implements Serializable {
      */
     private Integer waitSettleFlower;
 
+    private Boolean notice;
+
     private String openid;
 
     private String unionid;
@@ -68,6 +70,14 @@ public class Prentice implements Serializable {
 
     public void setWaitSettleFlower(Integer waitSettleFlower) {
         this.waitSettleFlower = waitSettleFlower;
+    }
+
+    public Boolean getNotice() {
+        return notice;
+    }
+
+    public void setNotice(Boolean notice) {
+        this.notice = notice;
     }
 
     public String getOpenid() {
