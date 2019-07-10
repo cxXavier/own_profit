@@ -4,6 +4,7 @@ import com.xavier.fast.common.mybatis.MyBatisDao;
 import com.xavier.fast.entity.order.Order;
 import org.springframework.stereotype.Repository;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -48,5 +49,14 @@ public class OrderMapper extends MyBatisDao {
     */
     public int updateOrderCashBackStatus(Map<String, Object> params){
         return super.update("updateOrderCashBackStatus", params);
+    }
+
+    /**
+     * 获取最新时间，用于判断是否更新订单
+     * @param params
+     * @return
+     */
+    public Date getMinDate(Map<String, Object> params){
+        return super.get("getMinDate", params);
     }
 }

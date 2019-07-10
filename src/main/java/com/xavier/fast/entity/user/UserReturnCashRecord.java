@@ -26,6 +26,11 @@ public class UserReturnCashRecord implements Serializable {
     private Integer orderId;
 
     /**
+     * 提现金额
+     */
+    private Integer cashBackAmount;
+
+    /**
      * 提现状态(0-未提现，1-已提现)
      */
     private Integer cashBackStatus;
@@ -71,6 +76,14 @@ public class UserReturnCashRecord implements Serializable {
 
     public void setOrderId(Integer orderId) {
         this.orderId = orderId;
+    }
+
+    public Integer getCashBackAmount() {
+        return cashBackAmount;
+    }
+
+    public void setCashBackAmount(Integer cashBackAmount) {
+        this.cashBackAmount = cashBackAmount;
     }
 
     public Integer getCashBackStatus() {

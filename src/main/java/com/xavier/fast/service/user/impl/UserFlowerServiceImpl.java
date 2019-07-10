@@ -5,8 +5,6 @@ import com.xavier.fast.dao.OrderMapper;
 import com.xavier.fast.dao.UserFlowerMapper;
 import com.xavier.fast.dao.UserMapper;
 import com.xavier.fast.entity.order.Order;
-import com.xavier.fast.entity.pdd.OrderQueryRo;
-import com.xavier.fast.entity.pdd.PddOrderList;
 import com.xavier.fast.entity.user.Prentice;
 import com.xavier.fast.entity.user.User;
 import com.xavier.fast.entity.user.UserFlower;
@@ -15,7 +13,7 @@ import com.xavier.fast.model.base.RopResponse;
 import com.xavier.fast.model.user.flower.RopFlowerRequest;
 import com.xavier.fast.model.user.flower.RopFlowerResponse;
 import com.xavier.fast.model.user.flower.RopPrenticeResponse;
-import com.xavier.fast.service.pdd.IpddService;
+import com.xavier.fast.model.user.flower.RopToTalFlowerResponse;
 import com.xavier.fast.service.user.IUserFlowerService;
 import com.xavier.fast.utils.CalFlowerUtils;
 import org.apache.commons.collections.CollectionUtils;
@@ -24,9 +22,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
 * @Description:    用户鲜花
@@ -50,9 +49,6 @@ public class UserFlowerServiceImpl implements IUserFlowerService {
 
     @Resource
     private UserFlowerMapper userFlowerMapper;
-
-    @Resource
-    private IpddService pddService;
 
     /**
     * 徒弟鲜花列表
@@ -78,18 +74,6 @@ public class UserFlowerServiceImpl implements IUserFlowerService {
         if(CollectionUtils.isNotEmpty(flowerList)){
             response.setTotalFlowers(CalFlowerUtils.calTotalFlowers(flowerList));
         }
-
-        OrderQueryRo dto = new OrderQueryRo();
-        try {
-            Date date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse("2019-07-09 10:00:00");
-            dto.setStartUpdateTime(date.getTime() / 1000);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        dto.setEndUpdateTime(System.currentTimeMillis()  / 1000);
-        dto.setPageNum(1);
-        dto.setPageSize(20);
-        PddOrderList list = pddService.queryPddOrder(dto, true);
 
         //查询徒弟列表
         Map<String, Object> params = new HashMap<>();
@@ -149,7 +133,49 @@ public class UserFlowerServiceImpl implements IUserFlowerService {
             return RopResponse.createFailedRep("", "暂无鲜花明细", "1.0.0");
         }
         response.setFlowerList(flowerList);
-        return RopResponse.createSuccessRep("", "查询徒弟列表成功", "1.0.0", response);
+        return RopResponse.createSuccessRep("", "查询鲜花明细成功", "1.0.0", response);
+    }
+
+    /**
+     * 鲜花数量汇总
+     * @author      Wang
+     * @param       flowerRequest
+     * @return
+     * @exception
+     * @date        2019/7/3 10:17
+     */
+    @ApiMethod(method = "api.pinke.user.flower.getTotalFlowers", version = "1.0.0")
+    public RopResponse<RopToTalFlowerResponse> getTotalFlowers(RopRequestBody<RopFlowerRequest> flowerRequest) {
+        RopToTalFlowerResponse response = new RopToTalFlowerResponse();
+        String openId = flowerRequest.getT().getOpenId();
+
+        //获取可使用鲜花
+        UserFlower u = new UserFlower();
+        u.setOpenId(flowerRequest.getT().getOpenId());
+        List<UserFlower> flowerList = userFlowerMapper.findUserFlowerList(u);
+        if(CollectionUtils.isEmpty(flowerList)){
+            log.warn("暂无可使用鲜花,openId=" + openId);
+        }
+        int sf = CalFlowerUtils.calTotalFlowers(flowerList);
+        response.setSpendableFlowers(sf);
+
+        //获取待结算鲜花
+        Map<String, Object> params = new HashMap<>();
+        params.put("openId", openId);
+        List<Order> orderList = orderMapper.findOrderListByParams(params);
+        if(CollectionUtils.isEmpty(orderList)){
+            log.warn("暂无待结算鲜花,openId=" + openId);
+        }
+        int wf = getFlower(orderList, "2", openId);
+        response.setWaitSettleFlowers(wf);
+
+        //设置预估鲜花 = 可使用鲜花 + 待结算鲜花
+        int ef = sf + wf;
+        response.setEstimateFlowers(ef);
+
+        log.info("可使用鲜花:" + sf + ",待结算鲜花:" + wf + ",预估鲜花:" + ef + ",openId=" + openId);
+
+        return RopResponse.createSuccessRep("", "归总鲜花数量成功", "1.0.0", response);
     }
 
     /**

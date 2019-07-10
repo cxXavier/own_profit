@@ -137,7 +137,8 @@
         </if>
     </sql>
 
-    <insert id="insert" parameterType="com.xavier.fast.entity.order.Order">
+    <insert id="insert" parameterType="com.xavier.fast.entity.order.Order"
+            useGeneratedKeys="true" keyProperty="id" keyColumn="id">
       INSERT INTO TBL_ORDER (
         PDD_ORDER_ID, ORDER_STATUS, DUO_COUPON_AMOUNT, GOODS_ID, GOODS_NAME, GOODS_PRICE,
         GOODS_QUANTITY, GOODS_THUMBNAIL_URL, ORDER_AMOUNT, ORDER_CREATE_TIME, ORDER_MODIFY_AT,
@@ -187,9 +188,6 @@
     <update id="update" parameterType="com.xavier.fast.entity.order.Order">
         UPDATE TBL_ORDER
         <set>
-            <if test="id != null">
-                ID = #{id,jdbcType=INTEGER},
-            </if>
             <if test="pddOrderId != null">
                 PDD_ORDER_ID = #{pddOrderId,jdbcType=VARCHAR},
             </if>
@@ -275,6 +273,7 @@
                 UPDATE_TIME = #{updateTime,jdbcType=TIMESTAMP},
             </if>
         </set>
+        where ID = #{id,jdbcType=INTEGER}
     </update>
 
     <select id="findOrderListByParams" parameterType="java.util.List" resultMap="BaseResultMap">
@@ -295,5 +294,10 @@
       WHERE ID = #{id,jdbcType=INTEGER}
       AND CASH_BACK_VERSION = #{cashBackVersion,jdbcType=INTEGER}
     </update>
+
+    <select id="getMinDate" parameterType="java.util.Map" resultType="java.util.Date">
+
+
+    </select>
 
 </mapper>

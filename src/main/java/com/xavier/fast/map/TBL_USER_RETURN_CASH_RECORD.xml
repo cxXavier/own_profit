@@ -5,6 +5,7 @@
         <id column="id" property="id" jdbcType="INTEGER"/>
         <result column="open_id" property="openId" jdbcType="VARCHAR"/>
         <result column="order_id" property="orderId" jdbcType="INTEGER"/>
+        <result column="cash_back_amount" property="cashBackAmount" jdbcType="INTEGER"/>
         <result column="cash_back_status" property="cashBackStatus" jdbcType="INTEGER"/>
         <result column="wechat_payment_status" property="wechatPaymentStatus" jdbcType="VARCHAR"/>
         <result column="wechat_payment_no" property="wechatPaymentNo" jdbcType="VARCHAR"/>
@@ -14,7 +15,7 @@
     </resultMap>
 
     <sql id="Base_Column_List">
-        ID, OPEN_ID, ORDER_ID, CASH_BACK_STATUS, WECHAT_PAYMENT_STATUS, WECHAT_PAYMENT_NO
+        ID, OPEN_ID, ORDER_ID, CASH_BACK_AMOUNT, CASH_BACK_STATUS, WECHAT_PAYMENT_STATUS, WECHAT_PAYMENT_NO
         WECHAT_PAYMENT_TIME, CREATE_TIME, UPDATE_TIME
     </sql>
 
@@ -27,6 +28,9 @@
         </if>
         <if test="orderId != null">
             and ORDER_ID = #{orderId,jdbcType=INTEGER}
+        </if>
+        <if test="cashBackAmount != null">
+            and cash_back_amount = #{cashBackAmount,jdbcType=INTEGER}
         </if>
         <if test="cashBackStatus != null">
             and CASH_BACK_STATUS = #{cashBackStatus,jdbcType=INTEGER}
@@ -49,10 +53,10 @@
     </sql>
 
     <insert id="insert" parameterType="com.xavier.fast.entity.user.UserReturnCashRecord">
-    INSERT INTO TBL_USER_RETURN_CASH_RECORD (OPEN_ID, ORDER_ID, CASH_BACK_STATUS,
+    INSERT INTO TBL_USER_RETURN_CASH_RECORD (OPEN_ID, ORDER_ID, CASH_BACK_AMOUNT CASH_BACK_STATUS,
       WECHAT_PAYMENT_STATUS, WECHAT_PAYMENT_NO, WECHAT_PAYMENT_TIME, CREATE_TIME, UPDATE_TIME)
-    values (#{openId,jdbcType=VARCHAR}, #{orderId,jdbcType=INTEGER}, #{cashBackStatus,jdbcType=INTEGER},
-      #{wechatPaymentStatus,jdbcType=VARCHAR}, #{wechatPaymentNo,jdbcType=VARCHAR}
+    values (#{openId,jdbcType=VARCHAR}, #{orderId,jdbcType=INTEGER}, #{cashBackAmount,jdbcType=INTEGER},
+      #{cashBackStatus,jdbcType=INTEGER}, #{wechatPaymentStatus,jdbcType=VARCHAR}, #{wechatPaymentNo,jdbcType=VARCHAR}
       #{wechatPaymentTime,jdbcType=TIMESTAMP}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP})
     </insert>
 

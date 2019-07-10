@@ -16,5 +16,5 @@ public interface IpddService {
     //更新拼多多订单信息
     PddOrderList queryPddOrder(OrderQueryRo dto, Boolean retrunCount);
     //获取推广链接
-    OrderVo queryGoodsShareUrl(String goodsId,String openId);
+    OrderVo queryGoodsShareUrl(String goodsId,String openId, String customParam);
 }

@@ -73,8 +73,8 @@ public class UserReturnCashServiceImpl implements IUserReturnCashService {
 
         //查询当前用户的订单
         Order order = orderMapper.selectByPrimaryKey(orderId);
-        if(order == null){
-            return RopResponse.createFailedRep("", "当前用户暂无订单", "1.0.0");
+        if(order == null || order.getCashBackStatus() == null){
+            return RopResponse.createFailedRep("", "当前用户暂无可提现订单", "1.0.0");
         }
         if(order.getCashBackStatus() == 1){
             return RopResponse.createFailedRep("", "当前订单已经提现，请勿重复操作", "1.0.0");
@@ -139,6 +139,7 @@ public class UserReturnCashServiceImpl implements IUserReturnCashService {
                     UserReturnCashRecord record = new UserReturnCashRecord();
                     record.setOpenId(openId);
                     record.setOrderId(orderId);
+                    record.setCashBackAmount(order.getOrderAmount().intValue());
                     record.setCashBackStatus(1);
                     record.setWechatPaymentStatus("1");
                     record.setWechatPaymentNo(paymentNO);
@@ -156,7 +157,7 @@ public class UserReturnCashServiceImpl implements IUserReturnCashService {
 
         RopReturnCashResponse response = new RopReturnCashResponse();
 
-        return RopResponse.createSuccessRep("", "转账成功", "1.0.0", response);
+        return RopResponse.createSuccessRep("", "提现成功", "1.0.0", response);
     }
 
     /**

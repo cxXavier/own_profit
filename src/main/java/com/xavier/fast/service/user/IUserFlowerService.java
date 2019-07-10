@@ -2,10 +2,10 @@ package com.xavier.fast.service.user;
 
 import com.xavier.fast.model.base.RopRequestBody;
 import com.xavier.fast.model.base.RopResponse;
-import com.xavier.fast.model.base.RopResponseBody;
 import com.xavier.fast.model.user.flower.RopFlowerRequest;
 import com.xavier.fast.model.user.flower.RopFlowerResponse;
 import com.xavier.fast.model.user.flower.RopPrenticeResponse;
+import com.xavier.fast.model.user.flower.RopToTalFlowerResponse;
 
 /**
 * @Description:    用户鲜花
@@ -37,6 +37,17 @@ public interface IUserFlowerService {
     * @date        2019/7/3 10:15
     */
     public RopResponse<RopFlowerResponse> getUserFlowers(RopRequestBody<RopFlowerRequest> flowerRequest);
+
+
+    /**
+    * 鲜花数量汇总
+    * @author      Wang
+    * @param       flowerRequest
+    * @return      
+    * @exception   
+    * @date        2019/7/10 14:06
+    */
+    public RopResponse<RopToTalFlowerResponse> getTotalFlowers(RopRequestBody<RopFlowerRequest> flowerRequest);
 
 
 }

@@ -167,13 +167,13 @@ public class PddServiceImpl implements IpddService {
     }
 
     @Override
-    public OrderVo queryGoodsShareUrl(String goodsId,String openId) {
+    public OrderVo queryGoodsShareUrl(String goodsId, String openId, String customParam) {
         //生成推广链接
-        OrderVo orderVo = generate(goodsId,openId);
+        OrderVo orderVo = generate(goodsId, customParam);
         //失败重试2次
-        for(int i=0;i<2;i++){
+        for(int i = 0; i < 2; i++){
             if(null == orderVo){
-                orderVo = generate(goodsId,openId);
+                orderVo = generate(goodsId, customParam);
             }
         }
         orderVo.setOpenid(openId);

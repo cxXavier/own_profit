@@ -373,4 +373,39 @@ public class Order implements Serializable {
     public void setCashBackVersion(Integer cashBackVersion) {
         this.cashBackVersion = cashBackVersion;
     }
+
+    @Override
+    public String toString() {
+        return "Order{" +
+                "id=" + id +
+                ", pddOrderId='" + pddOrderId + '\'' +
+                ", orderStatus='" + orderStatus + '\'' +
+                ", duoCouponAmount=" + duoCouponAmount +
+                ", goodsId='" + goodsId + '\'' +
+                ", goodsName='" + goodsName + '\'' +
+                ", goodsPrice=" + goodsPrice +
+                ", goodsQuantity=" + goodsQuantity +
+                ", goodsThumbnailUrl='" + goodsThumbnailUrl + '\'' +
+                ", orderAmount=" + orderAmount +
+                ", orderCreateTime=" + orderCreateTime +
+                ", orderModifyAt=" + orderModifyAt +
+                ", orderPayTime=" + orderPayTime +
+                ", orderReceiveTime=" + orderReceiveTime +
+                ", orderSettleTime=" + orderSettleTime +
+                ", orderStatusDesc='" + orderStatusDesc + '\'' +
+                ", orderVerifyTime=" + orderVerifyTime +
+                ", promotionAmount=" + promotionAmount +
+                ", promotionRate=" + promotionRate +
+                ", returnStatus=" + returnStatus +
+                ", openId='" + openId + '\'' +
+                ", unionId='" + unionId + '\'' +
+                ", parentOpenId='" + parentOpenId + '\'' +
+                ", parentUnionId='" + parentUnionId + '\'' +
+                ", cashBackStatus=" + cashBackStatus +
+                ", contributionFlower=" + contributionFlower +
+                ", cashBackVersion=" + cashBackVersion +
+                ", createTime=" + createTime +
+                ", updateTime=" + updateTime +
+                '}';
+    }
 }
