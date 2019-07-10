@@ -8,6 +8,8 @@ import java.io.Serializable;
  */
 public class UserVo  implements Serializable {
 
+    private Integer uId;
+
     private String mobile;
 
     private String openid;
@@ -22,6 +24,14 @@ public class UserVo  implements Serializable {
     private String sessionId;
 
     private Boolean newUser = false;  // 是否为新用户
+
+    public Integer getuId() {
+        return uId;
+    }
+
+    public void setuId(Integer uId) {
+        this.uId = uId;
+    }
 
     public Boolean getNewUser() {
         return newUser;

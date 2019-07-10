@@ -104,7 +104,8 @@
         #{created,jdbcType=TIMESTAMP}, #{updated,jdbcType=TIMESTAMP}, #{appOpenid,jdbcType=VARCHAR},
         #{source,jdbcType=VARCHAR}, #{relName,jdbcType=VARCHAR})
     </insert>
-    <insert id="insertSelective" parameterType="com.xavier.fast.entity.user.User">
+    <insert id="insertSelective" parameterType="com.xavier.fast.entity.user.User"
+            useGeneratedKeys="true" keyProperty="id" keyColumn="id">
         <selectKey resultType="java.lang.Long" keyProperty="id" order="AFTER">
             SELECT LAST_INSERT_ID()
         </selectKey>

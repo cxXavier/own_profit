@@ -86,6 +86,7 @@ public class LoginServiceImpl implements ILoginService {
         //updater.update(RedisConstants.User.getSessionId(vo.getOpenid(),vo.getSessionId()),"",RedisConstants.User.SESSION_TIME);
         vo.setInviteCode(info.getInviteCode());
         vo.setMobile(info.getMobile());
+        vo.setuId(info.getId().intValue());
         response.setUserInfo(vo);
         return RopResponse.createSuccessRep("登陆成功", "登陆成功", "1.0.0", response);
     }
