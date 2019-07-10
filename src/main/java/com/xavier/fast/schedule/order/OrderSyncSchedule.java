@@ -23,9 +23,9 @@ import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
-@Component
-@Configuration
-@EnableScheduling
+//@Component
+//@Configuration
+//@EnableScheduling
 public class OrderSyncSchedule {
 
     private Logger log = LoggerFactory.getLogger(OrderSyncSchedule.class);
@@ -36,7 +36,7 @@ public class OrderSyncSchedule {
     @Resource
     private OrderMapper orderMapper;
 
-    @Scheduled(cron = "0/5 * * * * ?")
+//    @Scheduled(cron = "0/5 * * * * ?")
     //或直接指定时间间隔，例如：5秒
     //@Scheduled(fixedRate=5000)
     private void configureTasks() {
