@@ -19,6 +19,10 @@ public class OrderMapper extends MyBatisDao {
         return super.insert("insert", record);
     }
 
+    public int insertSelective(Order record){
+        return super.insert("insertSelective", record);
+    }
+
     public Order selectByPrimaryKey(Integer id) {
         return super.get("selectByPrimaryKey", id);
     }

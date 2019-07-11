@@ -81,7 +81,7 @@ public class OrderServiceImpl extends BaseServiceImpl implements IOrderService {
         record.setGoodsId(goodsId);
         record.setDuoCouponAmount(priceAfterCoupon);
         record.setCreateTime(currentDate);
-        int count = orderMapper.insert(record);
+        int count = orderMapper.insertSelective(record);
         if(count <= 0){
             log.error("保存虚拟订单失败，参数：" + record.toString());
         }
