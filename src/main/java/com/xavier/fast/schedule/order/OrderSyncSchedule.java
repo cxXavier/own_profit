@@ -23,9 +23,9 @@ import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
-//@Component
-//@Configuration
-//@EnableScheduling
+@Component
+@Configuration
+@EnableScheduling
 public class OrderSyncSchedule {
 
     private Logger log = LoggerFactory.getLogger(OrderSyncSchedule.class);
@@ -36,7 +36,7 @@ public class OrderSyncSchedule {
     @Resource
     private OrderMapper orderMapper;
 
-//    @Scheduled(cron = "0/5 * * * * ?")
+    @Scheduled(cron = "0/5 * * * * ?")
     //或直接指定时间间隔，例如：5秒
     //@Scheduled(fixedRate=5000)
     private void configureTasks() {
@@ -45,7 +45,7 @@ public class OrderSyncSchedule {
 
         OrderQueryRo dto = new OrderQueryRo();
         try {
-            Date date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse("2019-07-09 10:00:00");
+            Date date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse("2019-07-11 21:00:00");
             dto.setStartUpdateTime(date.getTime() / 1000);
         } catch (ParseException e) {
             e.printStackTrace();
@@ -139,7 +139,7 @@ public class OrderSyncSchedule {
         if(millSec == null || millSec < 0){
             return null;
         }
-        return new Date(millSec);
+        return new Date(millSec * 1000);
     }
 
 }

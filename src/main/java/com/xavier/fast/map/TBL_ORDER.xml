@@ -23,7 +23,7 @@
         <result column="promotion_rate" property="promotionRate" jdbcType="INTEGER"/>
         <result column="return_status" property="returnStatus" jdbcType="INTEGER"/>
         <result column="open_id" property="openId" jdbcType="VARCHAR"/>
-        <result column="unioin_id" property="unioinId" jdbcType="VARCHAR"/>
+        <result column="unioin_id" property="unionId" jdbcType="VARCHAR"/>
         <result column="parent_open_id" property="parentOpenId" jdbcType="VARCHAR"/>
         <result column="parent_unioin_id" property="parentUnionId" jdbcType="VARCHAR"/>
         <result column="cash_back_status" property="cashBackStatus" jdbcType="INTEGER"/>
@@ -105,8 +105,8 @@
         <if test="openId != null">
             and OPEN_ID = #{openId,jdbcType=VARCHAR}
         </if>
-        <if test="unioinId != null">
-            and UNIOIN_ID = #{unioinId,jdbcType=VARCHAR}
+        <if test="unionId != null">
+            and UNIOIN_ID = #{unionId,jdbcType=VARCHAR}
         </if>
         <if test="parentOpenId != null">
             and PARENT_OPEN_ID = #{parentOpenId,jdbcType=VARCHAR}
@@ -153,7 +153,7 @@
         #{orderCreateTime,jdbcType=TIMESTAMP}, #{orderModifyAt,jdbcType=TIMESTAMP}, #{orderPayTime,jdbcType=TIMESTAMP},
         #{orderReceiveTime,jdbcType=TIMESTAMP}, #{orderSettleTime,jdbcType=TIMESTAMP}, #{orderStatusDesc,jdbcType=VARCHAR},
         #{orderVerifyTime,jdbcType=TIMESTAMP}, #{promotionAmount,jdbcType=INTEGER}, #{promotionRate,jdbcType=INTEGER},
-        #{returnStatus,jdbcType=INTEGER}, #{openId,jdbcType=VARCHAR}, #{unioinId,jdbcType=VARCHAR}, #{parentOpenId,jdbcType=VARCHAR},
+        #{returnStatus,jdbcType=INTEGER}, #{openId,jdbcType=VARCHAR}, #{unionId,jdbcType=VARCHAR}, #{parentOpenId,jdbcType=VARCHAR},
         #{parentUnionId,jdbcType=VARCHAR},#{cashBackStatus,jdbcType=INTEGER}, #{contributionFlower,jdbcType=INTEGER},
         #{cashBackVersion,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}
       )
@@ -226,7 +226,7 @@
             <if test="openId != null">
                 OPEN_ID,
             </if>
-            <if test="unioinId != null">
+            <if test="unionId != null">
                 UNIOIN_ID,
             </if>
             <if test="parentOpenId != null">
@@ -253,91 +253,91 @@
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="id != null">
-                ID = #{id,jdbcType=INTEGER},
+                #{id,jdbcType=INTEGER},
             </if>
             <if test="pddOrderId != null">
-                PDD_ORDER_ID = #{pddOrderId,jdbcType=VARCHAR},
+                #{pddOrderId,jdbcType=VARCHAR},
             </if>
             <if test="orderStatus != null">
-                ORDER_STATUS = #{orderStatus,jdbcType=VARCHAR},
+                #{orderStatus,jdbcType=VARCHAR},
             </if>
             <if test="duoCouponAmount != null">
-                DUO_COUPON_AMOUNT = #{duoCouponAmount,jdbcType=INTEGER},
+                #{duoCouponAmount,jdbcType=INTEGER},
             </if>
             <if test="goodsId != null">
-                GOODS_ID = #{goodsId,jdbcType=VARCHAR},
+                #{goodsId,jdbcType=VARCHAR},
             </if>
             <if test="goodsName != null">
-                GOODS_NAME = #{goodsName,jdbcType=VARCHAR},
+                #{goodsName,jdbcType=VARCHAR},
             </if>
             <if test="goodsPrice != null">
-                GOODS_PRICE = #{goodsPrice,jdbcType=INTEGER},
+                #{goodsPrice,jdbcType=INTEGER},
             </if>
             <if test="goodsQuantity != null">
-                GOODS_QUANTITY = #{goodsQuantity,jdbcType=INTEGER},
+                #{goodsQuantity,jdbcType=INTEGER},
             </if>
             <if test="goodsThumbnailUrl != null">
-                GOODS_THUMBNAIL_URL = #{goodsThumbnailUrl,jdbcType=VARCHAR},
+                #{goodsThumbnailUrl,jdbcType=VARCHAR},
             </if>
             <if test="orderAmount != null">
-                ORDER_AMOUNT = #{orderAmount,jdbcType=INTEGER},
+                #{orderAmount,jdbcType=INTEGER},
             </if>
             <if test="orderCreateTime != null">
-                ORDER_CREATE_TIME = #{orderCreateTime,jdbcType=TIMESTAMP},
+                #{orderCreateTime,jdbcType=TIMESTAMP},
             </if>
             <if test="orderModifyAt != null">
-                ORDER_MODIFY_AT = #{orderModifyAt,jdbcType=TIMESTAMP},
+                #{orderModifyAt,jdbcType=TIMESTAMP},
             </if>
             <if test="orderPayTime != null">
-                ORDER_PAY_TIME = #{orderPayTime,jdbcType=TIMESTAMP},
+                #{orderPayTime,jdbcType=TIMESTAMP},
             </if>
             <if test="orderReceiveTime != null">
-                ORDER_RECEIVE_TIME = #{orderReceiveTime,jdbcType=TIMESTAMP},
+                #{orderReceiveTime,jdbcType=TIMESTAMP},
             </if>
             <if test="orderSettleTime != null">
-                ORDER_SETTLE_TIME = #{orderSettleTime,jdbcType=TIMESTAMP},
+                #{orderSettleTime,jdbcType=TIMESTAMP},
             </if>
             <if test="orderStatusDesc != null">
-                ORDER_STATUS_DESC = #{orderStatusDesc,jdbcType=VARCHAR},
+                #{orderStatusDesc,jdbcType=VARCHAR},
             </if>
             <if test="orderVerifyTime != null">
-                ORDER_VERIFY_TIME = #{orderVerifyTime,jdbcType=TIMESTAMP},
+                #{orderVerifyTime,jdbcType=TIMESTAMP},
             </if>
             <if test="promotionAmount != null">
-                and PROMOTION_AMOUNT = #{promotionAmount,jdbcType=INTEGER},
+                #{promotionAmount,jdbcType=INTEGER},
             </if>
             <if test="promotionRate != null">
-                PROMOTION_RATE = #{promotionRate,jdbcType=INTEGER},
+                #{promotionRate,jdbcType=INTEGER},
             </if>
             <if test="returnStatus != null">
-                RETURN_STATUS = #{returnStatus,jdbcType=INTEGER},
+                #{returnStatus,jdbcType=INTEGER},
             </if>
             <if test="openId != null">
-                OPEN_ID = #{openId,jdbcType=VARCHAR},
+                #{openId,jdbcType=VARCHAR},
             </if>
-            <if test="unioinId != null">
-                UNIOIN_ID = #{unioinId,jdbcType=VARCHAR},
+            <if test="unionId != null">
+                #{unionId,jdbcType=VARCHAR},
             </if>
             <if test="parentOpenId != null">
-                PARENT_OPEN_ID = #{parentOpenId,jdbcType=VARCHAR},
+                #{parentOpenId,jdbcType=VARCHAR},
             </if>
             <if test="parentUnionId != null">
-                PARENT_UNIOIN_ID = #{parentUnionId,jdbcType=VARCHAR},
+                #{parentUnionId,jdbcType=VARCHAR},
             </if>
             <if test="cashBackStatus != null">
-                CASH_BACK_STATUS = #{cashBackStatus,jdbcType=INTEGER},
+                #{cashBackStatus,jdbcType=INTEGER},
             </if>
             <if test="contributionFlower != null">
-                CONTRIBUTION_FLOWER = #{contributionFlower,jdbcType=INTEGER},
+                #{contributionFlower,jdbcType=INTEGER},
             </if>
             <if test="cashBackVersion != null">
-                CASH_BACK_VERSION = #{cashBackVersion,jdbcType=INTEGER},
+                #{cashBackVersion,jdbcType=INTEGER},
             </if>
             <if test="createTime != null">
-                CREATE_TIME = #{createTime,jdbcType=TIMESTAMP},
+                #{createTime,jdbcType=TIMESTAMP},
             </if>
             <if test="updateTime != null">
-                UPDATE_TIME = #{updateTime,jdbcType=TIMESTAMP},
+                #{updateTime,jdbcType=TIMESTAMP},
             </if>
         </trim>
     </insert>
@@ -431,8 +431,8 @@
             <if test="openId != null">
                 OPEN_ID = #{openId,jdbcType=VARCHAR},
             </if>
-            <if test="unioinId != null">
-                UNIOIN_ID = #{unioinId,jdbcType=VARCHAR},
+            <if test="unionId != null">
+                UNIOIN_ID = #{unionId,jdbcType=VARCHAR},
             </if>
             <if test="parentOpenId != null">
                 PARENT_OPEN_ID = #{parentOpenId,jdbcType=VARCHAR},
