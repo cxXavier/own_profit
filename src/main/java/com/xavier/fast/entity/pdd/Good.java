@@ -158,7 +158,7 @@ public class Good implements Serializable {
     }
 
     public Long getPriceAfterCoupon() {
-        return minNormalPrice - couponDiscount;
+        return minGroupPrice - couponMinOrderAmount;
     }
 
     public void setPriceAfterCoupon(Long priceAfterCoupon) {
