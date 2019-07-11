@@ -276,7 +276,7 @@ public class OrderServiceImpl extends BaseServiceImpl implements IOrderService {
     private String getOrderStatus(String queryType){
         String orderStatus = "";
         if(QUERY_TYPE.WAITRECEIVE.name().equals(queryType)){//待收货
-            orderStatus = "0";
+            orderStatus = "1";
         }else if(QUERY_TYPE.WAITSETTLE.name().equals(queryType)){//待结算
             orderStatus = "2";
         }else if(QUERY_TYPE.VALIDATED.name().equals(queryType)){//已生效
