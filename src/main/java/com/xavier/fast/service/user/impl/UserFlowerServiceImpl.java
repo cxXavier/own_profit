@@ -98,10 +98,11 @@ public class UserFlowerServiceImpl implements IUserFlowerService {
 
 
         List<Prentice> prenticeList = new ArrayList<>();
-        Prentice prentice = new Prentice();
+        Prentice prentice;
 
         //添加用户信息、贡献鲜花数、待结算鲜花数
         for(User u : userList){
+            prentice = new Prentice();
             prentice.setAvatar(u.getAvatar());
             prentice.setNickname(u.getNickname());
             prentice.setOpenid(u.getOpenid());
