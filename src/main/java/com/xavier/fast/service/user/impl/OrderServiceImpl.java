@@ -236,7 +236,7 @@ public class OrderServiceImpl extends BaseServiceImpl implements IOrderService {
             }
             prenticeOrder.setContributionFlower(o.getContributionFlower());
             prenticeOrder.setOrderStatus(o.getOrderStatus());
-            prenticeOrder.setNotice("0".equals(o.getOrderStatus()));
+            prenticeOrder.setNotice("1".equals(o.getOrderStatus()));
             prenticeOrder.setOrderCreateTime(o.getOrderCreateTime());
             prenticeOrders.add(prenticeOrder);
         }

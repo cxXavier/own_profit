@@ -152,7 +152,7 @@ public class UserFlowerServiceImpl implements IUserFlowerService {
 
         //获取可使用鲜花
         UserFlower u = new UserFlower();
-        u.setOpenId(flowerRequest.getT().getOpenId());
+        u.setOpenId(openId);
         List<UserFlower> flowerList = userFlowerMapper.findUserFlowerList(u);
         if(CollectionUtils.isEmpty(flowerList)){
             log.warn("暂无可使用鲜花,openId=" + openId);
@@ -161,9 +161,10 @@ public class UserFlowerServiceImpl implements IUserFlowerService {
         response.setSpendableFlowers(sf);
 
         //获取待结算鲜花
-        Map<String, Object> params = new HashMap<>();
-        params.put("openId", openId);
-        List<Order> orderList = orderMapper.findOrderListByParams(params);
+        Order order = new Order();
+        order.setParentOpenId(openId);
+        order.setOrderStatus("2");
+        List<Order> orderList = orderMapper.findOrderList(order);
         if(CollectionUtils.isEmpty(orderList)){
             log.warn("暂无待结算鲜花,openId=" + openId);
         }
