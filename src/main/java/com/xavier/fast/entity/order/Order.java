@@ -2,6 +2,7 @@ package com.xavier.fast.entity.order;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 /**
 * @Description:    订单对象
@@ -141,6 +142,8 @@ public class Order implements Serializable {
     private Date createTime;
 
     private Date updateTime;
+
+    private List<String> openIds;
 
     public Integer getId() {
         return id;
@@ -372,6 +375,14 @@ public class Order implements Serializable {
 
     public void setCashBackVersion(Integer cashBackVersion) {
         this.cashBackVersion = cashBackVersion;
+    }
+
+    public List<String> getOpenIds() {
+        return openIds;
+    }
+
+    public void setOpenIds(List<String> openIds) {
+        this.openIds = openIds;
     }
 
     @Override

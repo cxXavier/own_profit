@@ -22,6 +22,7 @@ import com.xavier.fast.service.pdd.IpddService;
 import com.xavier.fast.service.user.IOrderService;
 import com.xavier.fast.utils.CalFlowerUtils;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
@@ -118,7 +119,9 @@ public class OrderServiceImpl extends BaseServiceImpl implements IOrderService {
         String orderStatus = getOrderStatus(queryType);//默认查询全部订单
         Order order = new Order();
         order.setParentOpenId(openId);
-        order.setOrderStatus(orderStatus);
+        if(StringUtils.isNotBlank(orderStatus)){
+            order.setOrderStatus(orderStatus);
+        }
         List<Order> orderList = orderMapper.findOrderList(order);
         List<PrenticeOrder> prenticeOrders = getPrenticeOrder(orderList);
 
@@ -145,7 +148,9 @@ public class OrderServiceImpl extends BaseServiceImpl implements IOrderService {
         String orderStatus = getOrderStatus(queryType);//默认查询全部订单
         Order order = new Order();
         order.setOpenId(openId);
-        order.setOrderStatus(orderStatus);
+        if(StringUtils.isNotBlank(orderStatus)){
+            order.setOrderStatus(orderStatus);
+        }
         List<Order> orderList = orderMapper.findOrderList(order);
         List<MyOrder> myOrders = getMyOrder(orderList);
         if(CollectionUtils.isEmpty(myOrders)){
