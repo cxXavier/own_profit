@@ -18,6 +18,8 @@ import com.xavier.fast.service.user.IUserReturnCashService;
 import com.xavier.fast.utils.*;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -39,6 +41,8 @@ import java.util.Map;
 */
 @Service
 public class UserReturnCashServiceImpl implements IUserReturnCashService {
+
+    private Logger log = LoggerFactory.getLogger(UserReturnCashServiceImpl.class);
 
     @Resource
     private UserMapper userMapper;
@@ -65,6 +69,8 @@ public class UserReturnCashServiceImpl implements IUserReturnCashService {
         String openId = cashRequest.getT().getOpenId();
         Integer orderId = cashRequest.getT().getOrderId();
 
+        log.info("userReturnCash params:openId=" + openId + ",orderId=" + orderId);
+
         //查询用户
         User user = userMapper.getUserByOpenid(openId);
         if(user == null){
@@ -73,7 +79,7 @@ public class UserReturnCashServiceImpl implements IUserReturnCashService {
 
         //查询当前用户的订单
         Order order = orderMapper.selectByPrimaryKey(orderId);
-        if(order == null || order.getCashBackStatus() == null){
+        if(order == null){
             return RopResponse.createFailedRep("", "当前用户暂无可提现订单", "1.0.0");
         }
         if(order.getCashBackStatus() == 1){
@@ -83,7 +89,8 @@ public class UserReturnCashServiceImpl implements IUserReturnCashService {
         //查询鲜花开支明细
         UserFlower paramFlower = new UserFlower();
         paramFlower.setOpenId(openId);
-        List<UserFlower> flowerList = userFlowerMapper.findUserFlowerList(paramFlower);
+        paramFlower.setParentOpenId(openId);
+        List<UserFlower> flowerList = userFlowerMapper.findListByOpendIdOrParentId(paramFlower);
         if(CollectionUtils.isEmpty(flowerList)){
             return RopResponse.createFailedRep("", "暂无可用鲜花", "1.0.0");
         }
@@ -134,7 +141,10 @@ public class UserReturnCashServiceImpl implements IUserReturnCashService {
                 int updateCount = orderMapper.updateOrderCashBackStatus(params);
                 if(updateCount <= 0){
                     //TODO 更新订单失败-补偿
+                    log.info("更新订单现状态失败");
                 }else{
+                    //添加鲜花收支记录
+                    addFlowerRecord(order);
                     //添加提现记录
                     UserReturnCashRecord record = new UserReturnCashRecord();
                     record.setOpenId(openId);
@@ -190,6 +200,24 @@ public class UserReturnCashServiceImpl implements IUserReturnCashService {
         String restXml = ClientCustomSSL.doRefund(wechatConfig.getPayPersonUrl(), XmlUtils.getRequestXml(parm));
         Map<String, String> restMap = XmlUtils.xmlToMap(restXml);
         return restMap;
+    }
+
+    /**
+     * 添加鲜花收支记录
+     * @param order
+     * @return
+     */
+    private int addFlowerRecord(Order order){
+        UserFlower uf = new UserFlower();
+        uf.setOpenId(order.getOpenId());
+        uf.setUnioinId(order.getUnionId());
+        uf.setParentOpenId(order.getParentOpenId());
+        uf.setParentUnionId(order.getParentUnionId());
+        uf.setFlowers(order.getContributionFlower());
+        uf.setCostType(UserFlower.COST_TYPE.DECREASE.name());
+        uf.setCreateTime(new Date());
+        int count = userFlowerMapper.insertSelective(uf);
+        return count;
     }
 
 }

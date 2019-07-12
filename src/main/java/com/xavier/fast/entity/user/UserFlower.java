@@ -21,6 +21,10 @@ public class UserFlower implements Serializable {
 
     private String unioinId;
 
+    private String parentOpenId;
+
+    private String parentUnionId;
+
     /**
      * 鲜花数量
      */
@@ -57,6 +61,22 @@ public class UserFlower implements Serializable {
 
     public void setUnioinId(String unioinId) {
         this.unioinId = unioinId;
+    }
+
+    public String getParentOpenId() {
+        return parentOpenId;
+    }
+
+    public void setParentOpenId(String parentOpenId) {
+        this.parentOpenId = parentOpenId;
+    }
+
+    public String getParentUnionId() {
+        return parentUnionId;
+    }
+
+    public void setParentUnionId(String parentUnionId) {
+        this.parentUnionId = parentUnionId;
     }
 
     public Integer getFlowers() {

@@ -17,13 +17,13 @@ import java.util.List;
 public class RopFlowerResponse implements Serializable {
     private static final long serialVersionUID = -152484453209932985L;
 
-    private List<UserFlower> flowerList;
+    private List<UserFlower> dataList;
 
-    public List<UserFlower> getFlowerList() {
-        return flowerList;
+    public List<UserFlower> getDataList() {
+        return dataList;
     }
 
-    public void setFlowerList(List<UserFlower> flowerList) {
-        this.flowerList = flowerList;
+    public void setDataList(List<UserFlower> dataList) {
+        this.dataList = dataList;
     }
 }

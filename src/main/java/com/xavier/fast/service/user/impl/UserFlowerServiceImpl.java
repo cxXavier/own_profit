@@ -69,8 +69,9 @@ public class UserFlowerServiceImpl implements IUserFlowerService {
 
         //查询我的鲜花数
         UserFlower uf = new UserFlower();
-        uf.setOpenId(openId);
-        List<UserFlower> flowerList = userFlowerMapper.findUserFlowerList(uf);
+        uf.setOpenId(flowerRequest.getT().getOpenId());
+        uf.setParentOpenId(flowerRequest.getT().getOpenId());
+        List<UserFlower> flowerList = userFlowerMapper.findListByOpendIdOrParentId(uf);
         if(CollectionUtils.isNotEmpty(flowerList)){
             response.setTotalFlowers(CalFlowerUtils.calTotalFlowers(flowerList));
         }
@@ -129,11 +130,12 @@ public class UserFlowerServiceImpl implements IUserFlowerService {
         RopFlowerResponse response = new RopFlowerResponse();
         UserFlower u = new UserFlower();
         u.setOpenId(flowerRequest.getT().getOpenId());
-        List<UserFlower> flowerList = userFlowerMapper.findUserFlowerList(u);
+        u.setParentOpenId(flowerRequest.getT().getOpenId());
+        List<UserFlower> flowerList = userFlowerMapper.findListByOpendIdOrParentId(u);
         if(CollectionUtils.isEmpty(flowerList)){
             return RopResponse.createFailedRep("", "暂无鲜花明细", "1.0.0");
         }
-        response.setFlowerList(flowerList);
+        response.setDataList(flowerList);
         return RopResponse.createSuccessRep("", "查询鲜花明细成功", "1.0.0", response);
     }
 
@@ -152,8 +154,9 @@ public class UserFlowerServiceImpl implements IUserFlowerService {
 
         //获取可使用鲜花
         UserFlower u = new UserFlower();
-        u.setOpenId(openId);
-        List<UserFlower> flowerList = userFlowerMapper.findUserFlowerList(u);
+        u.setOpenId(flowerRequest.getT().getOpenId());
+        u.setParentOpenId(flowerRequest.getT().getOpenId());
+        List<UserFlower> flowerList = userFlowerMapper.findListByOpendIdOrParentId(u);
         if(CollectionUtils.isEmpty(flowerList)){
             log.warn("暂无可使用鲜花,openId=" + openId);
         }
@@ -168,7 +171,7 @@ public class UserFlowerServiceImpl implements IUserFlowerService {
         if(CollectionUtils.isEmpty(orderList)){
             log.warn("暂无待结算鲜花,openId=" + openId);
         }
-        int wf = getFlower(orderList, "2", openId);
+        int wf = getWaitSettleFlower(orderList);
         response.setWaitSettleFlowers(wf);
 
         //设置预估鲜花 = 可使用鲜花 + 待结算鲜花
@@ -196,6 +199,22 @@ public class UserFlowerServiceImpl implements IUserFlowerService {
             if(orderStatus.equals(o.getOrderStatus()) && openId.equals(o.getOpenId())){
                 result += o.getContributionFlower();
             }
+        }
+        return result;
+    }
+
+    /**
+     * 归总鲜花
+     * @author      Wang
+     * @param       orderList
+     * @return
+     * @exception
+     * @date        2019/7/3 0:57
+     */
+    private int getWaitSettleFlower(List<Order> orderList){
+        int result = 0;
+        for(Order o : orderList){
+            result += o.getContributionFlower();
         }
         return result;
     }

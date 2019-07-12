@@ -177,7 +177,8 @@ public class OrderServiceImpl extends BaseServiceImpl implements IOrderService {
         //查询我的鲜花数
         UserFlower uf = new UserFlower();
         uf.setOpenId(openId);
-        List<UserFlower> flowerList = userFlowerMapper.findUserFlowerList(uf);
+        uf.setParentOpenId(openId);
+        List<UserFlower> flowerList = userFlowerMapper.findListByOpendIdOrParentId(uf);
         if(CollectionUtils.isNotEmpty(flowerList)){
             response.setFlowers(CalFlowerUtils.calTotalFlowers(flowerList));
         }

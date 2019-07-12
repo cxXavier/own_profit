@@ -5,6 +5,8 @@
         <id column="ID" property="id" jdbcType="INTEGER"/>
         <result column="open_id" property="openId" jdbcType="VARCHAR"/>
         <result column="unioin_id" property="unioinId" jdbcType="VARCHAR"/>
+        <result column="parent_open_id" property="parentOpenId" jdbcType="VARCHAR"/>
+        <result column="parent_unioin_id" property="parentUnionId" jdbcType="VARCHAR"/>
         <result column="flowers" property="flowers" jdbcType="INTEGER"/>
         <result column="cost_type" property="costType" jdbcType="VARCHAR"/>
         <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
@@ -12,7 +14,7 @@
     </resultMap>
 
     <sql id="Base_Column_List">
-        ID, OPEN_ID, UNIOIN_ID, FLOWERS, COST_TYPE, CREATE_TIME, UPDATE_TIME
+        ID, OPEN_ID, UNIOIN_ID, PARENT_OPEN_ID, PARENT_UNIOIN_ID, FLOWERS, COST_TYPE, CREATE_TIME, UPDATE_TIME
     </sql>
 
     <sql id="Base_Query_Column_List">
@@ -24,6 +26,12 @@
         </if>
         <if test="unioinId != null">
             and UNIOIN_ID = #{unioinId,jdbcType=VARCHAR}
+        </if>
+        <if test="parentOpenId != null">
+            and PARENT_OPEN_ID = #{parentOpenId,jdbcType=VARCHAR}
+        </if>
+        <if test="parentUnionId != null">
+            and PARENT_UNIOIN_ID = #{parentUnionId,jdbcType=VARCHAR}
         </if>
         <if test="flowers != null">
             and FLOWERS = #{flowers,jdbcType=INTEGER}
@@ -40,7 +48,7 @@
     </sql>
 
     <insert id="insert" parameterType="com.xavier.fast.entity.user.UserFlower">
-      INSERT INTO TBL_USER_FLOWER (OPEN_ID, UNIOIN_ID, FLOWERS, COST_TYPE, CREATE_TIME, UPDATE_TIME)
+      INSERT INTO TBL_USER_FLOWER (OPEN_ID, UNIOIN_ID, PARENT_OPEN_ID, PARENT_UNIOIN_ID, FLOWERS, COST_TYPE, CREATE_TIME, UPDATE_TIME)
       values (#{openId,jdbcType=VARCHAR}, #{unioinId,jdbcType=VARCHAR}, #{flowers,jdbcType=INTEGER},
       #{costType,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP})
     </insert>
@@ -53,6 +61,12 @@
             </if>
             <if test="unioinId != null">
                 UNIOIN_ID,
+            </if>
+            <if test="parentOpenId != null">
+                PARENT_OPEN_ID,
+            </if>
+            <if test="parentUnionId != null">
+                PARENT_UNIOIN_ID,
             </if>
             <if test="flowers != null">
                 FLOWERS,
@@ -69,22 +83,28 @@
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="openId != null">
-                OPEN_ID = #{openId,jdbcType=VARCHAR},
+                #{openId,jdbcType=VARCHAR},
             </if>
             <if test="unioinId != null">
-                UNIOIN_ID = #{unioinId,jdbcType=VARCHAR},
+                #{unioinId,jdbcType=VARCHAR},
+            </if>
+            <if test="parentOpenId != null">
+                #{parentOpenId,jdbcType=VARCHAR},
+            </if>
+            <if test="parentUnionId != null">
+                #{parentUnionId,jdbcType=VARCHAR},
             </if>
             <if test="flowers != null">
-                FLOWERS = #{flowers,jdbcType=INTEGER},
+                #{flowers,jdbcType=INTEGER},
             </if>
             <if test="costType != null">
-                COST_TYPE = #{costType,jdbcType=VARCHAR},
+                #{costType,jdbcType=VARCHAR},
             </if>
             <if test="createTime != null">
-                CREATE_TIME = #{createTime,jdbcType=TIMESTAMP},
+                #{createTime,jdbcType=TIMESTAMP},
             </if>
             <if test="updateTime != null">
-                UPDATE_TIME = #{updateTime,jdbcType=TIMESTAMP},
+                #{updateTime,jdbcType=TIMESTAMP},
             </if>
         </trim>
     </insert>
@@ -127,6 +147,12 @@
             <if test="unioinId != null">
                 UNIOIN_ID = #{unioinId,jdbcType=VARCHAR},
             </if>
+            <if test="parentOpenId != null">
+                PARENT_OPEN_ID = #{parentOpenId,jdbcType=VARCHAR},
+            </if>
+            <if test="parentUnionId != null">
+                PARENT_UNIOIN_ID = #{parentUnionId,jdbcType=VARCHAR},
+            </if>
             <if test="flowers != null">
                 FLOWERS = #{flowers,jdbcType=INTEGER},
             </if>
@@ -141,5 +167,13 @@
             </if>
         </set>
     </update>
+
+    <select id="findListByOpendIdOrParentId" parameterType="com.xavier.fast.entity.user.UserFlower"
+            resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM TBL_USER_FLOWER
+        WHERE OPEN_ID = #{openId,jdbcType=VARCHAR} OR PARENT_OPEN_ID = #{parentOpenId,jdbcType=VARCHAR}
+    </select>
 
 </mapper>

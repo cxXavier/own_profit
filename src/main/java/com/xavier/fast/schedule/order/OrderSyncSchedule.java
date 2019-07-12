@@ -1,10 +1,12 @@
 package com.xavier.fast.schedule.order;
 
 import com.xavier.fast.dao.OrderMapper;
+import com.xavier.fast.dao.UserFlowerMapper;
 import com.xavier.fast.entity.order.Order;
 import com.xavier.fast.entity.pdd.OrderQueryRo;
 import com.xavier.fast.entity.pdd.PddOrderInfo;
 import com.xavier.fast.entity.pdd.PddOrderList;
+import com.xavier.fast.entity.user.UserFlower;
 import com.xavier.fast.service.pdd.IpddService;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.ArrayUtils;
@@ -35,6 +37,9 @@ public class OrderSyncSchedule {
 
     @Resource
     private OrderMapper orderMapper;
+
+    @Resource
+    private UserFlowerMapper userFlowerMapper;
 
 //    @Scheduled(cron = "0/5 * * * * ?")
     //或直接指定时间间隔，例如：5秒
@@ -124,6 +129,16 @@ public class OrderSyncSchedule {
         order.setPromotionRate(po.getPromotionRate());
         order.setReturnStatus(po.getReturnStatus());
         int count = orderMapper.update(order);
+        if(count > 0){
+            log.info("更新订单成功");
+            //已生效，添加鲜花记录
+            if("3".equals(order.getOrderStatus())){
+                int flowerCount = addFlowerRecord(order);
+                if(flowerCount > 0){
+                    log.info("添加鲜花收支记录成功");
+                }
+            }
+        }
         return count;
     }
 
@@ -140,6 +155,24 @@ public class OrderSyncSchedule {
             return null;
         }
         return new Date(millSec * 1000);
+    }
+
+    /**
+     * 添加鲜花收支记录
+     * @param order
+     * @return
+     */
+    private int addFlowerRecord(Order order){
+        UserFlower uf = new UserFlower();
+        uf.setOpenId(order.getOpenId());
+        uf.setUnioinId(order.getUnionId());
+        uf.setParentOpenId(order.getParentOpenId());
+        uf.setParentUnionId(order.getParentUnionId());
+        uf.setFlowers(order.getContributionFlower());
+        uf.setCostType(UserFlower.COST_TYPE.INCREASE.name());
+        uf.setCreateTime(new Date());
+        int count = userFlowerMapper.insertSelective(uf);
+        return count;
     }
 
 }

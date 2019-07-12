@@ -33,6 +33,10 @@ public class UserFlowerMapper extends MyBatisDao {
         return super.queryForList("findUserFlowerList", record);
     }
 
+    public List<UserFlower> findListByOpendIdOrParentId(UserFlower record) {
+        return super.queryForList("findListByOpendIdOrParentId", record);
+    }
+
     public int update(UserFlower record){
         return super.update("update", record);
     }
