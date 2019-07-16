@@ -25,10 +25,7 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
 * @Description:    用户提现
@@ -183,7 +180,7 @@ public class UserReturnCashServiceImpl implements IUserReturnCashService {
     */
     private Map<String, String> transfers(String openId, Integer orderId, String relName,
                                           Long amount) throws Exception{
-        Map<String, Object> parm = new HashMap<String, Object>();
+        SortedMap<Object, Object> parm = new TreeMap<>();
         WechatConfig wechatConfig = new WechatConfig();
         parm.put("mch_appid", wechatConfig.getAppId()); // 公众账号appid
         parm.put("mchid", wechatConfig.getMchId()); // 商户号

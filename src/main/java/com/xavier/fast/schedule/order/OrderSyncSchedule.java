@@ -43,6 +43,7 @@ public class OrderSyncSchedule {
     private UserFlowerMapper userFlowerMapper;
 
     @Scheduled(cron = "0 0/30 * * * ?")
+//    @Scheduled(cron = "0/5 * * * * ?")
     //或直接指定时间间隔，例如：5秒
     //@Scheduled(fixedRate=5000)
     private void configureTasks() {

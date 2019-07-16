@@ -13,10 +13,7 @@ import javax.xml.transform.stream.StreamResult;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.StringWriter;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
 * @Description:    XML工具类
@@ -62,15 +59,15 @@ public class XmlUtils {
         return output;
     }
 
-    public static String getRequestXml(Map<String,Object> parameters){
+    public static String getRequestXml(SortedMap<Object, Object> parameters){
         StringBuffer sb = new StringBuffer();
         sb.append("<xml>");
         Set es = parameters.entrySet();
         Iterator it = es.iterator();
         while(it.hasNext()) {
             Map.Entry entry = (Map.Entry)it.next();
-            String k = (String)entry.getKey();
-            String v = (String)entry.getValue();
+            String k = String.valueOf(entry.getKey());
+            String v = String.valueOf(entry.getValue());
             if ("attach".equalsIgnoreCase(k)||"body".equalsIgnoreCase(k)||"sign".equalsIgnoreCase(k)) {
                 sb.append("<"+k+">"+"<![CDATA["+v+"]]></"+k+">");
             }else {

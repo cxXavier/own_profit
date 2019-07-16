@@ -5,6 +5,7 @@ import com.xavier.fast.properties.WechatConfig;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+import java.util.SortedMap;
 
 /**
 * @Description:    签名工具类
@@ -17,8 +18,7 @@ import java.util.Set;
 */
 public class SignUtils {
 
-    public static String createSign(String characterEncoding,
-           Map<String, Object> parameters) throws Exception {
+    public static String createSign(String characterEncoding, SortedMap<Object, Object> parameters) throws Exception {
         StringBuffer sf = new StringBuffer();
         Set es = parameters.entrySet();
         Iterator it = es.iterator();

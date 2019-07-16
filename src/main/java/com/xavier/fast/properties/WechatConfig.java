@@ -57,7 +57,7 @@ public class WechatConfig {
     /**
      * 证书路径地址
      */
-    private String certPath;
+    private String certPath = "/usr/local/wechat/apiclient_cert.p12";
 
     /**
      * 支付描述
@@ -79,7 +79,7 @@ public class WechatConfig {
      */
     private  String incomeTemplateId = "LwlRGwVWwNaVAuV_um8Z_nGbKOOHK9fIR8mt6FMRC7I";
 
-    private String apiKey;
+    private String apiKey = "xjq32F7pAdkyuFkmypuDHku1ScxNZ4dx";
 
     public String getJscode2sessionUrl() {
         return jscode2sessionUrl;
