@@ -22,10 +22,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
 * @Description:    用户鲜花
@@ -86,15 +83,12 @@ public class UserFlowerServiceImpl implements IUserFlowerService {
         }
 
         //查询徒弟订单
-        List<String> openIds = new ArrayList<>();
-        for(User u : userList){
-            openIds.add(u.getOpenid());
-        }
         params.clear();
-        params.put("openIds", openIds);
+        params.put("parentOpenId", openId);
         List<Order> orderList = orderMapper.findOrderListByParams(params);
         if(CollectionUtils.isEmpty(orderList)){
-            return RopResponse.createFailedRep("", "暂无徒弟订单", "1.0.0");
+            log.info("暂无徒弟订单");
+//            return RopResponse.createFailedRep("", "暂无徒弟订单", "1.0.0");
         }
 
 
@@ -110,6 +104,7 @@ public class UserFlowerServiceImpl implements IUserFlowerService {
             prentice.setUnionid(u.getUnionid());
             prentice.setContributionFlower(getFlower(orderList, "5", u.getOpenid()));
             prentice.setWaitSettleFlower(getFlower(orderList, "2", u.getOpenid()));
+            prentice.setNotice(isNotice(orderList, u.getOpenid()));
             prenticeList.add(prentice);
         }
 
@@ -194,6 +189,9 @@ public class UserFlowerServiceImpl implements IUserFlowerService {
     * @date        2019/7/3 0:57
     */
     private int getFlower(List<Order> orderList, String orderStatus, String openId){
+        if(CollectionUtils.isEmpty(orderList)){
+            return 0;
+        }
         int result = 0;
         for(Order o : orderList){
             if(orderStatus.equals(o.getOrderStatus()) && openId.equals(o.getOpenId())){
@@ -217,5 +215,17 @@ public class UserFlowerServiceImpl implements IUserFlowerService {
             result += o.getContributionFlower();
         }
         return result;
+    }
+
+    private boolean isNotice(List<Order> orderList, String openId){
+        if(CollectionUtils.isEmpty(orderList)){
+            return false;
+        }
+        for(Order o : orderList){
+            if("2".equals(o.getOrderStatus()) && openId.equals(o.getOpenId())){
+                return true;
+            }
+        }
+        return false;
     }
 }
