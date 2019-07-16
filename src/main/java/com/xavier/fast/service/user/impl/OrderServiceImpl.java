@@ -260,7 +260,7 @@ public class OrderServiceImpl extends BaseServiceImpl implements IOrderService {
         MyOrder myOrder;
         for(Order o : orderList){
             myOrder = new MyOrder();
-            BeanUtils.copyProperties(myOrder, o);
+            BeanUtils.copyProperties(o, myOrder);
             myOrders.add(myOrder);
         }
         return myOrders;
