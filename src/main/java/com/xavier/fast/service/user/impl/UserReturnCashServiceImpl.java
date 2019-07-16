@@ -79,7 +79,7 @@ public class UserReturnCashServiceImpl implements IUserReturnCashService {
         if(order == null){
             return RopResponse.createFailedRep("", "当前用户暂无可提现订单", "1.0.0");
         }
-        if(order.getCashBackStatus() == 1){
+        if(order.getCashBackStatus() != null && order.getCashBackStatus() == 1){
             return RopResponse.createFailedRep("", "当前订单已经提现，请勿重复操作", "1.0.0");
         }
 
@@ -105,7 +105,7 @@ public class UserReturnCashServiceImpl implements IUserReturnCashService {
         // 微信转账
         Map<String, String> restMap = null;
         try {
-            restMap = transfers(openId, orderId, user.getNickname(), order.getOrderAmount());
+            restMap = transfers(openId, order.getPddOrderId(), user.getNickname(), order.getOrderAmount());
         } catch (Exception e) {
             e.printStackTrace();
             return RopResponse.createFailedRep("", e.getMessage(), "1.0.0");
@@ -178,7 +178,7 @@ public class UserReturnCashServiceImpl implements IUserReturnCashService {
     * @exception
     * @date        2019/7/3 22:44
     */
-    private Map<String, String> transfers(String openId, Integer orderId, String relName,
+    private Map<String, String> transfers(String openId, String orderId, String relName,
                                           Long amount) throws Exception{
         SortedMap<Object, Object> parm = new TreeMap<>();
         WechatConfig wechatConfig = new WechatConfig();

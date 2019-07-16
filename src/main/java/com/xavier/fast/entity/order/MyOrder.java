@@ -9,6 +9,8 @@ public class MyOrder implements Serializable {
 
     private static final long serialVersionUID = 3343516884487540977L;
 
+    private Integer id;
+
     /**
      * 拼多多订单号
      */
@@ -63,6 +65,14 @@ public class MyOrder implements Serializable {
      * 提现需要鲜花数
      */
     private Integer cashCostFlower;
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
 
     public String getPddOrderId() {
         return pddOrderId;
