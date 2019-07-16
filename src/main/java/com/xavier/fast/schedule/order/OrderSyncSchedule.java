@@ -9,7 +9,6 @@ import com.xavier.fast.entity.pdd.PddOrderList;
 import com.xavier.fast.entity.user.UserFlower;
 import com.xavier.fast.service.pdd.IpddService;
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,18 +18,20 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-//@Component
-//@Configuration
-//@EnableScheduling
+@Component
+@Configuration
+@EnableScheduling
 public class OrderSyncSchedule {
 
     private Logger log = LoggerFactory.getLogger(OrderSyncSchedule.class);
+
+    private static int PAGE_SIZE = 45;
+
+    private static int PAGE_NUM = 1;
 
     @Resource
     private IpddService pddService;
@@ -41,42 +42,56 @@ public class OrderSyncSchedule {
     @Resource
     private UserFlowerMapper userFlowerMapper;
 
-//    @Scheduled(cron = "0/5 * * * * ?")
+    @Scheduled(cron = "0 0/30 * * * ?")
     //或直接指定时间间隔，例如：5秒
     //@Scheduled(fixedRate=5000)
     private void configureTasks() {
         log.info("更新开始");
-        //查询一天之内需要更新的订单
 
-        OrderQueryRo dto = new OrderQueryRo();
-        try {
-            Date date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse("2019-07-11 21:00:00");
-            dto.setStartUpdateTime(date.getTime() / 1000);
-        } catch (ParseException e) {
-            e.printStackTrace();
+        //当前时间往前推35分钟
+        Calendar c = Calendar.getInstance();
+        c.setTimeInMillis(System.currentTimeMillis());
+        c.add(Calendar.MINUTE, 35);
+
+        Long startTime = c.getTimeInMillis() / 1000;
+        Long endTime = System.currentTimeMillis() / 1000;
+
+        OrderQueryRo dto;
+        PddOrderList list;
+        int updateCount = 0;
+
+        while (true) {
+            dto = new OrderQueryRo();
+            dto.setStartUpdateTime(startTime);
+            dto.setEndUpdateTime(endTime);
+            dto.setPageNum(PAGE_NUM);
+            dto.setPageSize(PAGE_SIZE);
+            list = pddService.queryPddOrder(dto, true);
+            if(list == null){
+                log.info("暂无拼多多订单，PAGE_NUM=" + PAGE_NUM);
+                break;
+            }
+            if(list.getTotalCount() == null || list.getTotalCount() == 0){
+                log.info("暂无拼多多订单，订单总数为0，PAGE_NUM=" + PAGE_NUM);
+                break;
+            }
+            if(CollectionUtils.isEmpty(list.getOrderList())){
+                log.info("暂无拼多多订单，订单列表为空，PAGE_NUM=" + PAGE_NUM);
+                break;
+            }
+            Long totalCount = list.getTotalCount();
+            log.info("本次查询总数量totalCount为：" + totalCount + "，PAGE_NUM=" + PAGE_NUM
+                    + "，currentSize=" + list.getOrderList().size());
+            updateCount += dealOrders(list.getOrderList());
+            if(list.getOrderList().size() <= PAGE_SIZE){
+                break;
+            }
+            PAGE_NUM++;
         }
-        dto.setEndUpdateTime(System.currentTimeMillis() / 1000);
-        dto.setPageNum(1);
-        dto.setPageSize(20);
-        PddOrderList list = pddService.queryPddOrder(dto, true);
-        int updateCount = dealOrders(list);
         log.info("更新结束，本次共更新" + updateCount + "条数据");
     }
 
-    private int dealOrders(PddOrderList list){
-        if(list == null){
-            log.info("暂无拼多多订单");
-            return 0;
-        }
-        if(list.getTotalCount() == null || list.getTotalCount() == 0){
-            log.info("暂无拼多多订单，订单总数为0");
-            return 0;
-        }
-        List<PddOrderInfo> pddOrderInfos = list.getOrderList();
-        if(CollectionUtils.isEmpty(pddOrderInfos)){
-            log.info("暂无拼多多订单，订单列表为空");
-            return 0;
-        }
+    private int dealOrders(List<PddOrderInfo> pddOrderInfos){
         int count = 0;
         for(PddOrderInfo po : pddOrderInfos){
             String orderId = po.getCustomParameters();

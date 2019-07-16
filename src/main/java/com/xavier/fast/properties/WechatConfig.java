@@ -47,7 +47,7 @@ public class WechatConfig {
     /**
      * 微信支付分配的商户号
      */
-    private String mchId;
+    private String mchId = "1539680521";
 
     /**
      * 微信支付密匙
@@ -62,7 +62,7 @@ public class WechatConfig {
     /**
      * 支付描述
      */
-    private String payDesc = "多多客提现到账";
+    private String payDesc = "拼客花园提现到账";
 
     /**
      * 助力消息模板id

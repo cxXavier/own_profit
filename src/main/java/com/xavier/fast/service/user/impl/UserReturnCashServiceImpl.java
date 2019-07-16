@@ -108,7 +108,7 @@ public class UserReturnCashServiceImpl implements IUserReturnCashService {
         // 微信转账
         Map<String, String> restMap = null;
         try {
-            restMap = transfers(openId, orderId, user.getRelName(), order.getOrderAmount());
+            restMap = transfers(openId, orderId, user.getNickname(), order.getOrderAmount());
         } catch (Exception e) {
             e.printStackTrace();
             return RopResponse.createFailedRep("", e.getMessage(), "1.0.0");
@@ -193,7 +193,7 @@ public class UserReturnCashServiceImpl implements IUserReturnCashService {
         parm.put("check_name", "NO_CHECK"); // 是否验证真实姓名--校验用户姓名选项 OPTION_CHECK
         parm.put("re_user_name", relName); //收款用户姓名---check_name设置为FORCE_CHECK或OPTION_CHECK，则必填
         parm.put("amount", amount); // 转账金额
-        parm.put("desc", "拼客花园提现"); // 企业付款描述信息
+        parm.put("desc", wechatConfig.getPayDesc()); // 企业付款描述信息
         parm.put("spbill_create_ip", WechatUtils.getLocalIP()); // Ip地址
         parm.put("sign", SignUtils.createSign("UTF-8", parm));
 

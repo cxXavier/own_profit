@@ -26,7 +26,7 @@ public class WeChatConstants {
 
         public final static String API_KEY = "";
 
-        public final static String SSLCERT_PATH = "D://wechat//WXCertUtil//cert//apiclient_cert.p12";
+        public final static String SSLCERT_PATH = "/usr/local/wechat/apiclient_cert.p12";
 
         public final static String SSLCERT_PASSWORD = "1539680521";
     }
