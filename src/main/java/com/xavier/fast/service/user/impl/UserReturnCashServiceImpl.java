@@ -7,6 +7,7 @@ import com.xavier.fast.dao.UserFlowerMapper;
 import com.xavier.fast.dao.UserMapper;
 import com.xavier.fast.dao.UserReturnCashRecordMapper;
 import com.xavier.fast.entity.order.Order;
+import com.xavier.fast.entity.order.OrderBase;
 import com.xavier.fast.entity.user.User;
 import com.xavier.fast.entity.user.UserFlower;
 import com.xavier.fast.entity.user.UserReturnCashRecord;
@@ -80,7 +81,9 @@ public class UserReturnCashServiceImpl implements IUserReturnCashService {
         if(order == null){
             return RopResponse.createFailedRep("", "当前用户暂无可提现订单", "1.0.0");
         }
-        if(order.getCashBackStatus() != null && order.getCashBackStatus() == 1){
+        //非待提现，直接返回
+        if(order.getCashBackStatus() != null
+                && order.getCashBackStatus() != OrderBase.ORDER_CASH_STATUS.wait_cash_back.getCode()){
             return RopResponse.createFailedRep("", "当前订单已经提现，请勿重复操作", "1.0.0");
         }
 
@@ -148,8 +151,8 @@ public class UserReturnCashServiceImpl implements IUserReturnCashService {
                     record.setOpenId(openId);
                     record.setOrderId(orderId);
                     record.setCashBackAmount(order.getOrderAmount().intValue());
-                    record.setCashBackStatus(1);
-                    record.setWechatPaymentStatus("1");
+                    record.setCashBackStatus(OrderBase.ORDER_CASH_STATUS.cash_back_success.getCode());
+                    record.setWechatPaymentStatus(OrderBase.ORDER_PAYMENT_STATUS.pay_success.getCode());
                     record.setWechatPaymentNo(paymentNO);
                     try {
                         record.setWechatPaymentTime(

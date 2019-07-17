@@ -27,6 +27,8 @@ public class User {
 
     private String grandparentUnionid;
 
+    private Integer vip;
+
     private Date created;
 
     private Date updated;
@@ -131,6 +133,14 @@ public class User {
 
     public void setGrandparentUnionid(String grandparentUnionid) {
         this.grandparentUnionid = grandparentUnionid == null ? null : grandparentUnionid.trim();
+    }
+
+    public Integer getVip() {
+        return vip;
+    }
+
+    public void setVip(Integer vip) {
+        this.vip = vip;
     }
 
     public Date getCreated() {

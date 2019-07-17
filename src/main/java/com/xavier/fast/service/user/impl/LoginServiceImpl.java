@@ -22,6 +22,8 @@ import com.xavier.fast.utils.DateUtil;
 import com.xavier.fast.utils.InviteCodeUtils;
 import com.xavier.fast.utils.OkHttpUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
@@ -35,6 +37,8 @@ import java.util.Map;
 @Service
 public class LoginServiceImpl implements ILoginService {
 
+    private Logger log = LoggerFactory.getLogger(LoginServiceImpl.class);
+
     @Resource
     private UserMapper userMapper;
 
@@ -47,27 +51,32 @@ public class LoginServiceImpl implements ILoginService {
     @ApiMethod(method = "api.pinke.user.login.userLogin", version = "1.0.0")
     public RopResponse<RopLoginResponse> userLogin(RopRequestBody<RopLoginRequest> loginRequest) {
         RopLoginResponse response = new RopLoginResponse();
+
+        //微信登陆
         UserDto dto = new UserDto();
         BeanUtils.copyProperties(loginRequest.getT(), dto);
         WechatLoginReturn loginObj = wechartLogin(dto.getCode());
         if(null == loginObj.getOpenid()){
-            return RopResponse.createFailedRep("", "openId为空", "1.0.0");
+            log.error("openId为空");
+            return RopResponse.createFailedRep("", "登陆失败", "1.0.0");
         }
+
+        //登陆成功，保存用户信息
         UserVo vo = new UserVo();
         vo.setOpenid(loginObj.getOpenid());
         vo.setUnionid(loginObj.getUnioinid());
         vo.setSessionId(loginObj.getSessionkey());
+
         //验证是否为新用户
         User info = userMapper.getUserByOpenid(vo.getOpenid());
         if(null == info){
-            vo.setNewUser(true);
             info = new User();
-            //mapper.map(dto,info);
             info.setOpenid(vo.getOpenid());
             info.setUnionid(vo.getUnionid());
+            String inviteCode = dto.getInviteCode();
             //有邀请码时需要保留关联关系
-            if(StringUtils.isNotBlank(dto.getInviteCode())) {
-                User parentUser = userMapper.getUserByInviteCode(dto.getInviteCode());
+            if(StringUtils.isNotBlank(inviteCode)) {
+                User parentUser = userMapper.getUserByInviteCode(inviteCode);
                 if(null != parentUser){
                     info.setParentOpenid(parentUser.getOpenid());
                     info.setParentUnionid(parentUser.getUnionid());
@@ -75,15 +84,13 @@ public class LoginServiceImpl implements ILoginService {
                     info.setGrandparentUnionid(parentUser.getGrandparentUnionid());
                 }
             }
-            userMapper.insertSelective(info);
-            //生成邀请码
-            String inviteCode = InviteCodeUtils.generate(info.getId());
+            //每个人都生成一个邀请码
+            inviteCode = InviteCodeUtils.generate(info.getId());
             info.setInviteCode(inviteCode);
+            userMapper.insertSelective(info);
         } else {
             userMapper.updateByPrimaryKeySelective(info);
         }
-        //保存用户session信息
-        //updater.update(RedisConstants.User.getSessionId(vo.getOpenid(),vo.getSessionId()),"",RedisConstants.User.SESSION_TIME);
         vo.setInviteCode(info.getInviteCode());
         vo.setMobile(info.getMobile());
         vo.setuId(info.getId().intValue());
@@ -105,56 +112,6 @@ public class LoginServiceImpl implements ILoginService {
         }
         return RopResponse.createSuccessRep("", "修改用户信息成功", "1.0.0", "");
     }
-
-    @Override
-    public UserVo login(UserDto dto) {
-        UserVo vo = new UserVo();
-        WechatLoginReturn loginObj = wechartLogin(dto.getCode()) ;
-        if(null == loginObj.getOpenid()){
-            return vo;
-        }
-        vo.setOpenid(loginObj.getOpenid());
-        vo.setUnionid(loginObj.getUnioinid());
-        vo.setSessionId(loginObj.getSessionkey());
-        //验证是否为新用户
-        User info = userMapper.getUserByOpenid(vo.getOpenid());
-        if(null == info){
-            vo.setNewUser(true);
-            info = new User();
-            //mapper.map(dto,info);
-            info.setOpenid(vo.getOpenid());
-            info.setUnionid(vo.getUnionid());
-            //有邀请码时需要保留关联关系
-            if(StringUtils.isNotBlank(dto.getInviteCode())) {
-                User parentUser = userMapper.getUserByInviteCode(dto.getInviteCode());
-                if(null != parentUser){
-                    info.setParentOpenid(parentUser.getOpenid());
-                    info.setParentUnionid(parentUser.getUnionid());
-                    info.setGrandparentOpenid(parentUser.getParentOpenid());
-                    info.setGrandparentUnionid(parentUser.getGrandparentUnionid());
-                }
-            }
-            userMapper.insertSelective(info);
-            //生成邀请码
-            String inviteCode = InviteCodeUtils.generate(info.getId());
-            info.setInviteCode(inviteCode);
-        } else {
-            userMapper.updateByPrimaryKeySelective(info);
-        }
-        //保存用户session信息
-        //updater.update(RedisConstants.User.getSessionId(vo.getOpenid(),vo.getSessionId()),"",RedisConstants.User.SESSION_TIME);
-        vo.setInviteCode(info.getInviteCode());
-        vo.setMobile(info.getMobile());
-        return vo;
-    }
-
-    @Override
-    public void update(UserDto userdto) {
-        User info = userMapper.getUserByOpenid(userdto.getOpenid());
-        //mapper.map(userdto, info);  // null值不会复制,见com.bxm.shop.config.DozerBeanMapperConfig.mapper
-        //updater.hupdate(RedisConstants.User.getUserInfo(),info.getOpenid(),info, userExpireSec());
-    }
-
 
     @Override
     public int save(String openid, String formId) {

@@ -1,5 +1,7 @@
 package com.xavier.fast.entity.order;
 
+import com.xavier.fast.entity.BasePageQuery;
+
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
@@ -13,7 +15,7 @@ import java.util.List;
 * @UpdateRemark:
 * @Version:        1.0
 */
-public class Order implements Serializable {
+public class Order extends BasePageQuery implements Serializable {
 
     private static final long serialVersionUID = -4521309469481245221L;
 

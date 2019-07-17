@@ -5,12 +5,7 @@
     </sql>
     <sql id="pageSearchLimit">
        <if test="startRow != null and endRow != null">
-		      <if test="startRow == 0">
-		  	   limit #{startRow} , ${endRow-startRow}
-		  	  </if>
-		  	  <if test="startRow > 0">
-		  	   limit ${startRow-1} , ${endRow-startRow+1}
-		  	  </if>
-		  </if>
+		   limit #{startRow} , ${endRow}
+	   </if>
     </sql>
 </mapper>

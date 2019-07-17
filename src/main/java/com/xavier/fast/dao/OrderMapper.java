@@ -56,11 +56,12 @@ public class OrderMapper extends MyBatisDao {
     }
 
     /**
-     * 获取最新时间，用于判断是否更新订单
+     * 已经结算，并且确认收货时间为上个月内
      * @param params
      * @return
      */
-    public Date getMinDate(Map<String, Object> params){
-        return super.get("getMinDate", params);
+    public List<Order> getSettledAndReceivedOrders(Map<String, Object> params){
+        return super.queryForList("getSettledAndReceivedOrders", params);
     }
+
 }

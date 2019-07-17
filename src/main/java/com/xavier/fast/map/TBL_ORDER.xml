@@ -366,6 +366,8 @@
         <where>
             <include refid="Base_Query_Column_List"/>
         </where>
+        order by CREATE_TIME DESC
+        <include refid="mysqlBasic.pageSearchLimit"/>
     </select>
 
     <update id="update" parameterType="com.xavier.fast.entity.order.Order">
@@ -459,7 +461,7 @@
         where ID = #{id,jdbcType=INTEGER}
     </update>
 
-    <select id="findOrderListByParams" parameterType="java.util.List" resultMap="BaseResultMap">
+    <select id="findOrderListByParams" parameterType="java.util.Map" resultMap="BaseResultMap">
         SELECT
         <include refid="Base_Column_List"/>
         FROM TBL_ORDER
@@ -478,9 +480,12 @@
       AND CASH_BACK_VERSION = #{cashBackVersion,jdbcType=INTEGER}
     </update>
 
-    <select id="getMinDate" parameterType="java.util.Map" resultType="java.util.Date">
-
-
+    <select id="getSettledAndReceivedOrders" parameterType="java.util.Map" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM TBL_ORDER
+        WHERE T.ORDER_STATUS = '5'
+        AND (MONTH(SYSDATE()) - MONTH(T.ORDER_RECEIVE_TIME)) = 1
     </select>
 
 </mapper>

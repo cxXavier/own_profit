@@ -14,6 +14,7 @@
         <result column="parent_unionid" property="parentUnionid" jdbcType="VARCHAR"/>
         <result column="grandparent_openid" property="grandparentOpenid" jdbcType="VARCHAR"/>
         <result column="grandparent_unionid" property="grandparentUnionid" jdbcType="VARCHAR"/>
+        <result column="vip" property="vip" jdbcType="INTEGER"/>
         <result column="created" property="created" jdbcType="TIMESTAMP"/>
         <result column="updated" property="updated" jdbcType="TIMESTAMP"/>
         <result column="app_openid" property="appOpenid" jdbcType="VARCHAR"/>
@@ -22,7 +23,7 @@
     </resultMap>
     <sql id="Base_Column_List">
         id, avatar, nickname, gender, mobile, openid, unionid, invite_code, parent_openid,
-        parent_unionid, grandparent_openid, grandparent_unionid, created, updated, app_openid,
+        parent_unionid, grandparent_openid, grandparent_unionid, vip, created, updated, app_openid,
         source, rel_name
     </sql>
 
@@ -63,6 +64,9 @@
         <if test="grandparentUnionid != null">
             and grandparent_unionid = #{grandparentUnionid,jdbcType=VARCHAR}
         </if>
+        <if test="vip != null">
+            and vip = #{vip,jdbcType=INTEGER}
+        </if>
         <if test="created != null">
             and created = #{created,jdbcType=TIMESTAMP}
         </if>
@@ -96,12 +100,12 @@
         </selectKey>
         insert into tbl_user_info (avatar, nickname, gender, mobile, openid, unionid,
         invite_code, parent_openid, parent_unionid, grandparent_openid, grandparent_unionid,
-        created, updated, app_openid, source, rel_name)
+        vip, created, app_openid, source, rel_name)
         values (#{avatar,jdbcType=VARCHAR}, #{nickname,jdbcType=VARCHAR}, #{gender,jdbcType=INTEGER},
         #{mobile,jdbcType=VARCHAR}, #{openid,jdbcType=VARCHAR}, #{unionid,jdbcType=VARCHAR},
         #{inviteCode,jdbcType=VARCHAR}, #{parentOpenid,jdbcType=VARCHAR}, #{parentUnionid,jdbcType=VARCHAR},
         #{grandparentOpenid,jdbcType=VARCHAR}, #{grandparentUnionid,jdbcType=VARCHAR},
-        #{created,jdbcType=TIMESTAMP}, #{updated,jdbcType=TIMESTAMP}, #{appOpenid,jdbcType=VARCHAR},
+        #{vip,jdbcType=INTEGER}, #{created,jdbcType=TIMESTAMP}, #{appOpenid,jdbcType=VARCHAR},
         #{source,jdbcType=VARCHAR}, #{relName,jdbcType=VARCHAR})
     </insert>
     <insert id="insertSelective" parameterType="com.xavier.fast.entity.user.User"
@@ -143,6 +147,9 @@
             </if>
             <if test="grandparentUnionid != null">
                 grandparent_unionid,
+            </if>
+            <if test="vip != null">
+                vip,
             </if>
             <if test="created != null">
                 created,
@@ -193,6 +200,9 @@
             </if>
             <if test="grandparentUnionid != null">
                 #{grandparentUnionid,jdbcType=VARCHAR},
+            </if>
+            <if test="vip != null">
+                #{vip,jdbcType=INTEGER},
             </if>
             <if test="created != null">
                 #{created,jdbcType=TIMESTAMP},
@@ -247,6 +257,9 @@
             <if test="grandparentUnionid != null">
                 grandparent_unionid = #{grandparentUnionid,jdbcType=VARCHAR},
             </if>
+            <if test="vip != null">
+                vip = #{vip,jdbcType=INTEGER},
+            </if>
             <if test="created != null">
                 created = #{created,jdbcType=TIMESTAMP},
             </if>
@@ -278,6 +291,7 @@
           parent_unionid = #{parentUnionid,jdbcType=VARCHAR},
           grandparent_openid = #{grandparentOpenid,jdbcType=VARCHAR},
           grandparent_unionid = #{grandparentUnionid,jdbcType=VARCHAR},
+          vip = #{vip,jdbcType=INTEGER},
           created = #{created,jdbcType=TIMESTAMP},
           updated = #{updated,jdbcType=TIMESTAMP},
           app_openid = #{appOpenid,jdbcType=VARCHAR},

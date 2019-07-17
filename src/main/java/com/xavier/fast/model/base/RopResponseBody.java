@@ -18,6 +18,8 @@ public class RopResponseBody implements Serializable {
 
     private static final long serialVersionUID = 5608274717821395869L;
 
+    private boolean hasNext;
+
     private List<?> dataList;
 
     public List<?> getDataList() {
@@ -26,5 +28,13 @@ public class RopResponseBody implements Serializable {
 
     public void setDataList(List<?> dataList) {
         this.dataList = dataList;
+    }
+
+    public boolean isHasNext() {
+        return hasNext;
+    }
+
+    public void setHasNext(boolean hasNext) {
+        this.hasNext = hasNext;
     }
 }

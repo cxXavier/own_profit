@@ -7,10 +7,9 @@ import com.xavier.fast.dao.UserMapper;
 import com.xavier.fast.dao.UserReturnCashRecordMapper;
 import com.xavier.fast.entity.order.MyOrder;
 import com.xavier.fast.entity.order.Order;
+import com.xavier.fast.entity.order.OrderBase;
 import com.xavier.fast.entity.order.PrenticeOrder;
-import com.xavier.fast.entity.pdd.OrderQueryRo;
 import com.xavier.fast.entity.pdd.OrderVo;
-import com.xavier.fast.entity.pdd.PddOrderList;
 import com.xavier.fast.entity.user.User;
 import com.xavier.fast.entity.user.UserFlower;
 import com.xavier.fast.entity.user.UserReturnCashRecord;
@@ -22,7 +21,6 @@ import com.xavier.fast.service.pdd.IpddService;
 import com.xavier.fast.service.user.IOrderService;
 import com.xavier.fast.utils.CalFlowerUtils;
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
@@ -30,8 +28,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -49,6 +45,8 @@ import java.util.List;
 public class OrderServiceImpl extends BaseServiceImpl implements IOrderService {
 
     private Logger log = LoggerFactory.getLogger(OrderServiceImpl.class);
+
+    private final static int PAGE_SIZE = 10;
 
     @Resource
     private OrderMapper orderMapper;
@@ -93,7 +91,7 @@ public class OrderServiceImpl extends BaseServiceImpl implements IOrderService {
         }
         log.info("保存虚拟订单成功");
 
-        //openId+goodsId+订单号
+        //订单号
         String customParam = record.getId().toString();
         //去拼多多调起支付页面
         OrderVo order = pddService.queryGoodsShareUrl(goodsId, openId, customParam);
@@ -116,18 +114,25 @@ public class OrderServiceImpl extends BaseServiceImpl implements IOrderService {
         RopResponseBody responseBody = new RopResponseBody();
         String openId = orderListRequest.getT().getOpenId();
         String queryType = orderListRequest.getT().getQueryType();
-        String orderStatus = getOrderStatus(queryType);//默认查询全部订单
+        int pageNum = orderListRequest.getT().getPageNum();
+
         Order order = new Order();
         order.setParentOpenId(openId);
-        if(StringUtils.isNotBlank(orderStatus)){
-            order.setOrderStatus(orderStatus);
-        }
+        this.setOrderStatus(order, queryType);
+
+        int startRow = pageNum == 1 ? 0 : (pageNum - 1) * PAGE_SIZE;
+        order.setStartRow(startRow);
+        order.setEndRow(PAGE_SIZE);
+
         List<Order> orderList = orderMapper.findOrderList(order);
         List<PrenticeOrder> prenticeOrders = getPrenticeOrder(orderList);
 
         if(CollectionUtils.isEmpty(prenticeOrders)){
             return RopResponse.createSuccessRep("", "暂无订单", "1.0.0", null);
         }
+
+        responseBody.setHasNext(getTotalPage(order) > pageNum);
+
         responseBody.setDataList(prenticeOrders);
         return RopResponse.createSuccessRep("", "获取订单成功", "1.0.0", responseBody);
     }
@@ -145,17 +150,25 @@ public class OrderServiceImpl extends BaseServiceImpl implements IOrderService {
         RopResponseBody responseBody = new RopResponseBody();
         String openId = orderListRequest.getT().getOpenId();
         String queryType = orderListRequest.getT().getQueryType();
-        String orderStatus = getOrderStatus(queryType);//默认查询全部订单
+        int pageNum = orderListRequest.getT().getPageNum();
+
         Order order = new Order();
         order.setOpenId(openId);
-        if(StringUtils.isNotBlank(orderStatus)){
-            order.setOrderStatus(orderStatus);
-        }
+        this.setOrderStatus(order, queryType);
+
+        int startRow = pageNum == 1 ? 0 : (pageNum - 1) * PAGE_SIZE;
+        order.setStartRow(startRow);
+        order.setEndRow(PAGE_SIZE);
+
         List<Order> orderList = orderMapper.findOrderList(order);
+
         List<MyOrder> myOrders = getMyOrder(orderList);
         if(CollectionUtils.isEmpty(myOrders)){
             return RopResponse.createFailedRep("", "暂无订单", "1.0.0");
         }
+
+        responseBody.setHasNext(getTotalPage(order) > pageNum);
+
         responseBody.setDataList(myOrders);
         return RopResponse.createSuccessRep("", "查询订单列表成功", "1.0.0", responseBody);
     }
@@ -186,7 +199,7 @@ public class OrderServiceImpl extends BaseServiceImpl implements IOrderService {
         //查询我的累计提现金额
         UserReturnCashRecord record = new UserReturnCashRecord();
         record.setOpenId(openId);
-        record.setCashBackStatus(1);
+        record.setCashBackStatus(OrderBase.ORDER_CASH_STATUS.cash_back_success.getCode());
         List<UserReturnCashRecord> list = userReturnCashRecordMapper.findRecordList(record);
         if(CollectionUtils.isNotEmpty(list)){
             response.setCashAmount(getTotalCashAmount(list));
@@ -237,7 +250,7 @@ public class OrderServiceImpl extends BaseServiceImpl implements IOrderService {
             }
             prenticeOrder.setContributionFlower(o.getContributionFlower());
             prenticeOrder.setOrderStatus(o.getOrderStatus());
-            prenticeOrder.setNotice("1".equals(o.getOrderStatus()));
+            prenticeOrder.setNotice(OrderBase.ORDER_STATUS.wait_receive.getCode().equals(o.getOrderStatus()));
             prenticeOrder.setOrderCreateTime(o.getOrderCreateTime());
             prenticeOrders.add(prenticeOrder);
         }
@@ -267,25 +280,25 @@ public class OrderServiceImpl extends BaseServiceImpl implements IOrderService {
     }
 
     /**
-    * 计算订单状态
+    * 设置订单状态
     * @author      Wang
     * @param       queryType
     * @return
     * @exception
     * @date        2019/7/10 16:19
     */
-    private String getOrderStatus(String queryType){
-        String orderStatus = "";
+    private void setOrderStatus(Order order, String queryType){
+        //默认查询全部订单 = ALL
         if(QUERY_TYPE.WAITRECEIVE.name().equals(queryType)){//待收货
-            orderStatus = "1";
+            order.setOrderStatus(OrderBase.ORDER_STATUS.wait_receive.getCode());
         }else if(QUERY_TYPE.WAITSETTLE.name().equals(queryType)){//待结算
-            orderStatus = "2";
+            order.setOrderStatus(OrderBase.ORDER_STATUS.wait_settle.getCode());
         }else if(QUERY_TYPE.VALIDATED.name().equals(queryType)){//已生效
-            orderStatus = "3";
+            //已生效 == 待提现
+            order.setCashBackStatus(OrderBase.ORDER_CASH_STATUS.wait_cash_back.getCode());
         }else if(QUERY_TYPE.INVALIDATE.name().equals(queryType)){//已失效
-            orderStatus = "4";
+            order.setOrderStatus(OrderBase.ORDER_STATUS.invalidate.getCode());
         }
-        return orderStatus;
     }
 
     /**
@@ -317,5 +330,23 @@ public class OrderServiceImpl extends BaseServiceImpl implements IOrderService {
         }
         return result;
     }
+
+    /**
+     * 获取总页数
+     * @param order
+     * @return
+     */
+    private int getTotalPage(Order order){
+        int totalPage = 0;
+        int totalCount = orderMapper.queryTotalCount(order);
+        if(totalCount <= 0){
+            return 0;
+        }
+        if(totalCount % PAGE_SIZE == 0){
+            totalPage = totalCount / PAGE_SIZE;
+        }
+        return totalCount % PAGE_SIZE == 0 ? totalCount / PAGE_SIZE : (totalCount / PAGE_SIZE + 1);
+    }
+
 
 }

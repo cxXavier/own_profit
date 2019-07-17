@@ -6,7 +6,6 @@ import com.xavier.fast.entity.order.Order;
 import com.xavier.fast.entity.pdd.OrderQueryRo;
 import com.xavier.fast.entity.pdd.PddOrderInfo;
 import com.xavier.fast.entity.pdd.PddOrderList;
-import com.xavier.fast.entity.user.UserFlower;
 import com.xavier.fast.service.pdd.IpddService;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -22,6 +21,15 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+/**
+* @Description:    同步拼多多订单
+* @Author:         Wang
+* @CreateDate:     2019/7/17 15:32
+* @UpdateUser:
+* @UpdateDate:     2019/7/17 15:32
+* @UpdateRemark:
+* @Version:        1.0
+*/
 @Component
 @Configuration
 @EnableScheduling
@@ -46,8 +54,8 @@ public class OrderSyncSchedule {
 //    @Scheduled(cron = "0/5 * * * * ?")
     //或直接指定时间间隔，例如：5秒
     //@Scheduled(fixedRate=5000)
-    private void configureTasks() {
-        log.info("更新开始");
+    private void orderSyncTasks() {
+        log.info("同步拼多多订单开始");
 
         //当前时间往前推35分钟
         Calendar c = Calendar.getInstance();
@@ -89,7 +97,7 @@ public class OrderSyncSchedule {
             }
             PAGE_NUM++;
         }
-        log.info("更新结束，本次共更新" + updateCount + "条数据");
+        log.info("同步拼多多订单结束，本次共更新" + updateCount + "条数据");
     }
 
     private int dealOrders(List<PddOrderInfo> pddOrderInfos){
@@ -145,16 +153,6 @@ public class OrderSyncSchedule {
         order.setPromotionRate(po.getPromotionRate());
         order.setReturnStatus(po.getReturnStatus());
         int count = orderMapper.update(order);
-        if(count > 0){
-            log.info("更新订单成功");
-            //已生效，添加鲜花记录
-            if("3".equals(order.getOrderStatus())){
-                int flowerCount = addFlowerRecord(order);
-                if(flowerCount > 0){
-                    log.info("添加鲜花收支记录成功");
-                }
-            }
-        }
         return count;
     }
 
@@ -171,24 +169,6 @@ public class OrderSyncSchedule {
             return null;
         }
         return new Date(millSec * 1000);
-    }
-
-    /**
-     * 添加鲜花收支记录
-     * @param order
-     * @return
-     */
-    private int addFlowerRecord(Order order){
-        UserFlower uf = new UserFlower();
-        uf.setOpenId(order.getOpenId());
-        uf.setUnioinId(order.getUnionId());
-        uf.setParentOpenId(order.getParentOpenId());
-        uf.setParentUnionId(order.getParentUnionId());
-        uf.setFlowers(order.getContributionFlower());
-        uf.setCostType(UserFlower.COST_TYPE.INCREASE.name());
-        uf.setCreateTime(new Date());
-        int count = userFlowerMapper.insertSelective(uf);
-        return count;
     }
 
 }
