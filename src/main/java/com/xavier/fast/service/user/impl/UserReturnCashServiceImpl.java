@@ -1,5 +1,6 @@
 package com.xavier.fast.service.user.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.xavier.fast.annotation.ApiMethod;
 import com.xavier.fast.dao.OrderMapper;
 import com.xavier.fast.dao.UserFlowerMapper;
@@ -163,6 +164,7 @@ public class UserReturnCashServiceImpl implements IUserReturnCashService {
         }
 
         RopReturnCashResponse response = new RopReturnCashResponse();
+        response.setMsg("提现成功");
 
         return RopResponse.createSuccessRep("", "提现成功", "1.0.0", response);
     }
@@ -196,6 +198,7 @@ public class UserReturnCashServiceImpl implements IUserReturnCashService {
 
         String restXml = ClientCustomSSL.doRefund(wechatConfig.getPayPersonUrl(), XmlUtils.getRequestXml(parm));
         Map<String, String> restMap = XmlUtils.xmlToMap(restXml);
+        log.info("提现结果：" + JSON.toJSONString(restMap));
         return restMap;
     }
 

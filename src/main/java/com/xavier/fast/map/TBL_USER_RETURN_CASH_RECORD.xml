@@ -54,10 +54,10 @@
 
     <insert id="insert" parameterType="com.xavier.fast.entity.user.UserReturnCashRecord">
     INSERT INTO TBL_USER_RETURN_CASH_RECORD (OPEN_ID, ORDER_ID, CASH_BACK_AMOUNT, CASH_BACK_STATUS,
-      WECHAT_PAYMENT_STATUS, WECHAT_PAYMENT_NO, WECHAT_PAYMENT_TIME, CREATE_TIME, UPDATE_TIME)
+      WECHAT_PAYMENT_STATUS, WECHAT_PAYMENT_NO, WECHAT_PAYMENT_TIME, CREATE_TIME)
     values (#{openId,jdbcType=VARCHAR}, #{orderId,jdbcType=INTEGER}, #{cashBackAmount,jdbcType=INTEGER},
-      #{cashBackStatus,jdbcType=INTEGER}, #{wechatPaymentStatus,jdbcType=VARCHAR}, #{wechatPaymentNo,jdbcType=VARCHAR}
-      #{wechatPaymentTime,jdbcType=TIMESTAMP}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP})
+      #{cashBackStatus,jdbcType=INTEGER}, #{wechatPaymentStatus,jdbcType=VARCHAR}, #{wechatPaymentNo,jdbcType=VARCHAR},
+      #{wechatPaymentTime,jdbcType=TIMESTAMP}, #{createTime,jdbcType=TIMESTAMP})
     </insert>
 
     <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer">
