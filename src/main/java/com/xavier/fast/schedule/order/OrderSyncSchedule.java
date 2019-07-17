@@ -17,6 +17,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -50,17 +51,20 @@ public class OrderSyncSchedule {
     @Resource
     private UserFlowerMapper userFlowerMapper;
 
-    @Scheduled(cron = "0 0/30 * * * ?")
-//    @Scheduled(cron = "0/5 * * * * ?")
-    //或直接指定时间间隔，例如：5秒
-    //@Scheduled(fixedRate=5000)
+    /**
+     * 每30秒执行一次
+     */
+//    @Scheduled(cron = "0 0/30 * * * ?")
+    @Scheduled(cron = "0/30 * * * * ?")
     private void orderSyncTasks() {
         log.info("同步拼多多订单开始");
 
-        //当前时间往前推35分钟
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+        //当前时间往前推50秒
         Calendar c = Calendar.getInstance();
         c.setTimeInMillis(System.currentTimeMillis());
-        c.add(Calendar.MINUTE, 35);
+        c.add(Calendar.SECOND, -50);
 
         Long startTime = c.getTimeInMillis() / 1000;
         Long endTime = System.currentTimeMillis() / 1000;
@@ -169,6 +173,14 @@ public class OrderSyncSchedule {
             return null;
         }
         return new Date(millSec * 1000);
+    }
+
+    public static void main(String[] args) {
+        System.out.println(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
+        Calendar c = Calendar.getInstance();
+        c.setTimeInMillis(System.currentTimeMillis());
+        c.add(Calendar.SECOND, -30);
+        System.out.println(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(c.getTime()));
     }
 
 }
