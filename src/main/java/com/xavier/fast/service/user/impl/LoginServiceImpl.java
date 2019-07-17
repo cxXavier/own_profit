@@ -21,6 +21,7 @@ import com.xavier.fast.service.user.ILoginService;
 import com.xavier.fast.utils.DateUtil;
 import com.xavier.fast.utils.InviteCodeUtils;
 import com.xavier.fast.utils.OkHttpUtils;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -88,6 +89,17 @@ public class LoginServiceImpl implements ILoginService {
             inviteCode = InviteCodeUtils.generate(info.getId());
             info.setInviteCode(inviteCode);
             userMapper.insertSelective(info);
+
+            //有5个徒弟时，升级为VIP
+            Map<String, Object> params = new HashMap<>();
+            params.put("parentOpenid", info.getOpenid());
+            List<User> userList = userMapper.getUserListByParams(params);
+            if(CollectionUtils.isNotEmpty(userList) && userList.size() == 5){
+                User vipUser = new User();
+                vipUser.setId(info.getId());
+                vipUser.setVip(1);
+                userMapper.updateByPrimaryKeySelective(vipUser);
+            }
         } else {
             userMapper.updateByPrimaryKeySelective(info);
         }
