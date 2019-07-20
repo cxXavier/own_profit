@@ -2,7 +2,6 @@ package com.xavier.fast.dao;
 
 import com.xavier.fast.common.mybatis.MyBatisDao;
 import com.xavier.fast.entity.userFormid.UserFormid;
-import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -12,6 +11,10 @@ public class UserFormidMapper extends MyBatisDao {
 
     public UserFormidMapper () {
         super("TBL_USER_FORMID_INFO");
+    }
+
+    public UserFormid selectByPrimaryKey(Integer id){
+        return super.get("selectByPrimaryKey", id);
     }
 
     public int deleteByPrimaryKey(Integer id){
@@ -26,10 +29,6 @@ public class UserFormidMapper extends MyBatisDao {
         return super.insert("insertSelective", record);
     }
 
-    public UserFormid selectByPrimaryKey(Integer id){
-        return super.get("selectByPrimaryKey", id);
-    }
-
     public int updateByPrimaryKeySelective(UserFormid record){
         return super.update("updateByPrimaryKeySelective", record);
     }
@@ -38,20 +37,15 @@ public class UserFormidMapper extends MyBatisDao {
         return super.update("updateByPrimaryKey", record);
     }
 
-    //TODO
-    public int save(@Param("openid") String openid, @Param("formId") String formId){
-        return super.insert("save", openid);
-    }
-
-    public List<UserFormid> getFormIdList(@Param("openid") String openid){
+    public List<UserFormid> getFormIdList(String openid){
         return super.queryForList("getFormIdList", openid);
     }
 
-    public boolean update2TimeLimit(@Param("formid") String formid){
-        return super.update("update2TimeLimit", formid) > 0;
+    public boolean udate2Used(String formid){
+        return super.update("udate2Used", formid) > 0;
     }
 
-    public boolean udate2Used(@Param("formid") String formid){
-        return super.update("udate2Used", formid) > 0;
+    public UserFormid getLatestUsefulInfo(String openId){
+        return super.get("getLatestUsefulInfo", openId);
     }
 }

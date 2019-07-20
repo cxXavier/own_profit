@@ -4,13 +4,11 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.xavier.fast.annotation.ApiMethod;
 import com.xavier.fast.constants.WeChatConstants;
-import com.xavier.fast.dao.UserFormidMapper;
 import com.xavier.fast.dao.UserMapper;
 import com.xavier.fast.entity.user.User;
 import com.xavier.fast.entity.user.UserDto;
 import com.xavier.fast.entity.user.UserVo;
 import com.xavier.fast.entity.user.WechatLoginReturn;
-import com.xavier.fast.entity.userFormid.UserFormid;
 import com.xavier.fast.model.base.RopRequestBody;
 import com.xavier.fast.model.base.RopResponse;
 import com.xavier.fast.model.user.login.RopLoginRequest;
@@ -45,9 +43,6 @@ public class LoginServiceImpl implements ILoginService {
 
     @Resource
     private WechatConfig wechatConfig;
-
-    @Resource
-    private UserFormidMapper userFormidMapper;
 
     @ApiMethod(method = "api.pinke.user.login.userLogin", version = "1.0.0")
     public RopResponse<RopLoginResponse> userLogin(RopRequestBody<RopLoginRequest> loginRequest) {
@@ -123,32 +118,6 @@ public class LoginServiceImpl implements ILoginService {
             return RopResponse.createFailedRep("", "修改用户信息失败", "1.0.0");
         }
         return RopResponse.createSuccessRep("", "修改用户信息成功", "1.0.0", "");
-    }
-
-    @Override
-    public int save(String openid, String formId) {
-        return  userFormidMapper.save(openid,formId);
-    }
-
-    @Override
-    public String getAvailiabFormID(String openid) {
-        String formid="";
-        List<UserFormid> formIdInfoDaoList = userFormidMapper.getFormIdList(openid);
-        if(formIdInfoDaoList.size()<=0){
-            return  "";
-        }
-        for (UserFormid formIdInfo : formIdInfoDaoList) {
-            if(compareTimes(formIdInfo.getCreateTime())){
-                formid=formIdInfo.getFormid();
-                //formIdInfoMapper.udate2Used(formIdInfo.getId());//更改状态为已使用
-                break;
-            }else{
-                formid = formIdInfo.getFormid();
-                userFormidMapper.update2TimeLimit(formid);//更改formid状态为已过期
-                continue;
-            }
-        }
-        return formid;
     }
 
     /**

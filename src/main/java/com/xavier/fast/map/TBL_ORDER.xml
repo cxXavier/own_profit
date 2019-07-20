@@ -49,7 +49,14 @@
             and PDD_ORDER_ID = #{pddOrderId,jdbcType=VARCHAR}
         </if>
         <if test="orderStatus != null">
-            and ORDER_STATUS = #{orderStatus,jdbcType=VARCHAR}
+            <choose>
+                <when test="orderStatus == '11'">
+                    and ORDER_STATUS = '5' and CASH_BACK_STATUS is null
+                </when>
+                <otherwise>
+                    and ORDER_STATUS = #{orderStatus,jdbcType=VARCHAR}
+                </otherwise>
+            </choose>
         </if>
         <if test="duoCouponAmount != null">
             and DUO_COUPON_AMOUNT = #{duoCouponAmount,jdbcType=INTEGER}
@@ -128,6 +135,9 @@
         </if>
         <if test="updateTime != null">
             and UPDATE_TIME = #{updateTime,jdbcType=TIMESTAMP}
+        </if>
+        <if test="queryAll != null and queryAll != ''">
+            and ((ORDER_STATUS IN ('1','4','5')) OR CASH_BACK_STATUS is not null)
         </if>
         <if test="openIds != null">
             and OPEN_ID IN
@@ -483,6 +493,15 @@
     <select id="getSettledAndReceivedOrders" parameterType="java.util.Map" resultMap="BaseResultMap">
         SELECT
         <include refid="Base_Column_List"/>
+        FROM TBL_ORDER
+        WHERE T.ORDER_STATUS = '5'
+        AND (MONTH(SYSDATE()) - MONTH(T.ORDER_RECEIVE_TIME)) = 1
+        <include refid="mysqlBasic.pageSearchLimit"/>
+    </select>
+
+    <select id="getSettledAndReceivedOrdersCount" parameterType="java.util.Map" resultType="Integer">
+        SELECT
+        COUNT(1)
         FROM TBL_ORDER
         WHERE T.ORDER_STATUS = '5'
         AND (MONTH(SYSDATE()) - MONTH(T.ORDER_RECEIVE_TIME)) = 1

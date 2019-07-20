@@ -64,4 +64,8 @@ public class OrderMapper extends MyBatisDao {
         return super.queryForList("getSettledAndReceivedOrders", params);
     }
 
+    public int getSettledAndReceivedOrdersCount(Map<String, Object> params) {
+        return super.get("getSettledAndReceivedOrdersCount", params);
+    }
+
 }

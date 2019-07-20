@@ -5,6 +5,7 @@ import com.xavier.fast.dao.OrderMapper;
 import com.xavier.fast.dao.UserFlowerMapper;
 import com.xavier.fast.dao.UserMapper;
 import com.xavier.fast.entity.order.Order;
+import com.xavier.fast.entity.order.OrderBase;
 import com.xavier.fast.entity.user.Prentice;
 import com.xavier.fast.entity.user.User;
 import com.xavier.fast.entity.user.UserFlower;
@@ -22,7 +23,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
 * @Description:    用户鲜花
@@ -88,9 +92,7 @@ public class UserFlowerServiceImpl implements IUserFlowerService {
         List<Order> orderList = orderMapper.findOrderListByParams(params);
         if(CollectionUtils.isEmpty(orderList)){
             log.info("暂无徒弟订单");
-//            return RopResponse.createFailedRep("", "暂无徒弟订单", "1.0.0");
         }
-
 
         List<Prentice> prenticeList = new ArrayList<>();
         Prentice prentice;
@@ -102,8 +104,8 @@ public class UserFlowerServiceImpl implements IUserFlowerService {
             prentice.setNickname(u.getNickname());
             prentice.setOpenid(u.getOpenid());
             prentice.setUnionid(u.getUnionid());
-            prentice.setContributionFlower(getFlower(orderList, "5", u.getOpenid()));
-            prentice.setWaitSettleFlower(getFlower(orderList, "2", u.getOpenid()));
+            prentice.setContributionFlower(this.getContributionFlowers(orderList, u.getOpenid()));
+            prentice.setWaitSettleFlower(this.getWaitSettleFlowers(orderList, u.getOpenid()));
             prentice.setNotice(isNotice(orderList, u.getOpenid()));
             prenticeList.add(prentice);
         }
@@ -161,12 +163,12 @@ public class UserFlowerServiceImpl implements IUserFlowerService {
         //获取待结算鲜花
         Order order = new Order();
         order.setParentOpenId(openId);
-        order.setOrderStatus("2");
+        order.setOrderStatus(OrderBase.ORDER_STATUS.settled.getCode());
         List<Order> orderList = orderMapper.findOrderList(order);
         if(CollectionUtils.isEmpty(orderList)){
             log.warn("暂无待结算鲜花,openId=" + openId);
         }
-        int wf = getWaitSettleFlower(orderList);
+        int wf = this.getWaitSettleFlower(orderList);
         response.setWaitSettleFlowers(wf);
 
         //设置预估鲜花 = 可使用鲜花 + 待结算鲜花
@@ -179,22 +181,20 @@ public class UserFlowerServiceImpl implements IUserFlowerService {
     }
 
     /**
-    * 归总鲜花
-    * @author      Wang
-    * @param       orderList
-    * @param       orderStatus
-    * @param       openId
-    * @return
-    * @exception
-    * @date        2019/7/3 0:57
-    */
-    private int getFlower(List<Order> orderList, String orderStatus, String openId){
+     * 获取徒弟贡献花朵
+     * @param orderList
+     * @param openId
+     * @return
+     */
+    private int getContributionFlowers(List<Order> orderList, String openId){
         if(CollectionUtils.isEmpty(orderList)){
             return 0;
         }
         int result = 0;
         for(Order o : orderList){
-            if(orderStatus.equals(o.getOrderStatus()) && openId.equals(o.getOpenId())){
+            //25号已结算
+            if(OrderBase.ORDER_STATUS.settled.getCode().equals(o.getOrderStatus())
+                    && o.getCashBackStatus() != null && openId.equals(o.getOpenId())){
                 result += o.getContributionFlower();
             }
         }
@@ -202,7 +202,27 @@ public class UserFlowerServiceImpl implements IUserFlowerService {
     }
 
     /**
-     * 归总鲜花
+     * 获取徒弟待生效花朵
+     * @param orderList
+     * @param openId
+     * @return
+     */
+    private int getWaitSettleFlowers(List<Order> orderList, String openId){
+        if(CollectionUtils.isEmpty(orderList)){
+            return 0;
+        }
+        int result = 0;
+        for(Order o : orderList){
+            if(OrderBase.ORDER_STATUS.settled.getCode().equals(o.getOrderStatus())
+                    && o.getCashBackStatus() == null && openId.equals(o.getOpenId())){
+                result += o.getContributionFlower();
+            }
+        }
+        return result;
+    }
+
+    /**
+     * 获取待结算鲜花
      * @author      Wang
      * @param       orderList
      * @return
@@ -212,17 +232,26 @@ public class UserFlowerServiceImpl implements IUserFlowerService {
     private int getWaitSettleFlower(List<Order> orderList){
         int result = 0;
         for(Order o : orderList){
-            result += o.getContributionFlower();
+            if(o.getCashBackStatus() == null){
+                result += o.getContributionFlower();
+            }
         }
         return result;
     }
 
+    /**
+     * 待收货，设置提醒
+     * @param orderList
+     * @param openId
+     * @return
+     */
     private boolean isNotice(List<Order> orderList, String openId){
         if(CollectionUtils.isEmpty(orderList)){
             return false;
         }
         for(Order o : orderList){
-            if("2".equals(o.getOrderStatus()) && openId.equals(o.getOpenId())){
+            if(OrderBase.ORDER_STATUS.wait_receive.getCode().equals(o.getOrderStatus())
+                    && openId.equals(o.getOpenId())){
                 return true;
             }
         }

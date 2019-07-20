@@ -3,6 +3,8 @@ package com.xavier.fast.service.user;
 import com.xavier.fast.model.base.RopRequestBody;
 import com.xavier.fast.model.base.RopResponse;
 import com.xavier.fast.model.user.login.RopInviteRequest;
+import com.xavier.fast.model.user.login.RopUserFormRequest;
+import com.xavier.fast.model.user.login.RopUserFormResponse;
 import com.xavier.fast.model.user.login.RopUserResponse;
 
 /**
@@ -22,5 +24,12 @@ public interface IUserService {
      * @return
      */
     public RopResponse<RopUserResponse> getInviteUsers(RopRequestBody<RopInviteRequest> inviteRequest);
+
+    /**
+     * 添加formId
+     * @param formRequest
+     * @return
+     */
+    public RopResponse<RopUserFormResponse> saveUserForm(RopRequestBody<RopUserFormRequest> formRequest);
 
 }

@@ -22,6 +22,11 @@ public class MyOrder implements Serializable {
     private String orderStatus;
 
     /**
+     * 订单状态（前台展示）
+     */
+    private String showOrderStatus;
+
+    /**
      * 多多券金额
      */
     private Long duoCouponAmount;
@@ -88,6 +93,14 @@ public class MyOrder implements Serializable {
 
     public void setOrderStatus(String orderStatus) {
         this.orderStatus = orderStatus;
+    }
+
+    public String getShowOrderStatus() {
+        return showOrderStatus;
+    }
+
+    public void setShowOrderStatus(String showOrderStatus) {
+        this.showOrderStatus = showOrderStatus;
     }
 
     public Long getDuoCouponAmount() {

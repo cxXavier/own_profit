@@ -14,8 +14,4 @@ public interface ILoginService {
 
     public RopResponse<String> updateUser(RopRequestBody<RopUserRequest> loginRequest);
 
-    int save(String openid,String formId);
-
-    String getAvailiabFormID (String openid);
-
 }

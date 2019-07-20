@@ -21,6 +21,7 @@ import com.xavier.fast.service.pdd.IpddService;
 import com.xavier.fast.service.user.IOrderService;
 import com.xavier.fast.utils.CalFlowerUtils;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
@@ -77,14 +78,24 @@ public class OrderServiceImpl extends BaseServiceImpl implements IOrderService {
         String goodsId = createOrderRequest.getT().getGoodsId();
         Long priceAfterCoupon = createOrderRequest.getT().getPriceAfterCoupon();
         log.info("createOrder params:" + createOrderRequest.getT().toString());
-        Date currentDate = new Date();
+
+        //判断是自购下单还是徒弟下单
+        User user = this.getUser(openId);
+        if(user == null){
+            return RopResponse.createFailedRep("", "暂无当前用户", "1.0.0");
+        }
+        log.info("createOrder parentOpenId=" + user.getParentOpenid());
+
         //保存虚拟订单
         Order record = new Order();
         record.setOpenId(openId);
         record.setGoodsId(goodsId);
         record.setDuoCouponAmount(priceAfterCoupon);
-        record.setCreateTime(currentDate);
+        record.setCreateTime(new Date());
         record.setContributionFlower(CalFlowerUtils.calContributionFlower(priceAfterCoupon));
+        if(StringUtils.isBlank(user.getParentOpenid())){
+            record.setParentOpenId(user.getParentOpenid());
+        }
         int count = orderMapper.insertSelective(record);
         if(count <= 0){
             log.error("保存虚拟订单失败，参数：" + record.toString());
@@ -118,7 +129,7 @@ public class OrderServiceImpl extends BaseServiceImpl implements IOrderService {
 
         Order order = new Order();
         order.setParentOpenId(openId);
-        this.setOrderStatus(order, queryType);
+        this.setQueryOrderStatus(order, queryType);
 
         int startRow = pageNum == 1 ? 0 : (pageNum - 1) * PAGE_SIZE;
         order.setStartRow(startRow);
@@ -154,7 +165,7 @@ public class OrderServiceImpl extends BaseServiceImpl implements IOrderService {
 
         Order order = new Order();
         order.setOpenId(openId);
-        this.setOrderStatus(order, queryType);
+        this.setQueryOrderStatus(order, queryType);
 
         int startRow = pageNum == 1 ? 0 : (pageNum - 1) * PAGE_SIZE;
         order.setStartRow(startRow);
@@ -243,13 +254,21 @@ public class OrderServiceImpl extends BaseServiceImpl implements IOrderService {
         User user;
         for(Order o : orderList){
             prenticeOrder = new PrenticeOrder();
-            user = getUser(o.getOpenId());
+            user = this.getUser(o.getOpenId());
             if(user != null){
                 prenticeOrder.setAvatar(user.getAvatar());
                 prenticeOrder.setNickname(user.getNickname());
             }
             prenticeOrder.setContributionFlower(o.getContributionFlower());
             prenticeOrder.setOrderStatus(o.getOrderStatus());
+            prenticeOrder.setShowOrderStatus(o.getOrderStatus());
+            if(o.getCashBackStatus() != null){
+                int status = o.getCashBackStatus();
+                //如果是待提现，代表订单状态为已生效
+                if(status == OrderBase.ORDER_CASH_STATUS.wait_cash_back.getCode()){
+                    prenticeOrder.setShowOrderStatus(OrderBase.SHOW_ORDER_STATUS.validate.getCode());
+                }
+            }
             prenticeOrder.setNotice(OrderBase.ORDER_STATUS.wait_receive.getCode().equals(o.getOrderStatus()));
             prenticeOrder.setOrderCreateTime(o.getOrderCreateTime());
             prenticeOrders.add(prenticeOrder);
@@ -274,6 +293,20 @@ public class OrderServiceImpl extends BaseServiceImpl implements IOrderService {
         for(Order o : orderList){
             myOrder = new MyOrder();
             BeanUtils.copyProperties(o, myOrder);
+            if(o.getCashBackStatus() != null){
+                if(o.getCashBackStatus() == OrderBase.ORDER_CASH_STATUS.cash_back_fail.getCode()){
+                    //提现中-提现失败
+                    myOrder.setShowOrderStatus(OrderBase.SHOW_ORDER_STATUS.cash_back_fail.getCode());
+                }else if(o.getCashBackStatus() == OrderBase.ORDER_CASH_STATUS.wait_cash_back.getCode()){
+                    //待提现
+                    myOrder.setShowOrderStatus(OrderBase.SHOW_ORDER_STATUS.wait_cash_back.getCode());
+                }else if(o.getCashBackStatus() == OrderBase.ORDER_CASH_STATUS.cash_back_success.getCode()){
+                    //提现成功
+                    myOrder.setShowOrderStatus(OrderBase.SHOW_ORDER_STATUS.cash_back_success.getCode());
+                }else{
+                    myOrder.setShowOrderStatus(o.getOrderStatus());
+                }
+            }
             myOrders.add(myOrder);
         }
         return myOrders;
@@ -287,8 +320,7 @@ public class OrderServiceImpl extends BaseServiceImpl implements IOrderService {
     * @exception
     * @date        2019/7/10 16:19
     */
-    private void setOrderStatus(Order order, String queryType){
-        //默认查询全部订单 = ALL
+    private void setQueryOrderStatus(Order order, String queryType){
         if(QUERY_TYPE.WAITRECEIVE.name().equals(queryType)){//待收货
             order.setOrderStatus(OrderBase.ORDER_STATUS.wait_receive.getCode());
         }else if(QUERY_TYPE.WAITSETTLE.name().equals(queryType)){//待结算
@@ -298,6 +330,8 @@ public class OrderServiceImpl extends BaseServiceImpl implements IOrderService {
             order.setCashBackStatus(OrderBase.ORDER_CASH_STATUS.wait_cash_back.getCode());
         }else if(QUERY_TYPE.INVALIDATE.name().equals(queryType)){//已失效
             order.setOrderStatus(OrderBase.ORDER_STATUS.invalidate.getCode());
+        }else if(QUERY_TYPE.ALL.name().equals(queryType)){//查询全部订单
+            order.setQueryAll("queryAll");
         }
     }
 
@@ -341,9 +375,6 @@ public class OrderServiceImpl extends BaseServiceImpl implements IOrderService {
         int totalCount = orderMapper.queryTotalCount(order);
         if(totalCount <= 0){
             return 0;
-        }
-        if(totalCount % PAGE_SIZE == 0){
-            totalPage = totalCount / PAGE_SIZE;
         }
         return totalCount % PAGE_SIZE == 0 ? totalCount / PAGE_SIZE : (totalCount / PAGE_SIZE + 1);
     }

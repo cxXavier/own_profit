@@ -1,5 +1,7 @@
 package com.xavier.fast.entity.order;
 
+import org.apache.commons.lang3.StringUtils;
+
 import java.io.Serializable;
 import java.util.Date;
 
@@ -20,6 +22,11 @@ public class PrenticeOrder implements Serializable {
      * 订单状态
      */
     private String orderStatus;
+
+    /**
+     * 订单状态（前台展示）
+     */
+    private String showOrderStatus;
 
     /**
      * 订单创建时间
@@ -58,6 +65,14 @@ public class PrenticeOrder implements Serializable {
 
     public void setOrderStatus(String orderStatus) {
         this.orderStatus = orderStatus;
+    }
+
+    public String getShowOrderStatus() {
+        return showOrderStatus;
+    }
+
+    public void setShowOrderStatus(String showOrderStatus) {
+        this.showOrderStatus = showOrderStatus;
     }
 
     public Date getOrderCreateTime() {

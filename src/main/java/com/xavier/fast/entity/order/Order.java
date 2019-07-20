@@ -147,6 +147,8 @@ public class Order extends BasePageQuery implements Serializable {
 
     private List<String> openIds;
 
+    private String queryAll;
+
     public Integer getId() {
         return id;
     }
@@ -385,6 +387,14 @@ public class Order extends BasePageQuery implements Serializable {
 
     public void setOpenIds(List<String> openIds) {
         this.openIds = openIds;
+    }
+
+    public String getQueryAll() {
+        return queryAll;
+    }
+
+    public void setQueryAll(String queryAll) {
+        this.queryAll = queryAll;
     }
 
     @Override

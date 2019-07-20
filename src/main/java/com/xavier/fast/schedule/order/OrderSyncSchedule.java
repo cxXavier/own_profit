@@ -3,10 +3,13 @@ package com.xavier.fast.schedule.order;
 import com.xavier.fast.dao.OrderMapper;
 import com.xavier.fast.dao.UserFlowerMapper;
 import com.xavier.fast.entity.order.Order;
+import com.xavier.fast.entity.order.OrderBase;
 import com.xavier.fast.entity.pdd.OrderQueryRo;
 import com.xavier.fast.entity.pdd.PddOrderInfo;
 import com.xavier.fast.entity.pdd.PddOrderList;
+import com.xavier.fast.push.wechat.template.TemplateMsg;
 import com.xavier.fast.service.pdd.IpddService;
+import com.xavier.fast.service.push.IPushService;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -49,7 +52,7 @@ public class OrderSyncSchedule {
     private OrderMapper orderMapper;
 
     @Resource
-    private UserFlowerMapper userFlowerMapper;
+    private IPushService pushService;
 
     /**
      * 每30秒执行一次
@@ -157,7 +160,24 @@ public class OrderSyncSchedule {
         order.setPromotionRate(po.getPromotionRate());
         order.setReturnStatus(po.getReturnStatus());
         int count = orderMapper.update(order);
+        //下单成功推送(拼多多-已成团，我们这边-待收货)
+        if(OrderBase.ORDER_STATUS.wait_receive.getCode().equals(order.getOrderStatus())){
+            wechatPushCreateOrderMsg(order);
+        }
         return count;
+    }
+
+    /**
+     * 小程序下单成功推送(异步)
+     * @param order
+     */
+    private void wechatPushCreateOrderMsg(Order order){
+        //如果parentOpenId为空，表示自购下单，不为空，为徒弟下单
+        if(StringUtils.isBlank(order.getParentOpenId())){
+            pushService.wechatPush(order, TemplateMsg.WECHAT_PUSH_TYPE.OWN_CREATE_ORDER.name());
+        }else{
+            pushService.wechatPush(order, TemplateMsg.WECHAT_PUSH_TYPE.PRENTICE_CREATEORDER.name());
+        }
     }
 
     /**
