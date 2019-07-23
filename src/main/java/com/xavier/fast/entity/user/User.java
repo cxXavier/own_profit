@@ -27,6 +27,9 @@ public class User {
 
     private String grandparentUnionid;
 
+    /**
+     * VIP(0,1)
+     */
     private Integer vip;
 
     private Date created;

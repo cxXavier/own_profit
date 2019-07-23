@@ -51,8 +51,11 @@ public class UserServiceImpl implements IUserService {
     public RopResponse<RopUserResponse> getInviteUsers(RopRequestBody<RopInviteRequest> inviteRequest) {
         RopUserResponse userResponse = new RopUserResponse();
         String openId = inviteRequest.getT().getOpenId();
+        //最多只查5个徒弟
         Map<String, Object> params = new HashMap<>();
         params.put("parentOpenid", openId);
+        params.put("startRow", 0);
+        params.put("endRow", 5);
         List<User> userList = userMapper.getUserListByParams(params);
         if(CollectionUtils.isEmpty(userList)){
             userResponse.setNeedPeoples(NEED_INVITE_USERS);

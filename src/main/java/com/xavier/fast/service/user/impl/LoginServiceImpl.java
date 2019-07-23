@@ -70,6 +70,7 @@ public class LoginServiceImpl implements ILoginService {
             info.setOpenid(vo.getOpenid());
             info.setUnionid(vo.getUnionid());
             String inviteCode = dto.getInviteCode();
+            log.info("inviteCode=" + inviteCode);
             //有邀请码时需要保留关联关系
             if(StringUtils.isNotBlank(inviteCode)) {
                 User parentUser = userMapper.getUserByInviteCode(inviteCode);
@@ -80,22 +81,21 @@ public class LoginServiceImpl implements ILoginService {
                     info.setGrandparentUnionid(parentUser.getGrandparentUnionid());
                 }
             }
+            userMapper.insertSelective(info);
             //每个人都生成一个邀请码
             inviteCode = InviteCodeUtils.generate(info.getId());
             info.setInviteCode(inviteCode);
-            userMapper.insertSelective(info);
-
-            //有5个徒弟时，升级为VIP
-            Map<String, Object> params = new HashMap<>();
-            params.put("parentOpenid", info.getOpenid());
-            List<User> userList = userMapper.getUserListByParams(params);
-            if(CollectionUtils.isNotEmpty(userList) && userList.size() == 5){
-                User vipUser = new User();
-                vipUser.setId(info.getId());
-                vipUser.setVip(1);
-                userMapper.updateByPrimaryKeySelective(vipUser);
-            }
+            userMapper.updateByPrimaryKeySelective(info);
         } else {
+            //有5个徒弟时，升级为VIP
+            if(info.getVip() == null || info.getVip().intValue() < 1){
+                Map<String, Object> params = new HashMap<>();
+                params.put("parentOpenid", info.getOpenid());
+                List<User> userList = userMapper.getUserListByParams(params);
+                if(CollectionUtils.isNotEmpty(userList) && userList.size() >= 5){
+                    info.setVip(1);
+                }
+            }
             userMapper.updateByPrimaryKeySelective(info);
         }
         vo.setInviteCode(info.getInviteCode());

@@ -322,5 +322,6 @@
         <where>
             <include refid="Base_Query_Column_List"/>
         </where>
+        <include refid="mysqlBasic.pageSearchLimit"/>
     </select>
 </mapper>
