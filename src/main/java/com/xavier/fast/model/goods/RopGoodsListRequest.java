@@ -58,6 +58,8 @@ public class RopGoodsListRequest extends RopRequest implements Serializable {
     private Integer pageSize = 10;
     private Integer pageNum = 1;
 
+    private Integer tagLevel;
+
     public Integer getTagId() {
         return tagId;
     }
@@ -112,5 +114,13 @@ public class RopGoodsListRequest extends RopRequest implements Serializable {
 
     public void setPageNum(Integer pageNum) {
         this.pageNum = pageNum;
+    }
+
+    public Integer getTagLevel() {
+        return tagLevel;
+    }
+
+    public void setTagLevel(Integer tagLevel) {
+        this.tagLevel = tagLevel;
     }
 }

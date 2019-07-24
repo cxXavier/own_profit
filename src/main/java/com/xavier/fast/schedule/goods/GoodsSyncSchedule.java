@@ -204,6 +204,7 @@ public class GoodsSyncSchedule {
         target.setDescPct(source.getDescPct());
         target.setLgstPct(source.getLgstPct());
         target.setServPct(source.getServPct());
+        target.setOptIds(this.convertIntListToString(source.getOptIds()));
         if(goodsType == 1){
             target.setIsHot(1);
         }else{

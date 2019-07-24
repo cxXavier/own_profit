@@ -159,7 +159,7 @@
             and avg_serv = #{avgServ,jdbcType=INTEGER}
         </if>
         <if test="catIds != null">
-            and cat_ids = #{catIds,jdbcType=VARCHAR}
+            and FIND_IN_SET(#{catIds,jdbcType=VARCHAR}, cat_ids) != 0
         </if>
         <if test="descPct != null">
             and desc_pct = #{descPct,jdbcType=DOUBLE}
@@ -171,7 +171,7 @@
             and serv_pct = #{servPct,jdbcType=DOUBLE}
         </if>
         <if test="optIds != null">
-            and opt_ids = #{optIds,jdbcType=VARCHAR}
+            and FIND_IN_SET(#{optIds,jdbcType=VARCHAR}, opt_ids) != 0
         </if>
         <if test="isHot != null">
             and is_hot = #{isHot,jdbcType=INTEGER}
