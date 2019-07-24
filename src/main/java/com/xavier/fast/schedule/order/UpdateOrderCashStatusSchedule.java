@@ -57,7 +57,7 @@ public class UpdateOrderCashStatusSchedule {
             return;
         }
         int totalPage = totalCount % PAGE_SIZE == 0 ? totalCount / PAGE_SIZE : (totalCount / PAGE_SIZE + 1);
-        while(pageNum < totalPage){
+        while(pageNum <= totalPage){
             int startRow = pageNum * PAGE_SIZE;
             params.put("startRow", startRow);
             params.put("endRow", PAGE_SIZE);

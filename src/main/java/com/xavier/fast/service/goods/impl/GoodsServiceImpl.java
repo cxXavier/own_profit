@@ -1,7 +1,9 @@
 package com.xavier.fast.service.goods.impl;
 
 import com.xavier.fast.annotation.ApiMethod;
+import com.xavier.fast.dao.GoodsMapper;
 import com.xavier.fast.dao.TagMapper;
+import com.xavier.fast.entity.goods.Goods;
 import com.xavier.fast.entity.pdd.*;
 import com.xavier.fast.entity.tag.Tag;
 import com.xavier.fast.model.base.RopRequestBody;
@@ -11,6 +13,7 @@ import com.xavier.fast.model.goods.*;
 import com.xavier.fast.service.goods.IGoodsService;
 import com.xavier.fast.service.pdd.IpddService;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -30,11 +33,16 @@ import java.util.Map;
 @Service
 public class GoodsServiceImpl implements IGoodsService {
 
+    private final static int PAGE_SIZE = 10;
+
     @Autowired
     private TagMapper tagMapper;
 
     @Autowired
     private IpddService pddService;
+
+    @Autowired
+    private GoodsMapper goodsMapper;
 
     /**
     * 获取商品类目
@@ -83,16 +91,38 @@ public class GoodsServiceImpl implements IGoodsService {
 
         RopResponseBody response = new RopResponseBody();
 
-        HotGoodsQueryRo goodsQueryRo = new HotGoodsQueryRo();
-        goodsQueryRo.setType(goodsRequest.getT().getType());
-        goodsQueryRo.setPageNum(goodsRequest.getT().getPageNum());
+        int pageNum = goodsRequest.getT().getPageNum();
+        int startRow = pageNum == 1 ? 0 : (pageNum - 1) * PAGE_SIZE;
 
-        HotGoodsList.HotGoodsSearchResponse goodsSearchResponse = pddService.queryHotGoods(goodsQueryRo);
-        if (goodsSearchResponse == null || CollectionUtils.isEmpty(goodsSearchResponse.getGoodsList())) {
+        Map<String, Object> params = new HashMap<>();
+        params.put("isHot", 1);
+        params.put("startRow", startRow);
+        params.put("endRow", PAGE_SIZE);
+        List<Goods> goodsList = goodsMapper.findGoodsListByParams(params);
+        if(CollectionUtils.isEmpty(goodsList)){
             return RopResponse.createFailedRep("", "获取热门商品失败", "1.0.0");
         }
-        List<Good> goodList = goodsSearchResponse.getGoodsList();
-        response.setDataList(goodList);
+        response.setDataList(goodsList);
+
+        Goods record = new Goods();
+        record.setIsHot(1);
+        int totalCount = goodsMapper.queryTotalCount(record);
+        if(totalCount > 0){
+            int totalPage = totalCount % PAGE_SIZE == 0 ? totalCount / PAGE_SIZE : (totalCount / PAGE_SIZE + 1);
+            response.setHasNext(totalPage > pageNum);
+        }
+
+
+//        HotGoodsQueryRo goodsQueryRo = new HotGoodsQueryRo();
+//        goodsQueryRo.setType(goodsRequest.getT().getType());
+//        goodsQueryRo.setPageNum(goodsRequest.getT().getPageNum());
+//        goodsQueryRo.setPageSize(goodsRequest.getT().getPageSize());
+//        HotGoodsList.HotGoodsSearchResponse goodsSearchResponse = pddService.queryHotGoods(goodsQueryRo);
+//        if (goodsSearchResponse == null || CollectionUtils.isEmpty(goodsSearchResponse.getGoodsList())) {
+//            return RopResponse.createFailedRep("", "获取热门商品失败", "1.0.0");
+//        }
+//        List<Good> goodList = goodsSearchResponse.getGoodsList();
+//        response.setDataList(goodList);
 
         return RopResponse.createSuccessRep("", "获取热门商品成功", "1.0.0", response);
     }
@@ -110,18 +140,76 @@ public class GoodsServiceImpl implements IGoodsService {
 
         RopResponseBody response = new RopResponseBody();
 
-        GoodsQueryRo goodsQueryRo = new GoodsQueryRo();
-        goodsQueryRo.setTagId(goodsRequest.getT().getTagId());
-        goodsQueryRo.setSortType(goodsRequest.getT().getSortType());
-        goodsQueryRo.setKeyword(goodsRequest.getT().getKeyword());
-        goodsQueryRo.setOpenid(goodsRequest.getT().getOpenid());
-        goodsQueryRo.setPageNum(goodsRequest.getT().getPageNum());
-        GoodsList.GoodsSearchResponse goodsSearchResponse = pddService.queryGoodsList(goodsQueryRo);
-        if (goodsSearchResponse == null || CollectionUtils.isEmpty(goodsSearchResponse.getGoodsList())) {
+        Integer tagId = goodsRequest.getT().getTagId();
+        Integer sortType = goodsRequest.getT().getSortType();
+        String keyword = goodsRequest.getT().getKeyword();
+
+        int pageNum = goodsRequest.getT().getPageNum();
+        int startRow = pageNum == 1 ? 0 : (pageNum - 1) * PAGE_SIZE;
+
+        Map<String, Object> params = new HashMap<>();
+        params.put("isNormal", 1);
+        if(StringUtils.isNotBlank(keyword)){
+            params.put("goodsName", keyword);
+        }else{
+            if(tagId != null){
+                params.put("optId", tagId);
+            }
+        }
+        if(sortType != null){
+            if(sortType == 5){//按销量升序
+                params.put("orderBy", "sold_quantity");
+            }else if(sortType == 6){//按销量降序
+                params.put("orderBy", "sold_quantity");
+                params.put("sortBy", "DESC");
+            }else if(sortType == 27){//描述评分击败同类店铺百分比升序
+                params.put("orderBy", "avg_desc");
+            }else if(sortType == 28){//描述评分击败同类店铺百分比降序
+                params.put("orderBy", "avg_desc");
+                params.put("sortBy", "DESC");
+            }else if(sortType == 3){//按价格升序
+                params.put("orderBy", "min_group_price");
+            }else if(sortType == 4){//按价格降序
+                params.put("orderBy", "min_group_price");
+                params.put("sortBy", "DESC");
+            }
+        }
+        params.put("startRow", startRow);
+        params.put("endRow", PAGE_SIZE);
+        List<Goods> goodsList = goodsMapper.findGoodsListByParams(params);
+        if(CollectionUtils.isEmpty(goodsList)){
             return RopResponse.createFailedRep("", "获取商品列表失败", "1.0.0");
         }
-        List<Good> goodList = goodsSearchResponse.getGoodsList();
-        response.setDataList(goodList);
+        response.setDataList(goodsList);
+
+        Goods record = new Goods();
+        record.setIsNormal(1);
+        if(StringUtils.isNotBlank(keyword)){
+            record.setGoodsName(keyword);
+        }else{
+            if(tagId != null){
+                record.setOptId(tagId.longValue());
+            }
+        }
+        int totalCount = goodsMapper.queryTotalCount(record);
+        if(totalCount > 0){
+            int totalPage = totalCount % PAGE_SIZE == 0 ? totalCount / PAGE_SIZE : (totalCount / PAGE_SIZE + 1);
+            response.setHasNext(totalPage > pageNum);
+        }
+
+//        GoodsQueryRo goodsQueryRo = new GoodsQueryRo();
+//        goodsQueryRo.setTagId(goodsRequest.getT().getTagId());
+//        goodsQueryRo.setSortType(goodsRequest.getT().getSortType());
+//        goodsQueryRo.setKeyword(goodsRequest.getT().getKeyword());
+//        goodsQueryRo.setOpenid(goodsRequest.getT().getOpenid());
+//        goodsQueryRo.setPageNum(goodsRequest.getT().getPageNum());
+//        goodsQueryRo.setPageSize(goodsRequest.getT().getPageSize());
+//        GoodsList.GoodsSearchResponse goodsSearchResponse = pddService.queryGoodsList(goodsQueryRo);
+//        if (goodsSearchResponse == null || CollectionUtils.isEmpty(goodsSearchResponse.getGoodsList())) {
+//            return RopResponse.createFailedRep("", "获取商品列表失败", "1.0.0");
+//        }
+//        List<Good> goodList = goodsSearchResponse.getGoodsList();
+//        response.setDataList(goodList);
 
         return RopResponse.createSuccessRep("", "获取商品列表成功", "1.0.0", response);
     }

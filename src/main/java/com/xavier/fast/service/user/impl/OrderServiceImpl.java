@@ -203,18 +203,15 @@ public class OrderServiceImpl extends BaseServiceImpl implements IOrderService {
         uf.setOpenId(openId);
         uf.setParentOpenId(openId);
         List<UserFlower> flowerList = userFlowerMapper.findListByOpendIdOrParentId(uf);
-        if(CollectionUtils.isNotEmpty(flowerList)){
-            response.setFlowers(CalFlowerUtils.calTotalFlowers(flowerList));
-        }
+        response.setFlowers(CalFlowerUtils.calTotalFlowers(flowerList));
 
         //查询我的累计提现金额
         UserReturnCashRecord record = new UserReturnCashRecord();
         record.setOpenId(openId);
         record.setCashBackStatus(OrderBase.ORDER_CASH_STATUS.cash_back_success.getCode());
         List<UserReturnCashRecord> list = userReturnCashRecordMapper.findRecordList(record);
-        if(CollectionUtils.isNotEmpty(list)){
-            response.setCashAmount(getTotalCashAmount(list));
-        }
+        response.setCashAmount(getTotalCashAmount(list));
+
         return RopResponse.createSuccessRep("", "查询成功", "1.0.0", response);
     }
 

@@ -39,7 +39,7 @@ public class PddServiceImpl implements IpddService {
     public HotGoodsList.HotGoodsSearchResponse queryHotGoods(HotGoodsQueryRo goodsQueryRo) {
         Map<String, String> param = new HashMap<>();
 
-        Integer offset = goodsQueryRo.getPageSize()*(goodsQueryRo.getPageNum() + 1);
+        Integer offset = goodsQueryRo.getPageSize() * (goodsQueryRo.getPageNum() - 1);
         param.put("offset", offset.toString());
         param.put("limit", goodsQueryRo.getPageSize().toString());
         param.put("sort_type", goodsQueryRo.getType().toString());

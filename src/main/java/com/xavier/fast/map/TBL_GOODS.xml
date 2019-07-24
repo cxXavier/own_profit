@@ -1,0 +1,823 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="TBL_GOODS">
+    <resultMap id="BaseResultMap" type="com.xavier.fast.entity.goods.Goods">
+        <id column="ID" property="id" jdbcType="INTEGER"/>
+        <result column="goods_id" property="goodsId" jdbcType="BIGINT"/>
+        <result column="goods_name" property="goodsName" jdbcType="VARCHAR"/>
+        <result column="goods_desc" property="goodsDesc" jdbcType="VARCHAR"/>
+        <result column="goods_thumbnail_url" property="goodsThumbnailUrl" jdbcType="VARCHAR"/>
+        <result column="goods_image_url" property="goodsImageUrl" jdbcType="VARCHAR"/>
+        <result column="goods_gallery_urls" property="goodsGalleryUrls" jdbcType="VARCHAR"/>
+        <result column="sold_quantity" property="soldQuantity" jdbcType="INTEGER"/>
+        <result column="min_group_price" property="minGroupPrice" jdbcType="INTEGER"/>
+        <result column="min_normal_price" property="minNormalPrice" jdbcType="INTEGER"/>
+        <result column="mall_id" property="mallId" jdbcType="VARCHAR"/>
+        <result column="mall_name" property="mallName" jdbcType="VARCHAR"/>
+        <result column="mall_rate" property="mallRate" jdbcType="VARCHAR"/>
+        <result column="merchant_type" property="merchantType" jdbcType="INTEGER"/>
+        <result column="category_id" property="categoryId" jdbcType="INTEGER"/>
+        <result column="category_name" property="categoryName" jdbcType="VARCHAR"/>
+        <result column="opt_id" property="optId" jdbcType="INTEGER"/>
+        <result column="opt_name" property="optName" jdbcType="VARCHAR"/>
+        <result column="mall_cps" property="mallCps" jdbcType="INTEGER"/>
+        <result column="has_coupon" property="hasCoupon" jdbcType="INTEGER"/>
+        <result column="coupon_min_order_amount" property="couponMinOrderAmount" jdbcType="INTEGER"/>
+        <result column="coupon_discount" property="couponDiscount" jdbcType="INTEGER"/>
+        <result column="coupon_total_quantity" property="couponTotalQuantity" jdbcType="INTEGER"/>
+        <result column="coupon_remain_quantity" property="couponRemainQuantity" jdbcType="INTEGER"/>
+        <result column="coupon_end_time" property="couponEndTime" jdbcType="INTEGER"/>
+        <result column="coupon_start_time" property="couponStartTime" jdbcType="INTEGER"/>
+        <result column="promotion_rate" property="promotionRate" jdbcType="INTEGER"/>
+        <result column="goods_eval_score" property="goodsEvalScore" jdbcType="DOUBLE"/>
+        <result column="goods_eval_count" property="goodsEvalCount" jdbcType="INTEGER"/>
+        <result column="avg_desc" property="avgDesc" jdbcType="INTEGER"/>
+        <result column="avg_lgst" property="avgLgst" jdbcType="INTEGER"/>
+        <result column="avg_serv" property="avgServ" jdbcType="INTEGER"/>
+        <result column="cat_ids" property="catIds" jdbcType="VARCHAR"/>
+        <result column="desc_pct" property="descPct" jdbcType="DOUBLE"/>
+        <result column="lgst_pct" property="lgstPct" jdbcType="DOUBLE"/>
+        <result column="serv_pct" property="servPct" jdbcType="DOUBLE"/>
+        <result column="opt_ids" property="optIds" jdbcType="VARCHAR"/>
+        <result column="is_hot" property="isHot" jdbcType="INTEGER"/>
+        <result column="is_normal" property="isNormal" jdbcType="INTEGER"/>
+        <result column="create_at" property="createAt" jdbcType="INTEGER"/>
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+        <result column="update_time" property="updateTime" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+      ID, GOODS_ID, GOODS_NAME, GOODS_DESC, GOODS_THUMBNAIL_URL, GOODS_IMAGE_URL, GOODS_GALLERY_URLS,
+      SOLD_QUANTITY, MIN_GROUP_PRICE, MIN_NORMAL_PRICE, MALL_ID, MALL_NAME, MALL_RATE, MERCHANT_TYPE,
+      CATEGORY_ID, CATEGORY_NAME, OPT_ID, OPT_NAME, MALL_CPS, HAS_COUPON, COUPON_MIN_ORDER_AMOUNT,
+      COUPON_DISCOUNT, COUPON_TOTAL_QUANTITY, COUPON_REMAIN_QUANTITY, COUPON_END_TIME, COUPON_START_TIME,
+      PROMOTION_RATE, GOODS_EVAL_SCORE, GOODS_EVAL_COUNT, AVG_DESC, AVG_LGST, AVG_SERV, CAT_IDS, DESC_PCT,
+      LGST_PCT, SERV_PCT, OPT_IDS, IS_HOT, IS_NORMAL, CREATE_AT, CREATE_TIME, UPDATE_TIME
+    </sql>
+
+    <sql id="Base_Query_Column_List">
+        <if test="id != null">
+            and ID = #{id,jdbcType=INTEGER}
+        </if>
+        <if test="goodsId != null">
+            and goods_id = #{goodsId,jdbcType=BIGINT}
+        </if>
+        <if test="goodsIdList != null">
+            and goods_id IN
+            <foreach item="goodsId" collection="goodsIdList" open="(" separator="," close=")">
+                #{goodsId}
+            </foreach>
+        </if>
+        <if test="goodsName != null">
+            and goods_name like CONCAT('%','${goodsName}','%')
+        </if>
+        <if test="goodsDesc != null">
+            and goods_desc = #{goodsDesc,jdbcType=VARCHAR}
+        </if>
+        <if test="goodsThumbnailUrl != null">
+            and goods_thumbnail_url = #{goodsThumbnailUrl,jdbcType=VARCHAR}
+        </if>
+        <if test="goodsImageUrl != null">
+            and goods_image_url = #{goodsImageUrl,jdbcType=VARCHAR}
+        </if>
+        <if test="goodsGalleryUrls != null">
+            and goods_gallery_urls = #{goodsGalleryUrls,jdbcType=VARCHAR}
+        </if>
+        <if test="soldQuantity != null">
+            and sold_quantity = #{soldQuantity,jdbcType=INTEGER}
+        </if>
+        <if test="minGroupPrice != null">
+            and min_group_price = #{minGroupPrice,jdbcType=INTEGER}
+        </if>
+        <if test="minNormalPrice != null">
+            and min_normal_price = #{minNormalPrice,jdbcType=INTEGER}
+        </if>
+        <if test="mallId != null">
+            and mall_id = #{mallId,jdbcType=VARCHAR}
+        </if>
+        <if test="mallName != null">
+            and mall_name = #{mallName,jdbcType=VARCHAR}
+        </if>
+        <if test="mallRate != null">
+            and mall_rate = #{mallRate,jdbcType=VARCHAR}
+        </if>
+        <if test="merchantType != null">
+            and merchant_type = #{merchantType,jdbcType=INTEGER}
+        </if>
+        <if test="categoryId != null">
+            and category_id = #{categoryId,jdbcType=INTEGER}
+        </if>
+        <if test="categoryName != null">
+            and category_name = #{categoryName,jdbcType=VARCHAR}
+        </if>
+        <if test="optId != null">
+            and opt_id = #{optId,jdbcType=INTEGER}
+        </if>
+        <if test="optName != null">
+            and opt_name = #{optName,jdbcType=VARCHAR}
+        </if>
+        <if test="mallCps != null">
+            and mall_cps = #{mallCps,jdbcType=INTEGER}
+        </if>
+        <if test="hasCoupon != null">
+            and has_coupon = #{hasCoupon,jdbcType=INTEGER}
+        </if>
+        <if test="couponMinOrderAmount != null">
+            and coupon_min_order_amount = #{couponMinOrderAmount,jdbcType=INTEGER}
+        </if>
+        <if test="couponDiscount != null">
+            and coupon_discount = #{couponDiscount,jdbcType=INTEGER}
+        </if>
+        <if test="couponTotalQuantity != null">
+            and coupon_total_quantity = #{couponTotalQuantity,jdbcType=INTEGER}
+        </if>
+        <if test="couponRemainQuantity != null">
+            and coupon_remain_quantity = #{couponRemainQuantity,jdbcType=INTEGER}
+        </if>
+        <if test="couponEndTime != null">
+            and coupon_end_time = #{couponEndTime,jdbcType=INTEGER}
+        </if>
+        <if test="couponStartTime != null">
+            and coupon_start_time = #{couponStartTime,jdbcType=INTEGER}
+        </if>
+        <if test="promotionRate != null">
+            and promotion_rate = #{promotionRate,jdbcType=INTEGER}
+        </if>
+        <if test="goodsEvalScore != null">
+            and goods_eval_score = #{goodsEvalScore,jdbcType=DOUBLE}
+        </if>
+        <if test="goodsEvalCount != null">
+            and goods_eval_count = #{goodsEvalCount,jdbcType=INTEGER}
+        </if>
+        <if test="avgDesc != null">
+            and avg_desc = #{avgDesc,jdbcType=INTEGER}
+        </if>
+        <if test="avgLgst != null">
+            and avg_lgst = #{avgLgst,jdbcType=INTEGER}
+        </if>
+        <if test="avgServ != null">
+            and avg_serv = #{avgServ,jdbcType=INTEGER}
+        </if>
+        <if test="catIds != null">
+            and cat_ids = #{catIds,jdbcType=VARCHAR}
+        </if>
+        <if test="descPct != null">
+            and desc_pct = #{descPct,jdbcType=DOUBLE}
+        </if>
+        <if test="lgstPct != null">
+            and lgst_pct = #{lgstPct,jdbcType=DOUBLE}
+        </if>
+        <if test="servPct != null">
+            and serv_pct = #{servPct,jdbcType=DOUBLE}
+        </if>
+        <if test="optIds != null">
+            and opt_ids = #{optIds,jdbcType=VARCHAR}
+        </if>
+        <if test="isHot != null">
+            and is_hot = #{isHot,jdbcType=INTEGER}
+        </if>
+        <if test="isNormal != null">
+            and is_normal = #{isNormal,jdbcType=INTEGER}
+        </if>
+        <if test="createAt != null">
+            and create_at = #{createAt,jdbcType=INTEGER}
+        </if>
+        <if test="createTime != null">
+            and CREATE_TIME = #{createTime,jdbcType=TIMESTAMP}
+        </if>
+        <if test="updateTime != null">
+            and UPDATE_TIME = #{updateTime,jdbcType=TIMESTAMP}
+        </if>
+    </sql>
+
+    <insert id="insert" parameterType="com.xavier.fast.entity.goods.Goods">
+        INSERT INTO TBL_GOODS (
+            GOODS_ID, GOODS_NAME, GOODS_DESC, GOODS_THUMBNAIL_URL, GOODS_IMAGE_URL, GOODS_GALLERY_URLS,
+            SOLD_QUANTITY, MIN_GROUP_PRICE, MIN_NORMAL_PRICE, MALL_ID, MALL_NAME, MALL_RATE, MERCHANT_TYPE,
+            CATEGORY_ID, CATEGORY_NAME, OPT_ID, OPT_NAME, MALL_CPS, HAS_COUPON, COUPON_MIN_ORDER_AMOUNT,
+            COUPON_DISCOUNT, COUPON_TOTAL_QUANTITY, COUPON_REMAIN_QUANTITY, COUPON_END_TIME, COUPON_START_TIME,
+            PROMOTION_RATE, GOODS_EVAL_SCORE, GOODS_EVAL_COUNT, AVG_DESC, AVG_LGST, AVG_SERV, CAT_IDS, DESC_PCT,
+            LGST_PCT, SERV_PCT, OPT_IDS, IS_HOT, IS_NORMAL, CREATE_AT, CREATE_TIME
+        )
+        values (
+            #{goodsId,jdbcType=BIGINT}, #{goodsName,jdbcType=VARCHAR},
+            #{goodsDesc,jdbcType=VARCHAR}, #{goodsThumbnailUrl,jdbcType=VARCHAR},
+            #{goodsImageUrl,jdbcType=VARCHAR}, #{goodsGalleryUrls,jdbcType=VARCHAR},
+            #{soldQuantity,jdbcType=INTEGER}, #{minGroupPrice,jdbcType=INTEGER},
+            #{minNormalPrice,jdbcType=INTEGER}, #{mallId,jdbcType=VARCHAR},
+            #{mallName,jdbcType=VARCHAR}, #{mallRate,jdbcType=VARCHAR},
+            #{merchantType,jdbcType=INTEGER}, #{categoryId,jdbcType=INTEGER},
+            #{categoryName,jdbcType=VARCHAR}, #{optId,jdbcType=INTEGER},
+            #{optName,jdbcType=VARCHAR}, #{mallCps,jdbcType=INTEGER},
+            #{hasCoupon,jdbcType=INTEGER}, #{couponMinOrderAmount,jdbcType=INTEGER},
+            #{couponDiscount,jdbcType=INTEGER}, #{couponTotalQuantity,jdbcType=INTEGER},
+            #{couponRemainQuantity,jdbcType=INTEGER}, #{couponEndTime,jdbcType=INTEGER},
+            #{couponStartTime,jdbcType=INTEGER}, #{promotionRate,jdbcType=INTEGER},
+            #{goodsEvalScore,jdbcType=DOUBLE}, #{goodsEvalCount,jdbcType=INTEGER},
+            #{avgDesc,jdbcType=INTEGER}, #{avgLgst,jdbcType=INTEGER},
+            #{avgServ,jdbcType=INTEGER}, #{catIds,jdbcType=VARCHAR},
+            #{descPct,jdbcType=DOUBLE}, #{lgstPct,jdbcType=DOUBLE},
+            #{servPct,jdbcType=DOUBLE}, #{optIds,jdbcType=VARCHAR},
+            #{isHot,jdbcType=INTEGER}, #{isNormal,jdbcType=INTEGER},
+            #{createAt,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}
+        )
+    </insert>
+
+    <insert id="insertSelective" parameterType="com.xavier.fast.entity.goods.Goods">
+        INSERT INTO TBL_GOODS
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="goodsId != null">
+                goods_id,
+            </if>
+            <if test="goodsName != null">
+                goods_name,
+            </if>
+            <if test="goodsDesc != null">
+                goods_desc,
+            </if>
+            <if test="goodsThumbnailUrl != null">
+                goods_thumbnail_url,
+            </if>
+            <if test="goodsImageUrl != null">
+                goods_image_url,
+            </if>
+            <if test="goodsGalleryUrls != null">
+                goods_gallery_urls,
+            </if>
+            <if test="soldQuantity != null">
+                sold_quantity,
+            </if>
+            <if test="minGroupPrice != null">
+                min_group_price,
+            </if>
+            <if test="minNormalPrice != null">
+                min_normal_price,
+            </if>
+            <if test="mallId != null">
+                mall_id,
+            </if>
+            <if test="mallName != null">
+                mall_name,
+            </if>
+            <if test="mallRate != null">
+                mall_rate,
+            </if>
+            <if test="merchantType != null">
+                merchant_type,
+            </if>
+            <if test="categoryId != null">
+                category_id,
+            </if>
+            <if test="categoryName != null">
+                category_name,
+            </if>
+            <if test="optId != null">
+                opt_id,
+            </if>
+            <if test="optName != null">
+                opt_name,
+            </if>
+            <if test="mallCps != null">
+                mall_cps,
+            </if>
+            <if test="hasCoupon != null">
+                has_coupon,
+            </if>
+            <if test="couponMinOrderAmount != null">
+                coupon_min_order_amount,
+            </if>
+            <if test="couponDiscount != null">
+                coupon_discount,
+            </if>
+            <if test="couponTotalQuantity != null">
+                coupon_total_quantity,
+            </if>
+            <if test="couponRemainQuantity != null">
+                coupon_remain_quantity,
+            </if>
+            <if test="couponEndTime != null">
+                coupon_end_time,
+            </if>
+            <if test="couponStartTime != null">
+                coupon_start_time,
+            </if>
+            <if test="promotionRate != null">
+                promotion_rate,
+            </if>
+            <if test="goodsEvalScore != null">
+                goods_eval_score,
+            </if>
+            <if test="goodsEvalCount != null">
+                goods_eval_count,
+            </if>
+            <if test="avgDesc != null">
+                avg_desc,
+            </if>
+            <if test="avgLgst != null">
+                avg_lgst,
+            </if>
+            <if test="avgServ != null">
+                avg_serv,
+            </if>
+            <if test="catIds != null">
+                cat_ids,
+            </if>
+            <if test="descPct != null">
+                desc_pct,
+            </if>
+            <if test="lgstPct != null">
+                lgst_pct,
+            </if>
+            <if test="servPct != null">
+                serv_pct,
+            </if>
+            <if test="optIds != null">
+                opt_ids,
+            </if>
+            <if test="isHot != null">
+                is_hot,
+            </if>
+            <if test="isNormal != null">
+                is_normal,
+            </if>
+            <if test="createAt != null">
+                create_at,
+            </if>
+            <if test="createTime != null">
+                CREATE_TIME,
+            </if>
+            <if test="updateTime != null">
+                UPDATE_TIME,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="goodsId != null">
+                #{goodsId,jdbcType=BIGINT},
+            </if>
+            <if test="goodsName != null">
+                #{goodsName,jdbcType=VARCHAR},
+            </if>
+            <if test="goodsDesc != null">
+                #{goodsDesc,jdbcType=VARCHAR},
+            </if>
+            <if test="goodsThumbnailUrl != null">
+                #{goodsThumbnailUrl,jdbcType=VARCHAR},
+            </if>
+            <if test="goodsImageUrl != null">
+                #{goodsImageUrl,jdbcType=VARCHAR},
+            </if>
+            <if test="goodsGalleryUrls != null">
+                #{goodsGalleryUrls,jdbcType=VARCHAR},
+            </if>
+            <if test="soldQuantity != null">
+                #{soldQuantity,jdbcType=INTEGER},
+            </if>
+            <if test="minGroupPrice != null">
+                #{minGroupPrice,jdbcType=INTEGER},
+            </if>
+            <if test="minNormalPrice != null">
+                #{minNormalPrice,jdbcType=INTEGER},
+            </if>
+            <if test="mallId != null">
+                #{mallId,jdbcType=VARCHAR},
+            </if>
+            <if test="mallName != null">
+                #{mallName,jdbcType=VARCHAR},
+            </if>
+            <if test="mallRate != null">
+                #{mallRate,jdbcType=VARCHAR},
+            </if>
+            <if test="merchantType != null">
+                #{merchantType,jdbcType=INTEGER},
+            </if>
+            <if test="categoryId != null">
+                #{categoryId,jdbcType=INTEGER},
+            </if>
+            <if test="categoryName != null">
+                #{categoryName,jdbcType=VARCHAR},
+            </if>
+            <if test="optId != null">
+                #{optId,jdbcType=INTEGER},
+            </if>
+            <if test="optName != null">
+                #{optName,jdbcType=VARCHAR},
+            </if>
+            <if test="mallCps != null">
+                #{mallCps,jdbcType=INTEGER},
+            </if>
+            <if test="hasCoupon != null">
+                #{hasCoupon,jdbcType=INTEGER},
+            </if>
+            <if test="couponMinOrderAmount != null">
+                #{couponMinOrderAmount,jdbcType=INTEGER},
+            </if>
+            <if test="couponDiscount != null">
+                #{couponDiscount,jdbcType=INTEGER},
+            </if>
+            <if test="couponTotalQuantity != null">
+                #{couponTotalQuantity,jdbcType=INTEGER},
+            </if>
+            <if test="couponRemainQuantity != null">
+                #{couponRemainQuantity,jdbcType=INTEGER},
+            </if>
+            <if test="couponEndTime != null">
+                #{couponEndTime,jdbcType=INTEGER},
+            </if>
+            <if test="couponStartTime != null">
+                #{couponStartTime,jdbcType=INTEGER},
+            </if>
+            <if test="promotionRate != null">
+                #{promotionRate,jdbcType=INTEGER},
+            </if>
+            <if test="goodsEvalScore != null">
+                #{goodsEvalScore,jdbcType=DOUBLE},
+            </if>
+            <if test="goodsEvalCount != null">
+                #{goodsEvalCount,jdbcType=INTEGER},
+            </if>
+            <if test="avgDesc != null">
+                #{avgDesc,jdbcType=INTEGER},
+            </if>
+            <if test="avgLgst != null">
+                #{avgLgst,jdbcType=INTEGER},
+            </if>
+            <if test="avgServ != null">
+                #{avgServ,jdbcType=INTEGER},
+            </if>
+            <if test="catIds != null">
+                #{catIds,jdbcType=VARCHAR},
+            </if>
+            <if test="descPct != null">
+                #{descPct,jdbcType=DOUBLE},
+            </if>
+            <if test="lgstPct != null">
+                #{lgstPct,jdbcType=DOUBLE},
+            </if>
+            <if test="servPct != null">
+                #{servPct,jdbcType=DOUBLE},
+            </if>
+            <if test="optIds != null">
+                #{optIds,jdbcType=VARCHAR},
+            </if>
+            <if test="isHot != null">
+                #{isHot,jdbcType=INTEGER},
+            </if>
+            <if test="isNormal != null">
+                #{isNormal,jdbcType=INTEGER},
+            </if>
+            <if test="createAt != null">
+                #{createAt,jdbcType=INTEGER},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateTime != null">
+                #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+        </trim>
+    </insert>
+
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+        select
+        <include refid="Base_Column_List"/>
+        from TBL_GOODS
+        where ID = #{id, jdbcType=INTEGER}
+    </select>
+
+    <select id="queryTotalCount" parameterType="com.xavier.fast.entity.goods.Goods" resultType="Integer">
+        select
+        count(1)
+        from TBL_GOODS
+        <where>
+            1=1
+            <include refid="Base_Query_Column_List"/>
+        </where>
+    </select>
+
+    <select id="findGoodsList" parameterType="com.xavier.fast.entity.goods.Goods" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from TBL_GOODS
+        <where>
+            <include refid="Base_Query_Column_List"/>
+        </where>
+    </select>
+
+    <select id="findGoodsListByParams" parameterType="java.util.Map" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from TBL_GOODS
+        <where>
+            <include refid="Base_Query_Column_List"/>
+        </where>
+        <if test="orderBy != null">
+            <choose>
+                <when test="sortBy != null and sortBy =='DESC'">
+                    ORDER BY ${orderBy} DESC
+                </when>
+                <otherwise>ORDER BY ${orderBy} ASC </otherwise>
+            </choose>
+        </if>
+        <include refid="mysqlBasic.pageSearchLimit"/>
+    </select>
+
+    <update id="update" parameterType="com.xavier.fast.entity.goods.Goods">
+        update TBL_GOODS
+        <set>
+            <if test="goodsId != null">
+                goods_id = #{goodsId,jdbcType=BIGINT},
+            </if>
+            <if test="goodsName != null">
+                goods_name = #{goodsName,jdbcType=VARCHAR},
+            </if>
+            <if test="goodsDesc != null">
+                goods_desc = #{goodsDesc,jdbcType=VARCHAR},
+            </if>
+            <if test="goodsThumbnailUrl != null">
+                goods_thumbnail_url = #{goodsThumbnailUrl,jdbcType=VARCHAR},
+            </if>
+            <if test="goodsImageUrl != null">
+                goods_image_url = #{goodsImageUrl,jdbcType=VARCHAR},
+            </if>
+            <if test="goodsGalleryUrls != null">
+                goods_gallery_urls = #{goodsGalleryUrls,jdbcType=VARCHAR},
+            </if>
+            <if test="soldQuantity != null">
+                sold_quantity = #{soldQuantity,jdbcType=INTEGER},
+            </if>
+            <if test="minGroupPrice != null">
+                min_group_price = #{minGroupPrice,jdbcType=INTEGER},
+            </if>
+            <if test="minNormalPrice != null">
+                min_normal_price = #{minNormalPrice,jdbcType=INTEGER},
+            </if>
+            <if test="mallId != null">
+                mall_id = #{mallId,jdbcType=VARCHAR},
+            </if>
+            <if test="mallName != null">
+                mall_name = #{mallName,jdbcType=VARCHAR},
+            </if>
+            <if test="mallRate != null">
+                mall_rate = #{mallRate,jdbcType=VARCHAR},
+            </if>
+            <if test="merchantType != null">
+                merchant_type = #{merchantType,jdbcType=INTEGER},
+            </if>
+            <if test="categoryId != null">
+                category_id = #{categoryId,jdbcType=INTEGER},
+            </if>
+            <if test="categoryName != null">
+                category_name = #{categoryName,jdbcType=VARCHAR},
+            </if>
+            <if test="optId != null">
+                opt_id = #{optId,jdbcType=INTEGER},
+            </if>
+            <if test="optName != null">
+                opt_name = #{optName,jdbcType=VARCHAR},
+            </if>
+            <if test="mallCps != null">
+                mall_cps = #{mallCps,jdbcType=INTEGER},
+            </if>
+            <if test="hasCoupon != null">
+                has_coupon = #{hasCoupon,jdbcType=INTEGER},
+            </if>
+            <if test="couponMinOrderAmount != null">
+                coupon_min_order_amount = #{couponMinOrderAmount,jdbcType=INTEGER},
+            </if>
+            <if test="couponDiscount != null">
+                coupon_discount = #{couponDiscount,jdbcType=INTEGER},
+            </if>
+            <if test="couponTotalQuantity != null">
+                coupon_total_quantity = #{couponTotalQuantity,jdbcType=INTEGER},
+            </if>
+            <if test="couponRemainQuantity != null">
+                coupon_remain_quantity = #{couponRemainQuantity,jdbcType=INTEGER},
+            </if>
+            <if test="couponEndTime != null">
+                coupon_end_time = #{couponEndTime,jdbcType=INTEGER},
+            </if>
+            <if test="couponStartTime != null">
+                coupon_start_time = #{couponStartTime,jdbcType=INTEGER},
+            </if>
+            <if test="promotionRate != null">
+                promotion_rate = #{promotionRate,jdbcType=INTEGER},
+            </if>
+            <if test="goodsEvalScore != null">
+                goods_eval_score = #{goodsEvalScore,jdbcType=DOUBLE},
+            </if>
+            <if test="goodsEvalCount != null">
+                goods_eval_count = #{goodsEvalCount,jdbcType=INTEGER},
+            </if>
+            <if test="avgDesc != null">
+                avg_desc = #{avgDesc,jdbcType=INTEGER},
+            </if>
+            <if test="avgLgst != null">
+                avg_lgst = #{avgLgst,jdbcType=INTEGER},
+            </if>
+            <if test="avgServ != null">
+                avg_serv = #{avgServ,jdbcType=INTEGER},
+            </if>
+            <if test="catIds != null">
+                cat_ids = #{catIds,jdbcType=VARCHAR},
+            </if>
+            <if test="descPct != null">
+                desc_pct = #{descPct,jdbcType=DOUBLE},
+            </if>
+            <if test="lgstPct != null">
+                lgst_pct = #{lgstPct,jdbcType=DOUBLE},
+            </if>
+            <if test="servPct != null">
+                serv_pct = #{servPct,jdbcType=DOUBLE},
+            </if>
+            <if test="optIds != null">
+                opt_ids = #{optIds,jdbcType=VARCHAR},
+            </if>
+            <if test="isHot != null">
+                is_hot = #{isHot,jdbcType=INTEGER},
+            </if>
+            <if test="isNormal != null">
+                is_normal = #{isNormal,jdbcType=INTEGER},
+            </if>
+            <if test="createAt != null">
+                create_at = #{createAt,jdbcType=INTEGER},
+            </if>
+            <if test="createTime != null">
+                CREATE_TIME = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateTime != null">
+                UPDATE_TIME = #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        WHERE ID = #{id,jdbcType=INTEGER}
+    </update>
+
+    <insert id="insertBatch" parameterType="java.util.List">
+        insert into TBL_GOODS
+        (
+            GOODS_ID, GOODS_NAME, GOODS_DESC, GOODS_THUMBNAIL_URL, GOODS_IMAGE_URL, GOODS_GALLERY_URLS,
+            SOLD_QUANTITY, MIN_GROUP_PRICE, MIN_NORMAL_PRICE, MALL_ID, MALL_NAME, MALL_RATE, MERCHANT_TYPE,
+            CATEGORY_ID, CATEGORY_NAME, OPT_ID, OPT_NAME, MALL_CPS, HAS_COUPON, COUPON_MIN_ORDER_AMOUNT,
+            COUPON_DISCOUNT, COUPON_TOTAL_QUANTITY, COUPON_REMAIN_QUANTITY, COUPON_END_TIME, COUPON_START_TIME,
+            PROMOTION_RATE, GOODS_EVAL_SCORE, GOODS_EVAL_COUNT, AVG_DESC, AVG_LGST, AVG_SERV, CAT_IDS, DESC_PCT,
+            LGST_PCT, SERV_PCT, OPT_IDS, IS_HOT, IS_NORMAL, CREATE_AT, CREATE_TIME
+        )
+        VALUES
+        <foreach collection="list" item="item" index="index" separator=",">
+            (
+                #{item.goodsId,jdbcType=BIGINT}, #{item.goodsName,jdbcType=VARCHAR},
+                #{item.goodsDesc,jdbcType=VARCHAR}, #{item.goodsThumbnailUrl,jdbcType=VARCHAR},
+                #{item.goodsImageUrl,jdbcType=VARCHAR}, #{item.goodsGalleryUrls,jdbcType=VARCHAR},
+                #{item.soldQuantity,jdbcType=INTEGER}, #{item.minGroupPrice,jdbcType=INTEGER},
+                #{item.minNormalPrice,jdbcType=INTEGER}, #{item.mallId,jdbcType=VARCHAR},
+                #{item.mallName,jdbcType=VARCHAR}, #{item.mallRate,jdbcType=VARCHAR},
+                #{item.merchantType,jdbcType=INTEGER}, #{item.categoryId,jdbcType=INTEGER},
+                #{item.categoryName,jdbcType=VARCHAR}, #{item.optId,jdbcType=INTEGER},
+                #{item.optName,jdbcType=VARCHAR}, #{item.mallCps,jdbcType=INTEGER},
+                #{item.hasCoupon,jdbcType=INTEGER}, #{item.couponMinOrderAmount,jdbcType=INTEGER},
+                #{item.couponDiscount,jdbcType=INTEGER}, #{item.couponTotalQuantity,jdbcType=INTEGER},
+                #{item.couponRemainQuantity,jdbcType=INTEGER}, #{item.couponEndTime,jdbcType=INTEGER},
+                #{item.couponStartTime,jdbcType=INTEGER}, #{item.promotionRate,jdbcType=INTEGER},
+                #{item.goodsEvalScore,jdbcType=DOUBLE}, #{item.goodsEvalCount,jdbcType=INTEGER},
+                #{item.avgDesc,jdbcType=INTEGER}, #{item.avgLgst,jdbcType=INTEGER},
+                #{item.avgServ,jdbcType=INTEGER}, #{item.catIds,jdbcType=VARCHAR},
+                #{item.descPct,jdbcType=DOUBLE}, #{item.lgstPct,jdbcType=DOUBLE},
+                #{item.servPct,jdbcType=DOUBLE}, #{item.optIds,jdbcType=VARCHAR},
+                #{item.isHot,jdbcType=INTEGER}, #{item.isNormal,jdbcType=INTEGER},
+                #{item.createAt,jdbcType=INTEGER}, #{item.createTime,jdbcType=TIMESTAMP}
+            )
+        </foreach>
+    </insert>
+
+    <update id="updateBatch" parameterType="java.util.List">
+        <foreach collection="list" separator=";" item="item">
+            update TBL_GOODS
+            <set>
+                <if test="item.goodsId != null">
+                    goods_id = #{item.goodsId,jdbcType=BIGINT},
+                </if>
+                <if test="item.goodsName != null">
+                    goods_name = #{item.goodsName,jdbcType=VARCHAR},
+                </if>
+                <if test="item.goodsDesc != null">
+                    goods_desc = #{item.goodsDesc,jdbcType=VARCHAR},
+                </if>
+                <if test="item.goodsThumbnailUrl != null">
+                    goods_thumbnail_url = #{item.goodsThumbnailUrl,jdbcType=VARCHAR},
+                </if>
+                <if test="item.goodsImageUrl != null">
+                    goods_image_url = #{item.goodsImageUrl,jdbcType=VARCHAR},
+                </if>
+                <if test="item.goodsGalleryUrls != null">
+                    goods_gallery_urls = #{item.goodsGalleryUrls,jdbcType=VARCHAR},
+                </if>
+                <if test="item.soldQuantity != null">
+                    sold_quantity = #{item.soldQuantity,jdbcType=INTEGER},
+                </if>
+                <if test="item.minGroupPrice != null">
+                    min_group_price = #{item.minGroupPrice,jdbcType=INTEGER},
+                </if>
+                <if test="item.minNormalPrice != null">
+                    min_normal_price = #{item.minNormalPrice,jdbcType=INTEGER},
+                </if>
+                <if test="item.mallId != null">
+                    mall_id = #{item.mallId,jdbcType=VARCHAR},
+                </if>
+                <if test="item.mallName != null">
+                    mall_name = #{item.mallName,jdbcType=VARCHAR},
+                </if>
+                <if test="item.mallRate != null">
+                    mall_rate = #{item.mallRate,jdbcType=VARCHAR},
+                </if>
+                <if test="item.merchantType != null">
+                    merchant_type = #{item.merchantType,jdbcType=INTEGER},
+                </if>
+                <if test="item.categoryId != null">
+                    category_id = #{item.categoryId,jdbcType=INTEGER},
+                </if>
+                <if test="item.categoryName != null">
+                    category_name = #{item.categoryName,jdbcType=VARCHAR},
+                </if>
+                <if test="item.optId != null">
+                    opt_id = #{item.optId,jdbcType=INTEGER},
+                </if>
+                <if test="item.optName != null">
+                    opt_name = #{item.optName,jdbcType=VARCHAR},
+                </if>
+                <if test="item.mallCps != null">
+                    mall_cps = #{item.mallCps,jdbcType=INTEGER},
+                </if>
+                <if test="item.hasCoupon != null">
+                    has_coupon = #{item.hasCoupon,jdbcType=INTEGER},
+                </if>
+                <if test="item.couponMinOrderAmount != null">
+                    coupon_min_order_amount = #{item.couponMinOrderAmount,jdbcType=INTEGER},
+                </if>
+                <if test="item.couponDiscount != null">
+                    coupon_discount = #{item.couponDiscount,jdbcType=INTEGER},
+                </if>
+                <if test="item.couponTotalQuantity != null">
+                    coupon_total_quantity = #{item.couponTotalQuantity,jdbcType=INTEGER},
+                </if>
+                <if test="item.couponRemainQuantity != null">
+                    coupon_remain_quantity = #{item.couponRemainQuantity,jdbcType=INTEGER},
+                </if>
+                <if test="item.couponEndTime != null">
+                    coupon_end_time = #{item.couponEndTime,jdbcType=INTEGER},
+                </if>
+                <if test="item.couponStartTime != null">
+                    coupon_start_time = #{item.couponStartTime,jdbcType=INTEGER},
+                </if>
+                <if test="item.promotionRate != null">
+                    promotion_rate = #{item.promotionRate,jdbcType=INTEGER},
+                </if>
+                <if test="item.goodsEvalScore != null">
+                    goods_eval_score = #{item.goodsEvalScore,jdbcType=DOUBLE},
+                </if>
+                <if test="item.goodsEvalCount != null">
+                    goods_eval_count = #{item.goodsEvalCount,jdbcType=INTEGER},
+                </if>
+                <if test="item.avgDesc != null">
+                    avg_desc = #{item.avgDesc,jdbcType=INTEGER},
+                </if>
+                <if test="item.avgLgst != null">
+                    avg_lgst = #{item.avgLgst,jdbcType=INTEGER},
+                </if>
+                <if test="item.avgServ != null">
+                    avg_serv = #{item.avgServ,jdbcType=INTEGER},
+                </if>
+                <if test="item.catIds != null">
+                    cat_ids = #{item.catIds,jdbcType=VARCHAR},
+                </if>
+                <if test="item.descPct != null">
+                    desc_pct = #{item.descPct,jdbcType=DOUBLE},
+                </if>
+                <if test="item.lgstPct != null">
+                    lgst_pct = #{item.lgstPct,jdbcType=DOUBLE},
+                </if>
+                <if test="item.servPct != null">
+                    serv_pct = #{item.servPct,jdbcType=DOUBLE},
+                </if>
+                <if test="item.optIds != null">
+                    opt_ids = #{item.optIds,jdbcType=VARCHAR},
+                </if>
+                <if test="item.isHot != null">
+                    is_hot = #{item.isHot,jdbcType=INTEGER},
+                </if>
+                <if test="item.isNormal != null">
+                    is_normal = #{item.isNormal,jdbcType=INTEGER},
+                </if>
+                <if test="item.createAt != null">
+                    create_at = #{item.createAt,jdbcType=INTEGER},
+                </if>
+                <if test="item.createTime != null">
+                    CREATE_TIME = #{item.createTime,jdbcType=TIMESTAMP},
+                </if>
+                <if test="item.updateTime != null">
+                    UPDATE_TIME = #{item.updateTime,jdbcType=TIMESTAMP},
+                </if>
+            </set>
+            WHERE ID = #{item.id,jdbcType=INTEGER}
+        </foreach>
+    </update>
+
+</mapper>
