@@ -199,9 +199,6 @@ public class GoodsServiceImpl implements IGoodsService {
                     record.setOptId(tagId.longValue());
                 }
             }
-            if(tagId != null){
-                record.setOptId(tagId.longValue());
-            }
         }
         int totalCount = goodsMapper.queryTotalCount(record);
         if(totalCount > 0){

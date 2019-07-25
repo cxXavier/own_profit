@@ -1,8 +1,11 @@
 package com.xavier.fast.schedule.goods;
 
 import com.xavier.fast.dao.GoodsMapper;
+import com.xavier.fast.dao.TagMapper;
 import com.xavier.fast.entity.goods.Goods;
 import com.xavier.fast.entity.pdd.*;
+import com.xavier.fast.entity.tag.Tag;
+import com.xavier.fast.model.base.RopResponse;
 import com.xavier.fast.service.pdd.IpddService;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -43,7 +46,10 @@ public class GoodsSyncSchedule {
     @Autowired
     private GoodsMapper goodsMapper;
 
-    @Scheduled(cron = "0 0/20 * * * ?")
+    @Autowired
+    private TagMapper tagMapper;
+
+//    @Scheduled(cron = "0 0/20 * * * ?")
     private void hotGoodsSyncTasks() {
         log.info("同步拼多多热门商品开始...");
         int pageNum = 1;
@@ -100,7 +106,7 @@ public class GoodsSyncSchedule {
         log.info("同步拼多多热门商品结束...");
     }
 
-    @Scheduled(cron = "0 0/20 * * * ?")
+//    @Scheduled(cron = "0 0/20 * * * ?")
     private void normalGoodsSyncTasks() {
         log.info("同步拼多多普通商品开始...");
         int pageNum = 1;
@@ -118,7 +124,7 @@ public class GoodsSyncSchedule {
             return;
         }
         totalCount = goodsSearchResponse.getTotalCount();
-        log.info("普通商品总数量：" + totalCount);
+        log.info("normalGoodsSyncTasks普通商品总数量：" + totalCount);
         if(totalCount <= 0){
             log.error("normalGoodsSyncTasks fail,totalCount=0");
             return;
@@ -155,6 +161,101 @@ public class GoodsSyncSchedule {
             pageNum++;
         }
         log.info("同步拼多多普通商品结束...");
+    }
+
+    @Scheduled(cron = "20 20 22 * * ?")
+    private void normalGoodsSyncByTagIdTasks() {
+        log.info("根据类目ID同步拼多多普通商品开始...");
+
+        Set<Integer> tagIds = new HashSet<>();
+
+        //查询父类目
+        Tag tag = new Tag();
+        tag.setParentId(0);
+        List<Tag> tags = tagMapper.findTagList(tag);
+        if(CollectionUtils.isEmpty(tags)){
+            log.error("normalGoodsSyncByTagIdTasks查询父类目失败");
+            return;
+        }
+
+        //查询子类目
+        for(Tag t : tags){
+            tagIds.add(t.getId());
+            tag = new Tag();
+            tag.setParentId(t.getId());
+            List<Tag> subTags = tagMapper.findTagList(tag);
+            if(CollectionUtils.isEmpty(subTags)){
+                log.error("normalGoodsSyncByTagIdTasks查询子类目失败");
+            }
+            for(Tag st : subTags){
+                tagIds.add(st.getId());
+            }
+        }
+        if(CollectionUtils.isEmpty(tagIds)){
+            log.error("normalGoodsSyncByTagIdTasks查询类目数据失败");
+            return;
+        }
+
+        //查询拼多多数据
+        for(Integer tagId : tagIds){
+            log.info("抓取数据tagId=" + tagId);
+            int pageNum = 1;
+            int totalCount = 0;
+            int totalPageNum = 0;
+
+            //获取商品总数量
+            GoodsQueryRo goodsQueryRo = new GoodsQueryRo();
+            goodsQueryRo.setSortType(0);
+            goodsQueryRo.setPageNum(pageNum);
+            goodsQueryRo.setPageSize(10);
+            goodsQueryRo.setTagId(tagId);
+            GoodsList.GoodsSearchResponse goodsSearchResponse = pddService.queryGoodsList(goodsQueryRo);
+            if (goodsSearchResponse == null || CollectionUtils.isEmpty(goodsSearchResponse.getGoodsList())) {
+                log.error("normalGoodsSyncByTagIdTasks fail,暂无普通商品数据");
+                continue;
+            }
+            totalCount = goodsSearchResponse.getTotalCount();
+            log.info("normalGoodsSyncByTagIdTasks普通商品总数量：" + totalCount);
+            if(totalCount <= 0){
+                log.error("normalGoodsSyncByTagIdTasks fail,totalCount=0");
+                continue;
+            }
+            totalPageNum = totalCount % NORMAL_PAGE_SIZE == 0 ? totalCount / NORMAL_PAGE_SIZE :
+                    (totalCount / NORMAL_PAGE_SIZE + 1);
+            List<Goods> goodsList;
+            List<Long> goodsIdList;
+            Goods goods;
+            while (pageNum <= totalPageNum) {
+                log.info("pageNum = " + pageNum + ",totalPageNum = " + totalPageNum);
+                goodsQueryRo = new GoodsQueryRo();
+                goodsQueryRo.setPageNum(pageNum);
+                goodsQueryRo.setPageSize(NORMAL_PAGE_SIZE);
+                goodsQueryRo.setSortType(0);
+                goodsQueryRo.setTagId(tagId);
+                goodsSearchResponse = pddService.queryGoodsList(goodsQueryRo);
+                if (goodsSearchResponse == null || CollectionUtils.isEmpty(goodsSearchResponse.getGoodsList())) {
+                    log.error("normalGoodsSyncByTagIdTasks fail,查询普通商品数据失败");
+                    pageNum = totalPageNum + 1;
+                    continue;
+                }
+                List<Good> goodList = goodsSearchResponse.getGoodsList();
+                goodsList = new ArrayList<>(NORMAL_PAGE_SIZE);
+                goodsIdList = new ArrayList<>(NORMAL_PAGE_SIZE);
+                for(Good good : goodList){
+                    goods = new Goods();
+                    goods = copyGoods(good, goods, 0);
+                    if(goods != null){
+                        goodsList.add(goods);
+                        goodsIdList.add(goods.getGoodsId());
+                    }
+                }
+                if(CollectionUtils.isNotEmpty(goodsList)){
+                    this.insertOrUpdate(goodsList, goodsIdList);
+                }
+                pageNum++;
+            }
+        }
+        log.info("根据类目ID同步拼多多普通商品结束...");
     }
 
     /**

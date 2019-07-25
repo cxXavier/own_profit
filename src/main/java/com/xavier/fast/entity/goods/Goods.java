@@ -73,7 +73,7 @@ public class Goods implements Serializable {
 
     private Long promotionRate;     // 佣金比例，千分比
 
-    private double goodsEvalScore;  // 商品评价分
+    private Double goodsEvalScore;  // 商品评价分
 
     private Long goodsEvalCount;   // 商品评价数量
 
@@ -85,11 +85,11 @@ public class Goods implements Serializable {
 
     private String catIds;  // 商品类目id
 
-    private double descPct;    // 描述分击败同类店铺百分比
+    private Double descPct;    // 描述分击败同类店铺百分比
 
-    private double lgstPct;    // 物流分击败同类店铺百分比
+    private Double lgstPct;    // 物流分击败同类店铺百分比
 
-    private double servPct;    // 服务分击败同类店铺百分比
+    private Double servPct;    // 服务分击败同类店铺百分比
 
     private String optIds;  // 商品标签id
 
@@ -348,11 +348,11 @@ public class Goods implements Serializable {
         this.promotionRate = promotionRate;
     }
 
-    public double getGoodsEvalScore() {
+    public Double getGoodsEvalScore() {
         return goodsEvalScore;
     }
 
-    public void setGoodsEvalScore(double goodsEvalScore) {
+    public void setGoodsEvalScore(Double goodsEvalScore) {
         this.goodsEvalScore = goodsEvalScore;
     }
 
@@ -396,27 +396,27 @@ public class Goods implements Serializable {
         this.catIds = catIds;
     }
 
-    public double getDescPct() {
+    public Double getDescPct() {
         return descPct;
     }
 
-    public void setDescPct(double descPct) {
+    public void setDescPct(Double descPct) {
         this.descPct = descPct;
     }
 
-    public double getLgstPct() {
+    public Double getLgstPct() {
         return lgstPct;
     }
 
-    public void setLgstPct(double lgstPct) {
+    public void setLgstPct(Double lgstPct) {
         this.lgstPct = lgstPct;
     }
 
-    public double getServPct() {
+    public Double getServPct() {
         return servPct;
     }
 
-    public void setServPct(double servPct) {
+    public void setServPct(Double servPct) {
         this.servPct = servPct;
     }
 

@@ -26,8 +26,8 @@
         <result column="coupon_discount" property="couponDiscount" jdbcType="INTEGER"/>
         <result column="coupon_total_quantity" property="couponTotalQuantity" jdbcType="INTEGER"/>
         <result column="coupon_remain_quantity" property="couponRemainQuantity" jdbcType="INTEGER"/>
-        <result column="coupon_end_time" property="couponEndTime" jdbcType="INTEGER"/>
-        <result column="coupon_start_time" property="couponStartTime" jdbcType="INTEGER"/>
+        <result column="coupon_end_time" property="couponEndTime" jdbcType="BIGINT"/>
+        <result column="coupon_start_time" property="couponStartTime" jdbcType="BIGINT"/>
         <result column="promotion_rate" property="promotionRate" jdbcType="INTEGER"/>
         <result column="goods_eval_score" property="goodsEvalScore" jdbcType="DOUBLE"/>
         <result column="goods_eval_count" property="goodsEvalCount" jdbcType="INTEGER"/>
@@ -41,7 +41,7 @@
         <result column="opt_ids" property="optIds" jdbcType="VARCHAR"/>
         <result column="is_hot" property="isHot" jdbcType="INTEGER"/>
         <result column="is_normal" property="isNormal" jdbcType="INTEGER"/>
-        <result column="create_at" property="createAt" jdbcType="INTEGER"/>
+        <result column="create_at" property="createAt" jdbcType="BIGINT"/>
         <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
         <result column="update_time" property="updateTime" jdbcType="TIMESTAMP"/>
     </resultMap>
@@ -135,10 +135,10 @@
             and coupon_remain_quantity = #{couponRemainQuantity,jdbcType=INTEGER}
         </if>
         <if test="couponEndTime != null">
-            and coupon_end_time = #{couponEndTime,jdbcType=INTEGER}
+            and coupon_end_time = #{couponEndTime,jdbcType=BIGINT}
         </if>
         <if test="couponStartTime != null">
-            and coupon_start_time = #{couponStartTime,jdbcType=INTEGER}
+            and coupon_start_time = #{couponStartTime,jdbcType=BIGINT}
         </if>
         <if test="promotionRate != null">
             and promotion_rate = #{promotionRate,jdbcType=INTEGER}
@@ -180,7 +180,7 @@
             and is_normal = #{isNormal,jdbcType=INTEGER}
         </if>
         <if test="createAt != null">
-            and create_at = #{createAt,jdbcType=INTEGER}
+            and create_at = #{createAt,jdbcType=BIGINT}
         </if>
         <if test="createTime != null">
             and CREATE_TIME = #{createTime,jdbcType=TIMESTAMP}
@@ -211,15 +211,15 @@
             #{optName,jdbcType=VARCHAR}, #{mallCps,jdbcType=INTEGER},
             #{hasCoupon,jdbcType=INTEGER}, #{couponMinOrderAmount,jdbcType=INTEGER},
             #{couponDiscount,jdbcType=INTEGER}, #{couponTotalQuantity,jdbcType=INTEGER},
-            #{couponRemainQuantity,jdbcType=INTEGER}, #{couponEndTime,jdbcType=INTEGER},
-            #{couponStartTime,jdbcType=INTEGER}, #{promotionRate,jdbcType=INTEGER},
+            #{couponRemainQuantity,jdbcType=INTEGER}, #{couponEndTime,jdbcType=BIGINT},
+            #{couponStartTime,jdbcType=BIGINT}, #{promotionRate,jdbcType=INTEGER},
             #{goodsEvalScore,jdbcType=DOUBLE}, #{goodsEvalCount,jdbcType=INTEGER},
             #{avgDesc,jdbcType=INTEGER}, #{avgLgst,jdbcType=INTEGER},
             #{avgServ,jdbcType=INTEGER}, #{catIds,jdbcType=VARCHAR},
             #{descPct,jdbcType=DOUBLE}, #{lgstPct,jdbcType=DOUBLE},
             #{servPct,jdbcType=DOUBLE}, #{optIds,jdbcType=VARCHAR},
             #{isHot,jdbcType=INTEGER}, #{isNormal,jdbcType=INTEGER},
-            #{createAt,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}
+            #{createAt,jdbcType=BIGINT}, #{createTime,jdbcType=TIMESTAMP}
         )
     </insert>
 
@@ -421,10 +421,10 @@
                 #{couponRemainQuantity,jdbcType=INTEGER},
             </if>
             <if test="couponEndTime != null">
-                #{couponEndTime,jdbcType=INTEGER},
+                #{couponEndTime,jdbcType=BIGINT},
             </if>
             <if test="couponStartTime != null">
-                #{couponStartTime,jdbcType=INTEGER},
+                #{couponStartTime,jdbcType=BIGINT},
             </if>
             <if test="promotionRate != null">
                 #{promotionRate,jdbcType=INTEGER},
@@ -466,7 +466,7 @@
                 #{isNormal,jdbcType=INTEGER},
             </if>
             <if test="createAt != null">
-                #{createAt,jdbcType=INTEGER},
+                #{createAt,jdbcType=BIGINT},
             </if>
             <if test="createTime != null">
                 #{createTime,jdbcType=TIMESTAMP},
@@ -594,10 +594,10 @@
                 coupon_remain_quantity = #{couponRemainQuantity,jdbcType=INTEGER},
             </if>
             <if test="couponEndTime != null">
-                coupon_end_time = #{couponEndTime,jdbcType=INTEGER},
+                coupon_end_time = #{couponEndTime,jdbcType=BIGINT},
             </if>
             <if test="couponStartTime != null">
-                coupon_start_time = #{couponStartTime,jdbcType=INTEGER},
+                coupon_start_time = #{couponStartTime,jdbcType=BIGINT},
             </if>
             <if test="promotionRate != null">
                 promotion_rate = #{promotionRate,jdbcType=INTEGER},
@@ -639,7 +639,7 @@
                 is_normal = #{isNormal,jdbcType=INTEGER},
             </if>
             <if test="createAt != null">
-                create_at = #{createAt,jdbcType=INTEGER},
+                create_at = #{createAt,jdbcType=BIGINT},
             </if>
             <if test="createTime != null">
                 CREATE_TIME = #{createTime,jdbcType=TIMESTAMP},
@@ -675,15 +675,15 @@
                 #{item.optName,jdbcType=VARCHAR}, #{item.mallCps,jdbcType=INTEGER},
                 #{item.hasCoupon,jdbcType=INTEGER}, #{item.couponMinOrderAmount,jdbcType=INTEGER},
                 #{item.couponDiscount,jdbcType=INTEGER}, #{item.couponTotalQuantity,jdbcType=INTEGER},
-                #{item.couponRemainQuantity,jdbcType=INTEGER}, #{item.couponEndTime,jdbcType=INTEGER},
-                #{item.couponStartTime,jdbcType=INTEGER}, #{item.promotionRate,jdbcType=INTEGER},
+                #{item.couponRemainQuantity,jdbcType=INTEGER}, #{item.couponEndTime,jdbcType=BIGINT},
+                #{item.couponStartTime,jdbcType=BIGINT}, #{item.promotionRate,jdbcType=INTEGER},
                 #{item.goodsEvalScore,jdbcType=DOUBLE}, #{item.goodsEvalCount,jdbcType=INTEGER},
                 #{item.avgDesc,jdbcType=INTEGER}, #{item.avgLgst,jdbcType=INTEGER},
                 #{item.avgServ,jdbcType=INTEGER}, #{item.catIds,jdbcType=VARCHAR},
                 #{item.descPct,jdbcType=DOUBLE}, #{item.lgstPct,jdbcType=DOUBLE},
                 #{item.servPct,jdbcType=DOUBLE}, #{item.optIds,jdbcType=VARCHAR},
                 #{item.isHot,jdbcType=INTEGER}, #{item.isNormal,jdbcType=INTEGER},
-                #{item.createAt,jdbcType=INTEGER}, #{item.createTime,jdbcType=TIMESTAMP}
+                #{item.createAt,jdbcType=BIGINT}, #{item.createTime,jdbcType=TIMESTAMP}
             )
         </foreach>
     </insert>
@@ -762,10 +762,10 @@
                     coupon_remain_quantity = #{item.couponRemainQuantity,jdbcType=INTEGER},
                 </if>
                 <if test="item.couponEndTime != null">
-                    coupon_end_time = #{item.couponEndTime,jdbcType=INTEGER},
+                    coupon_end_time = #{item.couponEndTime,jdbcType=BIGINT},
                 </if>
                 <if test="item.couponStartTime != null">
-                    coupon_start_time = #{item.couponStartTime,jdbcType=INTEGER},
+                    coupon_start_time = #{item.couponStartTime,jdbcType=BIGINT},
                 </if>
                 <if test="item.promotionRate != null">
                     promotion_rate = #{item.promotionRate,jdbcType=INTEGER},
@@ -807,7 +807,7 @@
                     is_normal = #{item.isNormal,jdbcType=INTEGER},
                 </if>
                 <if test="item.createAt != null">
-                    create_at = #{item.createAt,jdbcType=INTEGER},
+                    create_at = #{item.createAt,jdbcType=BIGINT},
                 </if>
                 <if test="item.createTime != null">
                     CREATE_TIME = #{item.createTime,jdbcType=TIMESTAMP},
