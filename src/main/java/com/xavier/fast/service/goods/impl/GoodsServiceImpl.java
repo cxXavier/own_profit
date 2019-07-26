@@ -153,12 +153,15 @@ public class GoodsServiceImpl implements IGoodsService {
         if(StringUtils.isNotBlank(keyword)){
             params.put("goodsName", keyword);
         }else{
-            if(tagLevel != null && tagLevel == 2){
+//            if(tagLevel != null && tagLevel == 2){
+//                params.put("optIds", tagId.toString());
+//            }else {
+//                if(tagId != null){
+//                    params.put("optId", tagId);
+//                }
+//            }
+            if(tagId != null){
                 params.put("optIds", tagId.toString());
-            }else {
-                if(tagId != null){
-                    params.put("optId", tagId);
-                }
             }
         }
         if(sortType != null){
@@ -192,12 +195,15 @@ public class GoodsServiceImpl implements IGoodsService {
         if(StringUtils.isNotBlank(keyword)){
             record.setGoodsName(keyword);
         }else{
-            if(tagLevel != null && tagLevel == 2){
+//            if(tagLevel != null && tagLevel == 2){
+//                record.setOptIds(tagId.toString());
+//            }else {
+//                if(tagId != null){
+//                    record.setOptId(tagId.longValue());
+//                }
+//            }
+            if(tagId != null){
                 record.setOptIds(tagId.toString());
-            }else {
-                if(tagId != null){
-                    record.setOptId(tagId.longValue());
-                }
             }
         }
         int totalCount = goodsMapper.queryTotalCount(record);

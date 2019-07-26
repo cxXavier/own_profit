@@ -163,7 +163,7 @@ public class GoodsSyncSchedule {
         log.info("同步拼多多普通商品结束...");
     }
 
-    @Scheduled(cron = "20 20 22 * * ?")
+    @Scheduled(cron = "20 14 23 * * ?")
     private void normalGoodsSyncByTagIdTasks() {
         log.info("根据类目ID同步拼多多普通商品开始...");
 
