@@ -34,7 +34,7 @@ import java.util.Map;
 @Service
 public class UserServiceImpl implements IUserService {
 
-    private final static int NEED_INVITE_USERS = 5;
+    private final static int NEED_INVITE_USERS = 3;
 
     @Resource
     private UserMapper userMapper;
@@ -55,7 +55,7 @@ public class UserServiceImpl implements IUserService {
         Map<String, Object> params = new HashMap<>();
         params.put("parentOpenid", openId);
         params.put("startRow", 0);
-        params.put("endRow", 5);
+        params.put("endRow", NEED_INVITE_USERS);
         List<User> userList = userMapper.getUserListByParams(params);
         if(CollectionUtils.isEmpty(userList)){
             userResponse.setNeedPeoples(NEED_INVITE_USERS);

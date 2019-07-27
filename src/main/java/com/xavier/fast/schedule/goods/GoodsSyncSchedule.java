@@ -49,7 +49,7 @@ public class GoodsSyncSchedule {
     @Autowired
     private TagMapper tagMapper;
 
-//    @Scheduled(cron = "0 0/20 * * * ?")
+    @Scheduled(cron = "0 0/20 * * * ?")
     private void hotGoodsSyncTasks() {
         log.info("同步拼多多热门商品开始...");
         int pageNum = 1;
@@ -106,7 +106,7 @@ public class GoodsSyncSchedule {
         log.info("同步拼多多热门商品结束...");
     }
 
-//    @Scheduled(cron = "0 0/20 * * * ?")
+    @Scheduled(cron = "0 0/20 * * * ?")
     private void normalGoodsSyncTasks() {
         log.info("同步拼多多普通商品开始...");
         int pageNum = 1;
@@ -163,7 +163,7 @@ public class GoodsSyncSchedule {
         log.info("同步拼多多普通商品结束...");
     }
 
-    @Scheduled(cron = "20 14 23 * * ?")
+//    @Scheduled(cron = "20 14 23 * * ?")
     private void normalGoodsSyncByTagIdTasks() {
         log.info("根据类目ID同步拼多多普通商品开始...");
 

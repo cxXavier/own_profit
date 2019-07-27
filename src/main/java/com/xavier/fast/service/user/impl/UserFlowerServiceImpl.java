@@ -86,6 +86,8 @@ public class UserFlowerServiceImpl implements IUserFlowerService {
             return RopResponse.createFailedRep("", "暂无徒弟", "1.0.0");
         }
 
+        response.setTotalPrentices(userList.size());
+
         //查询徒弟订单
         params.clear();
         params.put("parentOpenId", openId);

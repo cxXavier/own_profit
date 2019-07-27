@@ -69,30 +69,30 @@ public class LoginServiceImpl implements ILoginService {
             info = new User();
             info.setOpenid(vo.getOpenid());
             info.setUnionid(vo.getUnionid());
-            String inviteCode = dto.getInviteCode();
-            log.info("inviteCode=" + inviteCode);
-            //有邀请码时需要保留关联关系
-            if(StringUtils.isNotBlank(inviteCode)) {
-                User parentUser = userMapper.getUserByInviteCode(inviteCode);
-                if(null != parentUser){
-                    info.setParentOpenid(parentUser.getOpenid());
-                    info.setParentUnionid(parentUser.getUnionid());
-                    info.setGrandparentOpenid(parentUser.getParentOpenid());
-                    info.setGrandparentUnionid(parentUser.getGrandparentUnionid());
-                }
-            }
+//            String inviteCode = dto.getInviteCode();
+//            log.info("inviteCode=" + inviteCode);
+//            //有邀请码时需要保留关联关系
+//            if(StringUtils.isNotBlank(inviteCode)) {
+//                User parentUser = userMapper.getUserByInviteCode(inviteCode);
+//                if(null != parentUser){
+//                    info.setParentOpenid(parentUser.getOpenid());
+//                    info.setParentUnionid(parentUser.getUnionid());
+//                    info.setGrandparentOpenid(parentUser.getParentOpenid());
+//                    info.setGrandparentUnionid(parentUser.getGrandparentUnionid());
+//                }
+//            }
             userMapper.insertSelective(info);
             //每个人都生成一个邀请码
-            inviteCode = InviteCodeUtils.generate(info.getId());
+            String inviteCode = InviteCodeUtils.generate(info.getId());
             info.setInviteCode(inviteCode);
             userMapper.updateByPrimaryKeySelective(info);
         } else {
-            //有5个徒弟时，升级为VIP
+            //有3个徒弟时，升级为VIP
             if(info.getVip() == null || info.getVip().intValue() < 1){
                 Map<String, Object> params = new HashMap<>();
                 params.put("parentOpenid", info.getOpenid());
                 List<User> userList = userMapper.getUserListByParams(params);
-                if(CollectionUtils.isNotEmpty(userList) && userList.size() >= 5){
+                if(CollectionUtils.isNotEmpty(userList) && userList.size() >= 3){
                     info.setVip(1);
                 }
             }
@@ -118,6 +118,28 @@ public class LoginServiceImpl implements ILoginService {
             return RopResponse.createFailedRep("", "修改用户信息失败", "1.0.0");
         }
         return RopResponse.createSuccessRep("", "修改用户信息成功", "1.0.0", "");
+    }
+
+    @ApiMethod(method = "api.pinke.user.login.bindRelation", version = "1.0.0")
+    public RopResponse<String> bindRelation(RopRequestBody<RopLoginRequest> loginRequest) {
+        String inviteCode = loginRequest.getT().getInviteCode();
+        if(StringUtils.isBlank(inviteCode)){
+            return RopResponse.createFailedRep("", "inviteCode不能为空", "1.0.0");
+        }
+        User info = new User();
+        User parentUser = userMapper.getUserByInviteCode(inviteCode);
+        if(parentUser == null){
+            return RopResponse.createSuccessRep("", "无需绑定师徒关系", "1.0.0", "");
+        }
+        info.setParentOpenid(parentUser.getOpenid());
+        info.setParentUnionid(parentUser.getUnionid());
+        info.setGrandparentOpenid(parentUser.getParentOpenid());
+        info.setGrandparentUnionid(parentUser.getGrandparentUnionid());
+        int updateCount = userMapper.updateByPrimaryKeySelective(info);
+        if(updateCount <= 0){
+            return RopResponse.createFailedRep("", "绑定师徒关系失败", "1.0.0");
+        }
+        return RopResponse.createSuccessRep("", "绑定师徒关系成功", "1.0.0", "");
     }
 
     /**

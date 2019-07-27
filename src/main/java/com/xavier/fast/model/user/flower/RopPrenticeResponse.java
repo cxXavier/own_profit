@@ -22,6 +22,8 @@ public class RopPrenticeResponse implements Serializable {
      */
     private Integer totalFlowers;
 
+    private Integer totalPrentices;
+
     /**
      * 徒弟列表
      */
@@ -41,5 +43,13 @@ public class RopPrenticeResponse implements Serializable {
 
     public void setTotalFlowers(Integer totalFlowers) {
         this.totalFlowers = totalFlowers;
+    }
+
+    public Integer getTotalPrentices() {
+        return totalPrentices;
+    }
+
+    public void setTotalPrentices(Integer totalPrentices) {
+        this.totalPrentices = totalPrentices;
     }
 }

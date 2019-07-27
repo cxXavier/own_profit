@@ -14,4 +14,6 @@ public interface ILoginService {
 
     public RopResponse<String> updateUser(RopRequestBody<RopUserRequest> loginRequest);
 
+    public RopResponse<String> bindRelation(RopRequestBody<RopLoginRequest> loginRequest);
+
 }

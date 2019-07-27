@@ -143,7 +143,6 @@ public class GoodsServiceImpl implements IGoodsService {
         Integer tagId = goodsRequest.getT().getTagId();
         Integer sortType = goodsRequest.getT().getSortType();
         String keyword = goodsRequest.getT().getKeyword();
-        Integer tagLevel = goodsRequest.getT().getTagLevel();
 
         int pageNum = goodsRequest.getT().getPageNum();
         int startRow = pageNum == 1 ? 0 : (pageNum - 1) * PAGE_SIZE;
@@ -153,13 +152,6 @@ public class GoodsServiceImpl implements IGoodsService {
         if(StringUtils.isNotBlank(keyword)){
             params.put("goodsName", keyword);
         }else{
-//            if(tagLevel != null && tagLevel == 2){
-//                params.put("optIds", tagId.toString());
-//            }else {
-//                if(tagId != null){
-//                    params.put("optId", tagId);
-//                }
-//            }
             if(tagId != null){
                 params.put("optIds", tagId.toString());
             }
@@ -195,13 +187,6 @@ public class GoodsServiceImpl implements IGoodsService {
         if(StringUtils.isNotBlank(keyword)){
             record.setGoodsName(keyword);
         }else{
-//            if(tagLevel != null && tagLevel == 2){
-//                record.setOptIds(tagId.toString());
-//            }else {
-//                if(tagId != null){
-//                    record.setOptId(tagId.longValue());
-//                }
-//            }
             if(tagId != null){
                 record.setOptIds(tagId.toString());
             }
