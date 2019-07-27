@@ -50,29 +50,32 @@ public class GoodsSyncSchedule {
     private TagMapper tagMapper;
 
     @Scheduled(cron = "0 0/20 * * * ?")
+//    @Scheduled(cron = "30 27 23 * * ?")
     private void hotGoodsSyncTasks() {
         log.info("同步拼多多热门商品开始...");
         int pageNum = 1;
         int totalCount = 0;
-        int totalPageNum = 0;
+        int totalPageNum = 100;
 
-        //获取商品总数量
+//        //获取商品总数量
         HotGoodsQueryRo goodsQueryRo = new HotGoodsQueryRo();
-        goodsQueryRo.setPageNum(pageNum);
-        goodsQueryRo.setPageSize(10);
-        goodsQueryRo.setType(1);
-        HotGoodsList.HotGoodsSearchResponse goodsSearchResponse = pddService.queryHotGoods(goodsQueryRo);
-        if (goodsSearchResponse == null || CollectionUtils.isEmpty(goodsSearchResponse.getGoodsList())) {
-            log.error("hotGoodsSyncTasks fail,暂无热门商品数据");
-            return;
-        }
-        totalCount = goodsSearchResponse.getTotalCount();
-        log.info("热门商品总数量：" + totalCount);
-        if(totalCount <= 0){
-            log.error("hotGoodsSyncTasks fail,totalCount=0");
-            return;
-        }
-        totalPageNum = totalCount % HOT_PAGE_SIZE == 0 ? totalCount / HOT_PAGE_SIZE : (totalCount / HOT_PAGE_SIZE + 1);
+//        goodsQueryRo.setPageNum(pageNum);
+//        goodsQueryRo.setPageSize(10);
+//        goodsQueryRo.setType(1);
+//        HotGoodsList.HotGoodsSearchResponse goodsSearchResponse = pddService.queryHotGoods(goodsQueryRo);
+//        if (goodsSearchResponse == null || CollectionUtils.isEmpty(goodsSearchResponse.getGoodsList())) {
+//            log.error("hotGoodsSyncTasks fail,暂无热门商品数据");
+//            return;
+//        }
+//        totalCount = goodsSearchResponse.getTotalCount();
+//        log.info("热门商品总数量：" + totalCount);
+//        if(totalCount <= 0){
+//            log.error("hotGoodsSyncTasks fail,totalCount=0");
+//            return;
+//        }
+//        totalPageNum = totalCount % HOT_PAGE_SIZE == 0 ? totalCount / HOT_PAGE_SIZE : (totalCount / HOT_PAGE_SIZE + 1);
+
+        HotGoodsList.HotGoodsSearchResponse goodsSearchResponse;
         List<Goods> goodsList;
         List<Long> goodsIdList;
         Goods goods;
@@ -106,7 +109,8 @@ public class GoodsSyncSchedule {
         log.info("同步拼多多热门商品结束...");
     }
 
-    @Scheduled(cron = "0 0/20 * * * ?")
+//    @Scheduled(cron = "0 0/20 * * * ?")
+    @Scheduled(cron = "20 15 23 * * ?")
     private void normalGoodsSyncTasks() {
         log.info("同步拼多多普通商品开始...");
         int pageNum = 1;
@@ -163,7 +167,7 @@ public class GoodsSyncSchedule {
         log.info("同步拼多多普通商品结束...");
     }
 
-//    @Scheduled(cron = "20 14 23 * * ?")
+    @Scheduled(cron = "0 30 2 * * ?")
     private void normalGoodsSyncByTagIdTasks() {
         log.info("根据类目ID同步拼多多普通商品开始...");
 
@@ -276,7 +280,7 @@ public class GoodsSyncSchedule {
         target.setGoodsThumbnailUrl(source.getGoodsThumbnailUrl());
         target.setGoodsImageUrl(source.getGoodsImageUrl());
         target.setGoodsGalleryUrls(this.convertStrListToString(source.getGoodsGalleryUrls()));
-        target.setSoldQuantity(source.getSoldQuantity());
+        target.setSoldQuantity(source.getSoldNum());
         target.setMinGroupPrice(source.getMinGroupPrice());
         target.setMinNormalPrice(source.getMinNormalPrice());
         target.setMallId(source.getMallId());
@@ -298,9 +302,9 @@ public class GoodsSyncSchedule {
         target.setPromotionRate(source.getPromotionRate());
         target.setGoodsEvalScore(source.getGoodsEvalScore());
         target.setGoodsEvalCount(source.getGoods_eval_count());
-        target.setAvgDesc(source.getAvgDesc());
-        target.setAvgLgst(source.getAvgLgst());
-        target.setAvgServ(source.getAvgServ());
+        target.setAvgDesc(getScore(source.getAvgDesc()));
+        target.setAvgLgst(getScore(source.getAvgLgst()));
+        target.setAvgServ(getScore(source.getAvgServ()));
         target.setCatIds(this.convertIntListToString(source.getCatIds()));
         target.setDescPct(source.getDescPct());
         target.setLgstPct(source.getLgstPct());
@@ -399,6 +403,17 @@ public class GoodsSyncSchedule {
             }
         }
         return false;
+    }
+
+    private Long getScore(String scoreCnName){
+        if("高".equals(scoreCnName)){
+            return 3L;
+        }else if("中".equals(scoreCnName)){
+            return 2L;
+        }else if("低".equals(scoreCnName)){
+            return 1L;
+        }
+        return 0L;
     }
 
 }

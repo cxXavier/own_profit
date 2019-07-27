@@ -4,6 +4,7 @@ import com.alibaba.fastjson.annotation.JSONField;
 import com.xavier.fast.utils.CalFlowerUtils;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 
 import java.io.Serializable;
 import java.util.List;
@@ -37,8 +38,8 @@ public class Good implements Serializable {
     @JSONField(name = "goods_gallery_urls")
     private List<String> goodsGalleryUrls;    // 商品轮播图
 
-    @JSONField(name = "sold_quantity")
-    private Long soldQuantity;  // 已售卖件数
+    @JSONField(name = "sales_tip")
+    private String soldQuantity;  // 已售卖件数
 
     @JSONField(name = "min_group_price")
     private Long minGroupPrice;  // 最小拼团价（单位为分）
@@ -103,14 +104,14 @@ public class Good implements Serializable {
     @JSONField(name = "goods_eval_count")
     private Long goods_eval_count;   // 商品评价数量
 
-    @JSONField(name = "avg_desc")
-    private Long avgDesc;    // 描述评分
+    @JSONField(name = "desc_txt")
+    private String avgDesc;    // 描述评分
 
-    @JSONField(name = "avg_lgst")
-    private Long avgLgst;    // 物流评分
+    @JSONField(name = "lgst_txt")
+    private String avgLgst;    // 物流评分
 
-    @JSONField(name = "avg_serv")
-    private Long avgServ;    // 服务评分
+    @JSONField(name = "serv_txt")
+    private String avgServ;    // 服务评分
 
     @JSONField(name = "cat_ids")
     private List<Integer> catIds;  // 商品类目id
@@ -126,6 +127,8 @@ public class Good implements Serializable {
 
     @JSONField(name = "opt_ids")
     private List<Integer> optIds;  // 商品标签id
+
+    private Long soldNum;
 
     /**
      * 贡献鲜花数
@@ -198,11 +201,11 @@ public class Good implements Serializable {
         this.goodsGalleryUrls = goodsGalleryUrls;
     }
 
-    public Long getSoldQuantity() {
+    public String getSoldQuantity() {
         return soldQuantity;
     }
 
-    public void setSoldQuantity(Long soldQuantity) {
+    public void setSoldQuantity(String soldQuantity) {
         this.soldQuantity = soldQuantity;
     }
 
@@ -374,27 +377,27 @@ public class Good implements Serializable {
         this.goods_eval_count = goods_eval_count;
     }
 
-    public Long getAvgDesc() {
+    public String getAvgDesc() {
         return avgDesc;
     }
 
-    public void setAvgDesc(Long avgDesc) {
+    public void setAvgDesc(String avgDesc) {
         this.avgDesc = avgDesc;
     }
 
-    public Long getAvgLgst() {
+    public String getAvgLgst() {
         return avgLgst;
     }
 
-    public void setAvgLgst(Long avgLgst) {
+    public void setAvgLgst(String avgLgst) {
         this.avgLgst = avgLgst;
     }
 
-    public Long getAvgServ() {
+    public String getAvgServ() {
         return avgServ;
     }
 
-    public void setAvgServ(Long avgServ) {
+    public void setAvgServ(String avgServ) {
         this.avgServ = avgServ;
     }
 
@@ -460,5 +463,22 @@ public class Good implements Serializable {
 
     public void setPriceAfterCoupon(Long priceAfterCoupon) {
         this.priceAfterCoupon = priceAfterCoupon;
+    }
+
+    public Long getSoldNum() {
+        if(StringUtils.isNotBlank(this.getSoldQuantity())){
+            String soldQuantity = this.getSoldQuantity().replace("+", "");
+            if(soldQuantity.contains("万")){
+                Double num = Double.valueOf(soldQuantity.substring(0, soldQuantity.indexOf("万"))) * 10000;
+                return num.longValue();
+            }else{
+                return Long.valueOf(soldQuantity);
+            }
+        }
+        return soldNum;
+    }
+
+    public void setSoldNum(Long soldNum) {
+        this.soldNum = soldNum;
     }
 }

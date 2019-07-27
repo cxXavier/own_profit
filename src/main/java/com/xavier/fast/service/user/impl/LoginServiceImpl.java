@@ -11,6 +11,7 @@ import com.xavier.fast.entity.user.UserVo;
 import com.xavier.fast.entity.user.WechatLoginReturn;
 import com.xavier.fast.model.base.RopRequestBody;
 import com.xavier.fast.model.base.RopResponse;
+import com.xavier.fast.model.user.login.RopBindRequest;
 import com.xavier.fast.model.user.login.RopLoginRequest;
 import com.xavier.fast.model.user.login.RopLoginResponse;
 import com.xavier.fast.model.user.login.RopUserRequest;
@@ -121,7 +122,7 @@ public class LoginServiceImpl implements ILoginService {
     }
 
     @ApiMethod(method = "api.pinke.user.login.bindRelation", version = "1.0.0")
-    public RopResponse<String> bindRelation(RopRequestBody<RopLoginRequest> loginRequest) {
+    public RopResponse<String> bindRelation(RopRequestBody<RopBindRequest> loginRequest) {
         String inviteCode = loginRequest.getT().getInviteCode();
         if(StringUtils.isBlank(inviteCode)){
             return RopResponse.createFailedRep("", "inviteCode不能为空", "1.0.0");
