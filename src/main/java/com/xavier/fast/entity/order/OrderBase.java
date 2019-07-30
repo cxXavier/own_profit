@@ -72,6 +72,7 @@ public class OrderBase implements Serializable {
      */
     public static enum ORDER_STATUS{
         wait_receive("1", "WAITRECEIVE", "待收货"),
+        received("2", "RECEIVED", "确认收货"),//拼多多待结算
         //待结算=拼多多已结算+暂不可提现
         wait_settle("11", "WAITSETTLE", "待结算"),
         invalidate("4", "INVALIDATE", "已失效"),

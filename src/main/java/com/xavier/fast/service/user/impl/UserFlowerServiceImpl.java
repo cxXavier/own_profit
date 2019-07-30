@@ -99,7 +99,7 @@ public class UserFlowerServiceImpl implements IUserFlowerService {
         List<Prentice> prenticeList = new ArrayList<>();
         Prentice prentice;
 
-        //添加用户信息、贡献鲜花数、待结算鲜花数
+        //添加用户信息、贡献鲜花数、待生效鲜花数
         for(User u : userList){
             prentice = new Prentice();
             prentice.setAvatar(u.getAvatar());
@@ -214,8 +214,15 @@ public class UserFlowerServiceImpl implements IUserFlowerService {
             return 0;
         }
         int result = 0;
+        //徒弟待生效花朵=拼多多待收货+拼多多待结算+拼多多已结算，我方未结算
         for(Order o : orderList){
-            if(OrderBase.ORDER_STATUS.settled.getCode().equals(o.getOrderStatus())
+            if(OrderBase.ORDER_STATUS.wait_receive.getCode().equals(o.getOrderStatus())
+                    && openId.equals(o.getOpenId())){
+                result += o.getContributionFlower();
+            }else if(OrderBase.ORDER_STATUS.received.getCode().equals(o.getOrderStatus())
+                    && openId.equals(o.getOpenId())){
+                result += o.getContributionFlower();
+            }else if(OrderBase.ORDER_STATUS.settled.getCode().equals(o.getOrderStatus())
                     && o.getCashBackStatus() == null && openId.equals(o.getOpenId())){
                 result += o.getContributionFlower();
             }
