@@ -93,7 +93,7 @@ public class OrderServiceImpl extends BaseServiceImpl implements IOrderService {
         record.setDuoCouponAmount(priceAfterCoupon);
         record.setCreateTime(new Date());
         record.setContributionFlower(CalFlowerUtils.calContributionFlower(priceAfterCoupon));
-        if(StringUtils.isBlank(user.getParentOpenid())){
+        if(StringUtils.isNotBlank(user.getParentOpenid())){
             record.setParentOpenId(user.getParentOpenid());
         }
         int count = orderMapper.insertSelective(record);
