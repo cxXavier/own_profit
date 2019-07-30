@@ -66,6 +66,8 @@ public class MyOrder implements Serializable {
      */
     private Date orderCreateTime;
 
+    private String orderCreateTimeStr;
+
     /**
      * 提现需要鲜花数
      */
@@ -173,5 +175,13 @@ public class MyOrder implements Serializable {
 
     public void setCashCostFlower(Integer cashCostFlower) {
         this.cashCostFlower = cashCostFlower;
+    }
+
+    public String getOrderCreateTimeStr() {
+        return orderCreateTimeStr;
+    }
+
+    public void setOrderCreateTimeStr(String orderCreateTimeStr) {
+        this.orderCreateTimeStr = orderCreateTimeStr;
     }
 }

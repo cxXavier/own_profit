@@ -516,4 +516,19 @@ public class DateUtil {
             return null;
         }
     }
+
+    public static Date formatDate(Date date, String pattern){
+        pattern = StringUtils.isBlank(pattern) ? "yyyy-MM-dd HH:mm:ss" : pattern;
+        if(date == null){
+            return null;
+        }
+        SimpleDateFormat formate = new SimpleDateFormat(pattern);
+        try {
+            Date result = formate.parse(formate.format(date));
+            return result;
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 }

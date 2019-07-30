@@ -137,7 +137,7 @@
             and UPDATE_TIME = #{updateTime,jdbcType=TIMESTAMP}
         </if>
         <if test="queryAll != null and queryAll != ''">
-            and ((ORDER_STATUS IN ('1','4','5')) OR CASH_BACK_STATUS is not null)
+            and ((ORDER_STATUS IN ('1','2','4','5')) OR CASH_BACK_STATUS is not null)
         </if>
         <if test="openIds != null">
             and OPEN_ID IN

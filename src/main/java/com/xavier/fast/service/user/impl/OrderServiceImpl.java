@@ -20,6 +20,7 @@ import com.xavier.fast.model.user.order.*;
 import com.xavier.fast.service.pdd.IpddService;
 import com.xavier.fast.service.user.IOrderService;
 import com.xavier.fast.utils.CalFlowerUtils;
+import com.xavier.fast.utils.DateUtil;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -268,6 +269,9 @@ public class OrderServiceImpl extends BaseServiceImpl implements IOrderService {
             }
             prenticeOrder.setNotice(OrderBase.ORDER_STATUS.wait_receive.getCode().equals(o.getOrderStatus()));
             prenticeOrder.setOrderCreateTime(o.getOrderCreateTime());
+            if(o.getOrderCreateTime() != null){
+                prenticeOrder.setOrderCreateTimeStr(DateUtil.dateToFormat(o.getOrderCreateTime(), "yyyy-MM-dd HH:mm:ss"));
+            }
             prenticeOrders.add(prenticeOrder);
         }
         return prenticeOrders;
@@ -290,6 +294,9 @@ public class OrderServiceImpl extends BaseServiceImpl implements IOrderService {
         for(Order o : orderList){
             myOrder = new MyOrder();
             BeanUtils.copyProperties(o, myOrder);
+            if(o.getOrderCreateTime() != null){
+                myOrder.setOrderCreateTimeStr(DateUtil.dateToFormat(o.getOrderCreateTime(), "yyyy-MM-dd HH:mm:ss"));
+            }
             if(o.getCashBackStatus() != null){
                 if(o.getCashBackStatus() == OrderBase.ORDER_CASH_STATUS.cash_back_fail.getCode()){
                     //提现中-提现失败
@@ -302,6 +309,10 @@ public class OrderServiceImpl extends BaseServiceImpl implements IOrderService {
                     myOrder.setShowOrderStatus(OrderBase.SHOW_ORDER_STATUS.cash_back_success.getCode());
                 }else{
                     myOrder.setShowOrderStatus(o.getOrderStatus());
+                }
+            }else{
+                if(OrderBase.ORDER_STATUS.settled.getCode().equals(o.getOrderStatus())){
+                    myOrder.setShowOrderStatus(OrderBase.SHOW_ORDER_STATUS.wait_settle.getCode());
                 }
             }
             myOrders.add(myOrder);

@@ -98,6 +98,8 @@ public class GoodsServiceImpl implements IGoodsService {
         params.put("isHot", 1);
         params.put("startRow", startRow);
         params.put("endRow", PAGE_SIZE);
+        params.put("orderBy", "sold_quantity");
+        params.put("sortBy", "DESC");
         List<Goods> goodsList = goodsMapper.findGoodsListByParams(params);
         if(CollectionUtils.isEmpty(goodsList)){
             return RopResponse.createFailedRep("", "获取热门商品失败", "1.0.0");

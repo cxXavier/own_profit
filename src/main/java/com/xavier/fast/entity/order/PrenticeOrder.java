@@ -33,6 +33,8 @@ public class PrenticeOrder implements Serializable {
      */
     private Date orderCreateTime;
 
+    private String orderCreateTimeStr;
+
     private Boolean notice;
 
     public String getAvatar() {
@@ -89,5 +91,13 @@ public class PrenticeOrder implements Serializable {
 
     public void setNotice(Boolean notice) {
         this.notice = notice;
+    }
+
+    public String getOrderCreateTimeStr() {
+        return orderCreateTimeStr;
+    }
+
+    public void setOrderCreateTimeStr(String orderCreateTimeStr) {
+        this.orderCreateTimeStr = orderCreateTimeStr;
     }
 }
