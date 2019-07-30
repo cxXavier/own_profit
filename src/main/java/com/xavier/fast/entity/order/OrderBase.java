@@ -74,6 +74,7 @@ public class OrderBase implements Serializable {
         wait_receive("1", "WAITRECEIVE", "待收货"),
         received("2", "RECEIVED", "确认收货"),//拼多多待结算
         //待结算=拼多多已结算+暂不可提现
+        audit_success("3", "AUDIT_SUCCESS", "审核成功"),//前台显示待结算
         wait_settle("11", "WAITSETTLE", "待结算"),
         invalidate("4", "INVALIDATE", "已失效"),
         settled("5", "settled", "已结算");

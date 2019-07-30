@@ -51,7 +51,8 @@
         <if test="orderStatus != null">
             <choose>
                 <when test="orderStatus == '11'">
-                    and ORDER_STATUS = '5' and CASH_BACK_STATUS is null
+                    or ORDER_STATUS = '2' or ORDER_STATUS = '3'
+                    or (ORDER_STATUS = '5' and CASH_BACK_STATUS is null)
                 </when>
                 <otherwise>
                     and ORDER_STATUS = #{orderStatus,jdbcType=VARCHAR}
@@ -137,7 +138,7 @@
             and UPDATE_TIME = #{updateTime,jdbcType=TIMESTAMP}
         </if>
         <if test="queryAll != null and queryAll != ''">
-            and ((ORDER_STATUS IN ('1','2','4','5')) OR CASH_BACK_STATUS is not null)
+            and ((ORDER_STATUS IN ('1','2','3','4','5')) OR CASH_BACK_STATUS is not null)
         </if>
         <if test="openIds != null">
             and OPEN_ID IN

@@ -137,7 +137,7 @@ public class OrderServiceImpl extends BaseServiceImpl implements IOrderService {
         order.setEndRow(PAGE_SIZE);
 
         List<Order> orderList = orderMapper.findOrderList(order);
-        List<PrenticeOrder> prenticeOrders = getPrenticeOrder(orderList);
+        List<PrenticeOrder> prenticeOrders = this.getPrenticeOrder(orderList);
 
         if(CollectionUtils.isEmpty(prenticeOrders)){
             return RopResponse.createSuccessRep("", "暂无订单", "1.0.0", null);
@@ -174,7 +174,7 @@ public class OrderServiceImpl extends BaseServiceImpl implements IOrderService {
 
         List<Order> orderList = orderMapper.findOrderList(order);
 
-        List<MyOrder> myOrders = getMyOrder(orderList);
+        List<MyOrder> myOrders = this.getMyOrder(orderList);
         if(CollectionUtils.isEmpty(myOrders)){
             return RopResponse.createFailedRep("", "暂无订单", "1.0.0");
         }
@@ -261,10 +261,15 @@ public class OrderServiceImpl extends BaseServiceImpl implements IOrderService {
             prenticeOrder.setOrderStatus(o.getOrderStatus());
             prenticeOrder.setShowOrderStatus(o.getOrderStatus());
             if(o.getCashBackStatus() != null){
-                int status = o.getCashBackStatus();
                 //如果是待提现，代表订单状态为已生效
-                if(status == OrderBase.ORDER_CASH_STATUS.wait_cash_back.getCode()){
+                if(o.getCashBackStatus().intValue() == OrderBase.ORDER_CASH_STATUS.wait_cash_back.getCode()){
                     prenticeOrder.setShowOrderStatus(OrderBase.SHOW_ORDER_STATUS.validate.getCode());
+                }
+            }else{
+                //拼多多已结算且我方未结算、拼多多审核通过，前台都显示待结算
+                if(OrderBase.ORDER_STATUS.settled.getCode().equals(o.getOrderStatus())
+                        || OrderBase.ORDER_STATUS.audit_success.getCode().equals(o.getOrderStatus())){
+                    prenticeOrder.setShowOrderStatus(OrderBase.SHOW_ORDER_STATUS.wait_settle.getCode());
                 }
             }
             prenticeOrder.setNotice(OrderBase.ORDER_STATUS.wait_receive.getCode().equals(o.getOrderStatus()));
@@ -311,7 +316,10 @@ public class OrderServiceImpl extends BaseServiceImpl implements IOrderService {
                     myOrder.setShowOrderStatus(o.getOrderStatus());
                 }
             }else{
-                if(OrderBase.ORDER_STATUS.settled.getCode().equals(o.getOrderStatus())){
+                //拼多多已结算且我方未结算、拼多多审核通过，前台都显示待结算
+                if(OrderBase.ORDER_STATUS.settled.getCode().equals(o.getOrderStatus())
+                        || OrderBase.ORDER_STATUS.received.getCode().equals(o.getOrderStatus())
+                        || OrderBase.ORDER_STATUS.audit_success.getCode().equals(o.getOrderStatus())){
                     myOrder.setShowOrderStatus(OrderBase.SHOW_ORDER_STATUS.wait_settle.getCode());
                 }
             }

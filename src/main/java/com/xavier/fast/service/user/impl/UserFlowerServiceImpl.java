@@ -107,7 +107,7 @@ public class UserFlowerServiceImpl implements IUserFlowerService {
             prentice.setOpenid(u.getOpenid());
             prentice.setUnionid(u.getUnionid());
             prentice.setContributionFlower(this.getContributionFlowers(orderList, u.getOpenid()));
-            prentice.setWaitSettleFlower(this.getWaitSettleFlowers(orderList, u.getOpenid()));
+            prentice.setWaitSettleFlower(this.getWaitValidateFlowers(orderList, u.getOpenid()));
             prentice.setNotice(isNotice(orderList, u.getOpenid()));
             prenticeList.add(prentice);
         }
@@ -163,21 +163,24 @@ public class UserFlowerServiceImpl implements IUserFlowerService {
         response.setSpendableFlowers(sf);
 
         //获取待结算鲜花
+        //查询所有徒弟订单
         Order order = new Order();
         order.setParentOpenId(openId);
-        order.setOrderStatus(OrderBase.ORDER_STATUS.settled.getCode());
         List<Order> orderList = orderMapper.findOrderList(order);
         if(CollectionUtils.isEmpty(orderList)){
-            log.warn("暂无待结算鲜花,openId=" + openId);
+            log.warn("暂无徒弟订单,openId=" + openId);
         }
+        //计算待结算鲜花
         int wf = this.getWaitSettleFlower(orderList);
         response.setWaitSettleFlowers(wf);
 
-        //设置预估鲜花 = 可使用鲜花 + 待结算鲜花
-        int ef = sf + wf;
+        //设置预估鲜花 = 可使用鲜花 + 待生效鲜花
+        //计算待生效鲜花
+        int wvf = this.getWaitValidateFlowersWithOutOpenId(orderList);
+        int ef = sf + wvf;
         response.setEstimateFlowers(ef);
 
-        log.info("可使用鲜花:" + sf + ",待结算鲜花:" + wf + ",预估鲜花:" + ef + ",openId=" + openId);
+        log.info("可使用鲜花:" + sf + ",待结算鲜花:" + wf + ",待生效鲜花:" + wvf + ",预估鲜花:" + ef + ",openId=" + openId);
 
         return RopResponse.createSuccessRep("", "归总鲜花数量成功", "1.0.0", response);
     }
@@ -209,12 +212,12 @@ public class UserFlowerServiceImpl implements IUserFlowerService {
      * @param openId
      * @return
      */
-    private int getWaitSettleFlowers(List<Order> orderList, String openId){
+    private int getWaitValidateFlowers(List<Order> orderList, String openId){
         if(CollectionUtils.isEmpty(orderList)){
             return 0;
         }
         int result = 0;
-        //徒弟待生效花朵=拼多多待收货+拼多多待结算+拼多多已结算，我方未结算
+        //徒弟待生效花朵=拼多多待收货+拼多多待结算(拼多多已收货+拼多多审核通过)+拼多多已结算，我方未结算
         for(Order o : orderList){
             if(OrderBase.ORDER_STATUS.wait_receive.getCode().equals(o.getOrderStatus())
                     && openId.equals(o.getOpenId())){
@@ -222,8 +225,37 @@ public class UserFlowerServiceImpl implements IUserFlowerService {
             }else if(OrderBase.ORDER_STATUS.received.getCode().equals(o.getOrderStatus())
                     && openId.equals(o.getOpenId())){
                 result += o.getContributionFlower();
+            }else if(OrderBase.ORDER_STATUS.audit_success.getCode().equals(o.getOrderStatus())
+                    && openId.equals(o.getOpenId())){
+                result += o.getContributionFlower();
             }else if(OrderBase.ORDER_STATUS.settled.getCode().equals(o.getOrderStatus())
                     && o.getCashBackStatus() == null && openId.equals(o.getOpenId())){
+                result += o.getContributionFlower();
+            }
+        }
+        return result;
+    }
+
+    /**
+     * 获取徒弟待生效花朵
+     * @param orderList
+     * @return
+     */
+    private int getWaitValidateFlowersWithOutOpenId(List<Order> orderList){
+        if(CollectionUtils.isEmpty(orderList)){
+            return 0;
+        }
+        int result = 0;
+        //徒弟待生效花朵=拼多多待收货+拼多多待结算(拼多多已收货+拼多多审核通过)+拼多多已结算，我方未结算
+        for(Order o : orderList){
+            if(OrderBase.ORDER_STATUS.wait_receive.getCode().equals(o.getOrderStatus())){
+                result += o.getContributionFlower();
+            }else if(OrderBase.ORDER_STATUS.received.getCode().equals(o.getOrderStatus())){
+                result += o.getContributionFlower();
+            }else if(OrderBase.ORDER_STATUS.audit_success.getCode().equals(o.getOrderStatus())){
+                result += o.getContributionFlower();
+            }else if(OrderBase.ORDER_STATUS.settled.getCode().equals(o.getOrderStatus())
+                    && o.getCashBackStatus() == null){
                 result += o.getContributionFlower();
             }
         }
@@ -239,9 +271,18 @@ public class UserFlowerServiceImpl implements IUserFlowerService {
      * @date        2019/7/3 0:57
      */
     private int getWaitSettleFlower(List<Order> orderList){
+        if(CollectionUtils.isEmpty(orderList)){
+            return 0;
+        }
         int result = 0;
+        //徒弟待结算花朵=拼多多待结算(拼多多已收货+拼多多审核通过)+拼多多已结算，我方未结算
         for(Order o : orderList){
-            if(o.getCashBackStatus() == null){
+            if(OrderBase.ORDER_STATUS.received.getCode().equals(o.getOrderStatus())){
+                result += o.getContributionFlower();
+            }else if(OrderBase.ORDER_STATUS.audit_success.getCode().equals(o.getOrderStatus())){
+                result += o.getContributionFlower();
+            }else if(OrderBase.ORDER_STATUS.settled.getCode().equals(o.getOrderStatus())
+                    && o.getCashBackStatus() == null){
                 result += o.getContributionFlower();
             }
         }
