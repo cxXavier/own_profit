@@ -1,6 +1,8 @@
 package com.xavier.fast.model.user.login;
 
 import com.xavier.fast.annotation.validate.NotEmpty;
+import com.xavier.fast.annotation.validate.NotNull;
+import com.xavier.fast.annotation.validate.NotZero;
 import com.xavier.fast.model.base.RopRequest;
 
 /**
@@ -14,6 +16,10 @@ import com.xavier.fast.model.base.RopRequest;
 */
 public class RopBindRequest extends RopRequest {
     private static final long serialVersionUID = -9095901388832441258L;
+
+    @NotNull(message = "userId不能为空")
+    @NotZero(message = "userId必须大于零")
+    private Integer uId;
 
     private String code;
 
@@ -35,6 +41,14 @@ public class RopBindRequest extends RopRequest {
     private String inviteCode;
 
     private String mobile;
+
+    public Integer getuId() {
+        return uId;
+    }
+
+    public void setuId(Integer uId) {
+        this.uId = uId;
+    }
 
     public String getCode() {
         return code;

@@ -132,6 +132,7 @@ public class LoginServiceImpl implements ILoginService {
         if(parentUser == null){
             return RopResponse.createSuccessRep("", "无需绑定师徒关系", "1.0.0", "");
         }
+        info.setId(loginRequest.getT().getuId().longValue());
         info.setParentOpenid(parentUser.getOpenid());
         info.setParentUnionid(parentUser.getUnionid());
         info.setGrandparentOpenid(parentUser.getParentOpenid());
