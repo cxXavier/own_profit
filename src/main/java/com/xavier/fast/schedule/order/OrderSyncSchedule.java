@@ -55,19 +55,19 @@ public class OrderSyncSchedule {
     private IPushService pushService;
 
     /**
-     * 每30秒执行一次
+     * 每30秒执行一次，同步5分钟内的订单
      */
 //    @Scheduled(cron = "0 0/30 * * * ?")
     @Scheduled(cron = "0/30 * * * * ?")
     private void orderSyncTasks() {
-        log.info("同步拼多多订单开始");
+        log.info("orderSyncTasks 同步5分钟内拼多多订单开始");
 
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
-        //当前时间往前推50秒
+        //当前时间往前推5分钟
         Calendar c = Calendar.getInstance();
         c.setTimeInMillis(System.currentTimeMillis());
-        c.add(Calendar.SECOND, -50);
+        c.add(Calendar.MINUTE, -5);
 
         Long startTime = c.getTimeInMillis() / 1000;
         Long endTime = System.currentTimeMillis() / 1000;
@@ -84,19 +84,19 @@ public class OrderSyncSchedule {
             dto.setPageSize(PAGE_SIZE);
             list = pddService.queryPddOrder(dto, true);
             if(list == null){
-                log.info("暂无拼多多订单，PAGE_NUM=" + PAGE_NUM);
+                log.info("orderSyncTasks 暂无拼多多订单，PAGE_NUM=" + PAGE_NUM);
                 break;
             }
             if(list.getTotalCount() == null || list.getTotalCount() == 0){
-                log.info("暂无拼多多订单，订单总数为0，PAGE_NUM=" + PAGE_NUM);
+                log.info("orderSyncTasks 暂无拼多多订单，订单总数为0，PAGE_NUM=" + PAGE_NUM);
                 break;
             }
             if(CollectionUtils.isEmpty(list.getOrderList())){
-                log.info("暂无拼多多订单，订单列表为空，PAGE_NUM=" + PAGE_NUM);
+                log.info("orderSyncTasks 暂无拼多多订单，订单列表为空，PAGE_NUM=" + PAGE_NUM);
                 break;
             }
             Long totalCount = list.getTotalCount();
-            log.info("本次查询总数量totalCount为：" + totalCount + "，PAGE_NUM=" + PAGE_NUM
+            log.info("orderSyncTasks 本次查询总数量totalCount为：" + totalCount + "，PAGE_NUM=" + PAGE_NUM
                     + "，currentSize=" + list.getOrderList().size());
             updateCount += dealOrders(list.getOrderList());
             if(list.getOrderList().size() <= PAGE_SIZE){
@@ -104,7 +104,74 @@ public class OrderSyncSchedule {
             }
             PAGE_NUM++;
         }
-        log.info("同步拼多多订单结束，本次共更新" + updateCount + "条数据");
+        log.info("orderSyncTasks 同步5分钟内拼多多订单结束，本次共更新" + updateCount + "条数据");
+    }
+
+    /**
+     * 每30分钟执行一次，同步2个月内的订单
+     */
+    @Scheduled(cron = "0 0/30 * * * ?")
+//    @Scheduled(cron = "50 44 10 * * ?")
+    private void orderSyncTwoMonthTasks() {
+        log.info("orderSyncTwoMonthTasks 同步2个月内拼多多订单开始");
+
+        int totalTimes = 63;
+        int currentTimes = 0;
+
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+        //拼多多只支持查询时间跨度为24小时的订单
+        long endTimeMillis = System.currentTimeMillis();
+        long startTimeMillis = getYesterDayTimeMillis(endTimeMillis);
+        Long startTime = startTimeMillis / 1000;
+        Long endTime = endTimeMillis / 1000;
+
+        OrderQueryRo dto;
+        PddOrderList list;
+        int updateCount = 0;
+
+        while (currentTimes <= totalTimes) {
+            while(true){
+                dto = new OrderQueryRo();
+                dto.setStartUpdateTime(startTime);
+                dto.setEndUpdateTime(endTime);
+                dto.setPageNum(PAGE_NUM);
+                dto.setPageSize(PAGE_SIZE);
+                list = pddService.queryPddOrder(dto, true);
+                if(list == null){
+                    log.info("orderSyncTwoMonthTasks 暂无拼多多订单，PAGE_NUM=" + PAGE_NUM);
+                    PAGE_NUM = 1;
+                    break;
+                }
+                if(list.getTotalCount() == null || list.getTotalCount() == 0){
+                    log.info("orderSyncTwoMonthTasks 暂无拼多多订单，订单总数为0，PAGE_NUM=" + PAGE_NUM);
+                    PAGE_NUM = 1;
+                    break;
+                }
+                if(CollectionUtils.isEmpty(list.getOrderList())){
+                    log.info("orderSyncTwoMonthTasks 暂无拼多多订单，订单列表为空，PAGE_NUM=" + PAGE_NUM);
+                    PAGE_NUM = 1;
+                    break;
+                }
+                Long totalCount = list.getTotalCount();
+                log.info("orderSyncTwoMonthTasks 本次查询总数量totalCount为：" + totalCount + "，PAGE_NUM=" + PAGE_NUM
+                        + "，currentSize=" + list.getOrderList().size());
+                updateCount += dealOrders(list.getOrderList());
+                if(list.getOrderList().size() <= PAGE_SIZE){
+                    PAGE_NUM = 1;
+                    break;
+                }
+                PAGE_NUM++;
+            }
+
+            endTimeMillis = startTimeMillis;
+            startTimeMillis = getYesterDayTimeMillis(endTimeMillis);
+            startTime = startTimeMillis / 1000;
+            endTime = endTimeMillis / 1000;
+
+            currentTimes++;
+        }
+        log.info("orderSyncTwoMonthTasks 同步2个月内拼多多订单结束，本次共更新" + updateCount + "条数据");
     }
 
     private int dealOrders(List<PddOrderInfo> pddOrderInfos){
@@ -195,12 +262,46 @@ public class OrderSyncSchedule {
         return new Date(millSec * 1000);
     }
 
-    public static void main(String[] args) {
-        System.out.println(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
+    private static long getYesterDayTimeMillis(long timeMillis){
         Calendar c = Calendar.getInstance();
-        c.setTimeInMillis(System.currentTimeMillis());
-        c.add(Calendar.SECOND, -30);
-        System.out.println(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(c.getTime()));
+        c.setTimeInMillis(timeMillis);
+        c.add(Calendar.HOUR, -24);
+        return c.getTimeInMillis();
+    }
+
+    public static void main(String[] args) {
+        int totalTimes = 63;
+        int currentTimes = 0;
+
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+        //拼多多只支持查询时间跨度为24小时的订单
+        long endTimeMillis = System.currentTimeMillis();
+        long startTimeMillis = getYesterDayTimeMillis(endTimeMillis);
+
+        Long startTime = startTimeMillis / 1000;
+        Long endTime = endTimeMillis / 1000;
+
+        while (currentTimes <= totalTimes){
+
+            System.out.println("current times is" + currentTimes);
+            System.out.println(sdf.format(new Date(startTimeMillis)));
+            System.out.println(sdf.format(new Date(endTimeMillis)));
+
+            while (true) {
+                System.out.println("PAGE_NUM" + PAGE_NUM);
+                if(PAGE_NUM == 50){
+                    PAGE_NUM = 1;
+                    break;
+                }
+                PAGE_NUM++;
+            }
+
+            endTimeMillis = startTimeMillis;
+            startTimeMillis = getYesterDayTimeMillis(endTimeMillis);
+
+            currentTimes++;
+        }
     }
 
 }
