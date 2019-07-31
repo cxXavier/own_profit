@@ -76,7 +76,7 @@ public class UserServiceImpl implements IUserService {
         record.setOpenid(openId);
         record.setFormid(formId);
         record.setCreateTime(new Date());
-        record.setStatus(1);
+        record.setStatus(0);
         int count = userFormidMapper.insert(record);
         if(count <= 0){
             return RopResponse.createFailedRep("", "保存formId失败", "1.0.0");
