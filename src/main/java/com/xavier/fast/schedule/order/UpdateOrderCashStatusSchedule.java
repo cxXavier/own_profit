@@ -94,7 +94,7 @@ public class UpdateOrderCashStatusSchedule {
                 log.info("添加鲜花收支记录成功");
             }
             //推送结算成功消息
-            wechatPushCreateOrderMsg(order);
+            pushService.wechatPush(order, TemplateMsg.BIZ_TYPE.SETTLED.name());
         }else{
             log.info("更新订单失败");
         }
@@ -121,19 +121,6 @@ public class UpdateOrderCashStatusSchedule {
             return count;
         }
         return 0;
-    }
-
-    /**
-     * 小程序下单成功推送(异步)
-     * @param order
-     */
-    private void wechatPushCreateOrderMsg(Order order){
-        //如果parentOpenId为空，表示自购下单，不为空，为徒弟下单
-        if(StringUtils.isBlank(order.getParentOpenId())){
-            pushService.wechatPush(order, TemplateMsg.WECHAT_PUSH_TYPE.OWN_SETTLED.name());
-        }else{
-            pushService.wechatPush(order, TemplateMsg.WECHAT_PUSH_TYPE.PRENTICE_SETTLED.name());
-        }
     }
 
 }

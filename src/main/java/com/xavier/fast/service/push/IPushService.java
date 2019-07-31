@@ -16,6 +16,7 @@ public interface IPushService {
     /**
      * 微信小程序推送（异步）
      * @param order
+     * @param bizType
      */
-    public void wechatPush(Order order, String wechatPushType);
+    public void wechatPush(Order order, String bizType);
 }

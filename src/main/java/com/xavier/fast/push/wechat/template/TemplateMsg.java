@@ -25,13 +25,13 @@ public class TemplateMsg implements Serializable {
 
     private static final String PRENTICE_TEMPLATE_ID = "8RU6gLXNR40GSsKPOaf6P4gtsf7g6l5BduRnPf3EJTE";
 
-    private static final String OWN_CREATE_ORDER_REMARK = "（备注：待结算）";
+    private static final String OWN_CREATE_ORDER_REMARK = "（待结算）";
 
-    private static final String OWN_SETTLED_REMARK = "（备注：已结算）";
+    private static final String OWN_SETTLED_REMARK = "（已结算）";
 
-    private static final String PRENTICE_CREATE_ORDER_REMARK = "（备注：待结算）";
+    private static final String PRENTICE_CREATE_ORDER_REMARK = "（待结算）";
 
-    private static final String PRENTICE_SETTLED_REMARK = "（备注：已生效）";
+    private static final String PRENTICE_SETTLED_REMARK = "（已生效）";
 
     /**
      * 用户openid
@@ -106,6 +106,11 @@ public class TemplateMsg implements Serializable {
         OWN_SETTLED,
         PRENTICE_CREATEORDER,
         PRENTICE_SETTLED;
+    }
+
+    public static enum BIZ_TYPE{
+        CREATE_ORDER,
+        SETTLED;
     }
 
     /**

@@ -114,7 +114,7 @@
     <select id="getLatestUsefulInfo" parameterType="java.lang.String" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"/>
-        from tbl_user_formid_info
+        from tbl_user_formid_info t
         where t.openid = #{id,jdbcType=VARCHAR}
         and t.`status` = 0
         ORDER BY t.create_time DESC

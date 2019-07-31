@@ -10,6 +10,7 @@ import com.xavier.fast.entity.pdd.PddOrderList;
 import com.xavier.fast.push.wechat.template.TemplateMsg;
 import com.xavier.fast.service.pdd.IpddService;
 import com.xavier.fast.service.push.IPushService;
+import com.xavier.fast.utils.CalFlowerUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -226,25 +227,13 @@ public class OrderSyncSchedule {
         order.setPromotionAmount(po.getPromotionAmount());
         order.setPromotionRate(po.getPromotionRate());
         order.setReturnStatus(po.getReturnStatus());
+        order.setContributionFlower(CalFlowerUtils.calContributionFlower(po.getOrderAmount()));
         int count = orderMapper.update(order);
         //下单成功推送(拼多多-已成团，我们这边-待收货)
         if(OrderBase.ORDER_STATUS.wait_receive.getCode().equals(order.getOrderStatus())){
-            wechatPushCreateOrderMsg(order);
+            pushService.wechatPush(order, TemplateMsg.BIZ_TYPE.CREATE_ORDER.name());
         }
         return count;
-    }
-
-    /**
-     * 小程序下单成功推送(异步)
-     * @param order
-     */
-    private void wechatPushCreateOrderMsg(Order order){
-        //如果parentOpenId为空，表示自购下单，不为空，为徒弟下单
-        if(StringUtils.isBlank(order.getParentOpenId())){
-            pushService.wechatPush(order, TemplateMsg.WECHAT_PUSH_TYPE.OWN_CREATE_ORDER.name());
-        }else{
-            pushService.wechatPush(order, TemplateMsg.WECHAT_PUSH_TYPE.PRENTICE_CREATEORDER.name());
-        }
     }
 
     /**
