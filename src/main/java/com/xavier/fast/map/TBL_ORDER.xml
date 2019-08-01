@@ -365,7 +365,7 @@
         COUNT(1)
         FROM TBL_ORDER
         <where>
-            1=1
+            PDD_ORDER_ID is not null
             <include refid="Base_Query_Column_List"/>
         </where>
     </select>
@@ -375,6 +375,7 @@
         <include refid="Base_Column_List"/>
         FROM TBL_ORDER
         <where>
+            PDD_ORDER_ID is not null
             <include refid="Base_Query_Column_List"/>
         </where>
         order by CREATE_TIME DESC
@@ -477,6 +478,7 @@
         <include refid="Base_Column_List"/>
         FROM TBL_ORDER
         <where>
+            PDD_ORDER_ID is not null
             <include refid="Base_Query_Column_List"/>
         </where>
     </select>
