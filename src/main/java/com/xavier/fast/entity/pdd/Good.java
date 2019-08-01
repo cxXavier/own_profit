@@ -7,6 +7,8 @@ import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -144,6 +146,10 @@ public class Good implements Serializable {
      * 券后价
      */
     private Long priceAfterCoupon;
+
+    private String couponEndTimeStr;
+
+    private String couponStartTimeStr;
 
     public Long getCreateAt() {
         return createAt;
@@ -480,5 +486,29 @@ public class Good implements Serializable {
 
     public void setSoldNum(Long soldNum) {
         this.soldNum = soldNum;
+    }
+
+    public String getCouponEndTimeStr() {
+        if(this.getCouponEndTime() != null){
+            couponEndTimeStr = new SimpleDateFormat("yyyy-MM-dd")
+                    .format(new Date(this.getCouponEndTime() * 1000));
+        }
+        return couponEndTimeStr;
+    }
+
+    public void setCouponEndTimeStr(String couponEndTimeStr) {
+        this.couponEndTimeStr = couponEndTimeStr;
+    }
+
+    public String getCouponStartTimeStr() {
+        if(this.getCouponStartTime() != null){
+            couponStartTimeStr = new SimpleDateFormat("yyyy-MM-dd")
+                    .format(new Date(this.getCouponStartTime() * 1000));
+        }
+        return couponStartTimeStr;
+    }
+
+    public void setCouponStartTimeStr(String couponStartTimeStr) {
+        this.couponStartTimeStr = couponStartTimeStr;
     }
 }
