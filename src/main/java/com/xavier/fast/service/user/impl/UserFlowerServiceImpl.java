@@ -71,7 +71,6 @@ public class UserFlowerServiceImpl implements IUserFlowerService {
         //查询我的鲜花数
         UserFlower uf = new UserFlower();
         uf.setOpenId(flowerRequest.getT().getOpenId());
-        uf.setParentOpenId(flowerRequest.getT().getOpenId());
         List<UserFlower> flowerList = userFlowerMapper.findListByOpendIdOrParentId(uf);
         if(CollectionUtils.isNotEmpty(flowerList)){
             response.setTotalFlowers(CalFlowerUtils.calTotalFlowers(flowerList));
@@ -129,7 +128,6 @@ public class UserFlowerServiceImpl implements IUserFlowerService {
         RopFlowerResponse response = new RopFlowerResponse();
         UserFlower u = new UserFlower();
         u.setOpenId(flowerRequest.getT().getOpenId());
-        u.setParentOpenId(flowerRequest.getT().getOpenId());
         List<UserFlower> flowerList = userFlowerMapper.findListByOpendIdOrParentId(u);
         if(CollectionUtils.isEmpty(flowerList)){
             return RopResponse.createFailedRep("", "暂无鲜花明细", "1.0.0");
@@ -154,7 +152,6 @@ public class UserFlowerServiceImpl implements IUserFlowerService {
         //获取可使用鲜花
         UserFlower u = new UserFlower();
         u.setOpenId(flowerRequest.getT().getOpenId());
-        u.setParentOpenId(flowerRequest.getT().getOpenId());
         List<UserFlower> flowerList = userFlowerMapper.findListByOpendIdOrParentId(u);
         if(CollectionUtils.isEmpty(flowerList)){
             log.warn("暂无可使用鲜花,openId=" + openId);

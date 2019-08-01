@@ -110,10 +110,7 @@ public class UpdateOrderCashStatusSchedule {
         //如果parentOpenId为空，表示自购下单，不添加鲜花记录，只添加徒弟贡献鲜花
         if(StringUtils.isNotBlank(order.getParentOpenId())){
             UserFlower uf = new UserFlower();
-            uf.setOpenId(order.getOpenId());
-            uf.setUnioinId(order.getUnionId());
-            uf.setParentOpenId(order.getParentOpenId());
-            uf.setParentUnionId(order.getParentUnionId());
+            uf.setOpenId(order.getParentOpenId());
             uf.setFlowers(order.getContributionFlower());
             uf.setCostType(UserFlower.COST_TYPE.INCREASE.name());
             uf.setCreateTime(new Date());

@@ -90,7 +90,6 @@ public class UserReturnCashServiceImpl implements IUserReturnCashService {
         //查询鲜花开支明细
         UserFlower paramFlower = new UserFlower();
         paramFlower.setOpenId(openId);
-        paramFlower.setParentOpenId(openId);
         List<UserFlower> flowerList = userFlowerMapper.findListByOpendIdOrParentId(paramFlower);
         if(CollectionUtils.isEmpty(flowerList)){
             return RopResponse.createFailedRep("", "暂无可用鲜花", "1.0.0");
@@ -226,7 +225,7 @@ public class UserReturnCashServiceImpl implements IUserReturnCashService {
      * @param order
      * @return
      */
-    private int addFlowerRecord(Order order){
+    private void addFlowerRecord(Order order){
         UserFlower uf = new UserFlower();
         uf.setOpenId(order.getOpenId());
         uf.setUnioinId(order.getUnionId());
@@ -236,7 +235,7 @@ public class UserReturnCashServiceImpl implements IUserReturnCashService {
         uf.setCostType(UserFlower.COST_TYPE.DECREASE.name());
         uf.setCreateTime(new Date());
         int count = userFlowerMapper.insertSelective(uf);
-        return count;
+        log.info("添加徒弟鲜花记录count=" + count);
     }
 
 }

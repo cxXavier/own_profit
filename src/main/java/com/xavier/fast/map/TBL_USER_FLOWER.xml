@@ -173,7 +173,7 @@
         SELECT
         <include refid="Base_Column_List"/>
         FROM TBL_USER_FLOWER
-        WHERE OPEN_ID = #{openId,jdbcType=VARCHAR} OR PARENT_OPEN_ID = #{parentOpenId,jdbcType=VARCHAR}
+        WHERE OPEN_ID = #{openId,jdbcType=VARCHAR}
     </select>
 
 </mapper>
