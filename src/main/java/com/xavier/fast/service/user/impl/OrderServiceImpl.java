@@ -31,6 +31,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -49,6 +50,10 @@ public class OrderServiceImpl extends BaseServiceImpl implements IOrderService {
     private Logger log = LoggerFactory.getLogger(OrderServiceImpl.class);
 
     private final static int PAGE_SIZE = 10;
+
+    private static final String CURRENT_MONTH_TIPS = "本月25号结算";
+
+    private static final String NEXT_MONTH_TIPS = "下个月25号结算";
 
     @Resource
     private OrderMapper orderMapper;
@@ -302,6 +307,7 @@ public class OrderServiceImpl extends BaseServiceImpl implements IOrderService {
             if(o.getOrderCreateTime() != null){
                 myOrder.setOrderCreateTimeStr(DateUtil.dateToFormat(o.getOrderCreateTime(), "yyyy-MM-dd HH:mm:ss"));
             }
+            myOrder.setShowOrderStatus(o.getOrderStatus());
             if(o.getCashBackStatus() != null){
                 if(o.getCashBackStatus() == OrderBase.ORDER_CASH_STATUS.cash_back_fail.getCode()){
                     //提现中-提现失败
@@ -312,8 +318,6 @@ public class OrderServiceImpl extends BaseServiceImpl implements IOrderService {
                 }else if(o.getCashBackStatus() == OrderBase.ORDER_CASH_STATUS.cash_back_success.getCode()){
                     //提现成功
                     myOrder.setShowOrderStatus(OrderBase.SHOW_ORDER_STATUS.cash_back_success.getCode());
-                }else{
-                    myOrder.setShowOrderStatus(o.getOrderStatus());
                 }
             }else{
                 //拼多多已结算且我方未结算、拼多多审核通过，前台都显示待结算
@@ -321,11 +325,28 @@ public class OrderServiceImpl extends BaseServiceImpl implements IOrderService {
                         || OrderBase.ORDER_STATUS.received.getCode().equals(o.getOrderStatus())
                         || OrderBase.ORDER_STATUS.audit_success.getCode().equals(o.getOrderStatus())){
                     myOrder.setShowOrderStatus(OrderBase.SHOW_ORDER_STATUS.wait_settle.getCode());
+                    myOrder.setWaitSettleTips(this.getWaitSettleTips(o.getOrderCreateTime()));
                 }
             }
             myOrders.add(myOrder);
         }
         return myOrders;
+    }
+
+    private String getWaitSettleTips(Date createTime){
+        if(createTime == null){
+            return null;
+        }
+        Calendar c = Calendar.getInstance();
+        c.setTime(createTime);
+        int createTimeMonth = c.get(Calendar.MONTH);
+        c.setTime(new Date());
+        int nowTimeMonth = c.get(Calendar.MONTH);
+        if(createTimeMonth < nowTimeMonth){
+            return CURRENT_MONTH_TIPS;
+        }else{
+            return NEXT_MONTH_TIPS;
+        }
     }
 
     /**

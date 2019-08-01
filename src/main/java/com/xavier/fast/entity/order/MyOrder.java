@@ -3,6 +3,9 @@ package com.xavier.fast.entity.order;
 import com.xavier.fast.utils.CalFlowerUtils;
 
 import java.io.Serializable;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 
 public class MyOrder implements Serializable {
@@ -72,6 +75,8 @@ public class MyOrder implements Serializable {
      * 提现需要鲜花数
      */
     private Integer cashCostFlower;
+
+    private String waitSettleTips;
 
     public Integer getId() {
         return id;
@@ -183,5 +188,13 @@ public class MyOrder implements Serializable {
 
     public void setOrderCreateTimeStr(String orderCreateTimeStr) {
         this.orderCreateTimeStr = orderCreateTimeStr;
+    }
+
+    public String getWaitSettleTips() {
+        return waitSettleTips;
+    }
+
+    public void setWaitSettleTips(String waitSettleTips) {
+        this.waitSettleTips = waitSettleTips;
     }
 }
