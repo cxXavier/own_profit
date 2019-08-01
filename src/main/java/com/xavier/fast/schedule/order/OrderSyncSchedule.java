@@ -111,7 +111,7 @@ public class OrderSyncSchedule {
     /**
      * 每30分钟执行一次，同步2个月内的订单
      */
-    @Scheduled(cron = "0 0/30 * * * ?")
+//    @Scheduled(cron = "0 0/30 * * * ?")
 //    @Scheduled(cron = "50 44 10 * * ?")
     private void orderSyncTwoMonthTasks() {
         log.info("orderSyncTwoMonthTasks 同步2个月内拼多多订单开始");
