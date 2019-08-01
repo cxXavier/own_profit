@@ -485,7 +485,7 @@
       UPDATE
         TBL_ORDER
       SET
-        CASH_BACK_STATUS = 1,
+        CASH_BACK_STATUS = #{cashBackStatus,jdbcType=INTEGER},
         CASH_BACK_VERSION = CASH_BACK_VERSION + 1
       WHERE ID = #{id,jdbcType=INTEGER}
       AND CASH_BACK_VERSION = #{cashBackVersion,jdbcType=INTEGER}

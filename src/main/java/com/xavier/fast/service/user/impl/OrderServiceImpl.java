@@ -266,8 +266,10 @@ public class OrderServiceImpl extends BaseServiceImpl implements IOrderService {
             prenticeOrder.setOrderStatus(o.getOrderStatus());
             prenticeOrder.setShowOrderStatus(o.getOrderStatus());
             if(o.getCashBackStatus() != null){
-                //如果是待提现，代表订单状态为已生效
-                if(o.getCashBackStatus().intValue() == OrderBase.ORDER_CASH_STATUS.wait_cash_back.getCode()){
+                //如果待提现、提现成功、提现失败，代表订单状态为已生效
+                if(o.getCashBackStatus().intValue() == OrderBase.ORDER_CASH_STATUS.wait_cash_back.getCode()
+                        || o.getCashBackStatus().intValue() == OrderBase.ORDER_CASH_STATUS.cash_back_success.getCode()
+                        || o.getCashBackStatus().intValue() == OrderBase.ORDER_CASH_STATUS.cash_back_fail.getCode()){
                     prenticeOrder.setShowOrderStatus(OrderBase.SHOW_ORDER_STATUS.validate.getCode());
                 }
             }else{

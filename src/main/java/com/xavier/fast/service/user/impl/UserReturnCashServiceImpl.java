@@ -98,7 +98,7 @@ public class UserReturnCashServiceImpl implements IUserReturnCashService {
         //计算鲜花余额
         int residueFlowers = CalFlowerUtils.calTotalFlowers(flowerList);
         //提现需要鲜花数4倍
-        int needFlowers = order.getContributionFlower() * 4;
+        int needFlowers = CalFlowerUtils.calCashFlower(order.getOrderAmount());
         if(residueFlowers < needFlowers){
             return RopResponse.createFailedRep("",
                     "当前可用鲜花不足，可用鲜花：" + residueFlowers + "朵，还需要鲜花："
@@ -107,7 +107,7 @@ public class UserReturnCashServiceImpl implements IUserReturnCashService {
 
         //满足提现要求
         // 微信转账
-        Map<String, String> restMap = null;
+        Map<String, String> restMap;
         try {
             restMap = transfers(openId, orderId, user.getNickname(), order.getOrderAmount());
         } catch (Exception e) {
@@ -116,15 +116,29 @@ public class UserReturnCashServiceImpl implements IUserReturnCashService {
         }
 
         if(MapUtils.isEmpty(restMap)){
-            return RopResponse.createFailedRep("", "转账失败", "1.0.0");
+            return RopResponse.createFailedRep("", "提现失败，restMap 为空", "1.0.0");
         }
         if("FAIL".equals(restMap.get("return_code"))){
-            return RopResponse.createFailedRep("", "转账失败，失败原因"
+            //更新订单提现状态
+            Map<String, Object> params = new HashMap<>();
+            params.put("id", orderId);
+            params.put("cashBackStatus", -1);
+            params.put("cashBackVersion", order.getCashBackVersion());
+            int updateCount = orderMapper.updateOrderCashBackStatus(params);
+            log.info("提现失败，失败原因" + restMap.get("return_msg") + "，updateCount=" + updateCount);
+            return RopResponse.createFailedRep("", "提现失败，失败原因"
                     + restMap.get("return_msg"), "1.0.0");
         }
         if(restMap.get("return_code").equals("SUCCESS")){
             if("FAIL".equals(restMap.get("result_code"))){
-                return RopResponse.createFailedRep("", "转账失败，失败原因"
+                //更新订单提现状态
+                Map<String, Object> params = new HashMap<>();
+                params.put("id", orderId);
+                params.put("cashBackStatus", -1);
+                params.put("cashBackVersion", order.getCashBackVersion());
+                int updateCount = orderMapper.updateOrderCashBackStatus(params);
+                log.info("提现失败，失败原因" + restMap.get("err_code_des") + "，updateCount=" + updateCount);
+                return RopResponse.createFailedRep("", "提现失败，失败原因"
                         + restMap.get("err_code_des"), "1.0.0");
             }
             if("SUCCESS".equals(restMap.get("result_code"))){
@@ -138,6 +152,7 @@ public class UserReturnCashServiceImpl implements IUserReturnCashService {
                 //更新订单提现状态
                 Map<String, Object> params = new HashMap<>();
                 params.put("id", orderId);
+                params.put("cashBackStatus", 1);
                 params.put("cashBackVersion", order.getCashBackVersion());
                 int updateCount = orderMapper.updateOrderCashBackStatus(params);
                 if(updateCount <= 0){
@@ -162,6 +177,7 @@ public class UserReturnCashServiceImpl implements IUserReturnCashService {
                     }
                     record.setCreateTime(new Date());
                     int insertCount = userReturnCashRecordMapper.insert(record);
+                    log.info("插入提现记录insertCount=" + insertCount);
                 }
             }
         }
@@ -194,7 +210,7 @@ public class UserReturnCashServiceImpl implements IUserReturnCashService {
         parm.put("openid", openId); // 用户openid
         parm.put("check_name", "NO_CHECK"); // 是否验证真实姓名--校验用户姓名选项 OPTION_CHECK
         parm.put("re_user_name", relName); //收款用户姓名---check_name设置为FORCE_CHECK或OPTION_CHECK，则必填
-        parm.put("amount", 40); // 转账金额
+        parm.put("amount", amount); // 转账金额
         parm.put("desc", wechatConfig.getPayDesc()); // 企业付款描述信息
         parm.put("spbill_create_ip", WechatUtils.getLocalIP()); // Ip地址
         parm.put("sign", SignUtils.createSign("UTF-8", parm));
@@ -216,7 +232,7 @@ public class UserReturnCashServiceImpl implements IUserReturnCashService {
         uf.setUnioinId(order.getUnionId());
         uf.setParentOpenId(order.getParentOpenId());
         uf.setParentUnionId(order.getParentUnionId());
-        uf.setFlowers(order.getContributionFlower());
+        uf.setFlowers(CalFlowerUtils.calCashFlower(order.getOrderAmount()));
         uf.setCostType(UserFlower.COST_TYPE.DECREASE.name());
         uf.setCreateTime(new Date());
         int count = userFlowerMapper.insertSelective(uf);
