@@ -4,7 +4,7 @@ import com.xavier.fast.annotation.ApiMethod;
 import com.xavier.fast.dao.GoodsMapper;
 import com.xavier.fast.dao.TagMapper;
 import com.xavier.fast.entity.goods.Goods;
-import com.xavier.fast.entity.pdd.*;
+import com.xavier.fast.entity.pdd.Good;
 import com.xavier.fast.entity.tag.Tag;
 import com.xavier.fast.model.base.RopRequestBody;
 import com.xavier.fast.model.base.RopResponse;
@@ -12,11 +12,15 @@ import com.xavier.fast.model.base.RopResponseBody;
 import com.xavier.fast.model.goods.*;
 import com.xavier.fast.service.goods.IGoodsService;
 import com.xavier.fast.service.pdd.IpddService;
+import com.xavier.fast.utils.GoodsFilter;
+import com.xavier.fast.utils.GoodsUtils;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -35,6 +39,8 @@ public class GoodsServiceImpl implements IGoodsService {
 
     private final static int PAGE_SIZE = 10;
 
+    private static List<Goods> recommendGoodsList = new ArrayList<>();
+
     @Autowired
     private TagMapper tagMapper;
 
@@ -43,6 +49,72 @@ public class GoodsServiceImpl implements IGoodsService {
 
     @Autowired
     private GoodsMapper goodsMapper;
+
+    /**
+    * 更新推荐商品（置顶的商品池）
+    * @author      Wang
+    * @param       recommendGoodsRequest
+    * @return
+    * @exception
+    * @date        2019/8/3 11:07
+    */
+    @ApiMethod(method = "api.pinke.goods.updateRecommendGoods", version = "1.0.0")
+    public RopResponse<RopRecommendGoodsResponse> updateRecommendGoods(
+            RopRequestBody<RopRecommendGoodsRequest> recommendGoodsRequest) {
+        String goodsIds = recommendGoodsRequest.getT().getGoodsIds();
+        String[] goodsArr = goodsIds.split(",");
+        if(ArrayUtils.isEmpty(goodsArr)){
+            return RopResponse.createFailedRep("",
+                    "更新推荐商品（置顶的商品池）失败，参数不合法", "1.0.0");
+        }
+        RopRecommendGoodsResponse response = new RopRecommendGoodsResponse();
+        StringBuffer sbf = new StringBuffer();
+        List<Goods> updateFailedGoodsList = new ArrayList<>();
+        List<Goods> updateSuccessGoodsList = new ArrayList<>();
+        Goods goods;
+        for(String goodsId : goodsArr){
+            Good good = pddService.queryGoodDetail(goodsId);
+            if(good == null){
+                sbf.append(goodsId).append(",");
+            }else{
+                goods = new Goods();
+                goods = GoodsUtils.copyGoods(good, goods, 1);
+                //过滤佣金比例小于30%、不含需屏蔽关键字的商品、券后价小于等于10元
+                if(GoodsFilter.goodsValidate(good.getPromotionRate(),
+                        good.getGoodsName(), good.getPriceAfterCoupon())){
+                    updateFailedGoodsList.add(goods);
+                }else if(updateSuccessGoodsList.size() <= 20){
+                    updateSuccessGoodsList.add(goods);
+                }
+            }
+        }
+        if(CollectionUtils.isNotEmpty(updateSuccessGoodsList)){
+            //不够20个的时候，打到热门商品商品中拿出20个补齐
+            int size = updateSuccessGoodsList.size();
+            if(size < 20){
+                int startRow = 80;
+                Map<String, Object> params = new HashMap<>();
+                params.put("isHot", 1);
+                params.put("startRow", startRow);
+                params.put("endRow", 20);
+                params.put("orderBy", "sold_quantity");
+                params.put("sortBy", "DESC");
+                List<Goods> goodsList = goodsMapper.findGoodsListByParams(params);
+                if(CollectionUtils.isEmpty(goodsList)){
+                    return RopResponse.createFailedRep("", "补齐推荐商品失败", "1.0.0");
+                }
+                updateSuccessGoodsList.addAll(goodsList.subList(0, (20 - size)));
+            }
+            goodsMapper.deleteAllRecommendGoods(new HashMap<>());
+            int count = goodsMapper.insertBatchRecommend(updateSuccessGoodsList);
+            recommendGoodsList = updateSuccessGoodsList;
+        }
+        response.setNotExistGoodsId(sbf.toString());
+        response.setUpdateFailedGoodsList(updateFailedGoodsList);
+        response.setUpdateSuccessGoodsList(updateSuccessGoodsList);
+        return RopResponse.createSuccessRep("",
+                "更新推荐商品（置顶的商品池）成功", "1.0.0", response);
+    }
 
     /**
     * 获取商品类目
@@ -92,6 +164,27 @@ public class GoodsServiceImpl implements IGoodsService {
         RopResponseBody response = new RopResponseBody();
 
         int pageNum = goodsRequest.getT().getPageNum();
+
+        //先从推荐商品中拿
+        if(pageNum < 3){
+            if(CollectionUtils.isEmpty(recommendGoodsList) || recommendGoodsList.size() < 20){
+                recommendGoodsList = goodsMapper.findRecommendGoodsList(new Goods());
+            }
+            if(CollectionUtils.isNotEmpty(recommendGoodsList) && recommendGoodsList.size() == 20){
+                if(pageNum == 1){
+                    response.setDataList(recommendGoodsList.subList(0, 10));
+                }
+                if(pageNum == 2){
+                    response.setDataList(recommendGoodsList.subList(10, 20));
+                }
+                response.setHasNext(true);
+                return RopResponse.createSuccessRep("", "获取热门商品成功", "1.0.0", response);
+            }
+        }else{
+            pageNum = pageNum - 2;
+        }
+
+
         int startRow = pageNum == 1 ? 0 : (pageNum - 1) * PAGE_SIZE;
 
         Map<String, Object> params = new HashMap<>();
@@ -235,4 +328,5 @@ public class GoodsServiceImpl implements IGoodsService {
         response.setGood(good);
         return RopResponse.createSuccessRep("", "获取商品详情信息成功", "1.0.0", response);
     }
+
 }

@@ -820,4 +820,54 @@
         </foreach>
     </update>
 
+    <select id="findRecommendGoodsList" parameterType="com.xavier.fast.entity.goods.Goods" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from TBL_RECOMMEND_GOODS limit 0, 20
+        <where>
+            <include refid="Base_Query_Column_List"/>
+        </where>
+    </select>
+
+    <insert id="insertBatchRecommend" parameterType="java.util.List">
+        insert into TBL_RECOMMEND_GOODS
+        (
+        GOODS_ID, GOODS_NAME, GOODS_DESC, GOODS_THUMBNAIL_URL, GOODS_IMAGE_URL, GOODS_GALLERY_URLS,
+        SOLD_QUANTITY, MIN_GROUP_PRICE, MIN_NORMAL_PRICE, MALL_ID, MALL_NAME, MALL_RATE, MERCHANT_TYPE,
+        CATEGORY_ID, CATEGORY_NAME, OPT_ID, OPT_NAME, MALL_CPS, HAS_COUPON, COUPON_MIN_ORDER_AMOUNT,
+        COUPON_DISCOUNT, COUPON_TOTAL_QUANTITY, COUPON_REMAIN_QUANTITY, COUPON_END_TIME, COUPON_START_TIME,
+        PROMOTION_RATE, GOODS_EVAL_SCORE, GOODS_EVAL_COUNT, AVG_DESC, AVG_LGST, AVG_SERV, CAT_IDS, DESC_PCT,
+        LGST_PCT, SERV_PCT, OPT_IDS, IS_HOT, IS_NORMAL, CREATE_AT, CREATE_TIME
+        )
+        VALUES
+        <foreach collection="list" item="item" index="index" separator=",">
+            (
+            #{item.goodsId,jdbcType=BIGINT}, #{item.goodsName,jdbcType=VARCHAR},
+            #{item.goodsDesc,jdbcType=VARCHAR}, #{item.goodsThumbnailUrl,jdbcType=VARCHAR},
+            #{item.goodsImageUrl,jdbcType=VARCHAR}, #{item.goodsGalleryUrls,jdbcType=VARCHAR},
+            #{item.soldQuantity,jdbcType=INTEGER}, #{item.minGroupPrice,jdbcType=INTEGER},
+            #{item.minNormalPrice,jdbcType=INTEGER}, #{item.mallId,jdbcType=VARCHAR},
+            #{item.mallName,jdbcType=VARCHAR}, #{item.mallRate,jdbcType=VARCHAR},
+            #{item.merchantType,jdbcType=INTEGER}, #{item.categoryId,jdbcType=INTEGER},
+            #{item.categoryName,jdbcType=VARCHAR}, #{item.optId,jdbcType=INTEGER},
+            #{item.optName,jdbcType=VARCHAR}, #{item.mallCps,jdbcType=INTEGER},
+            #{item.hasCoupon,jdbcType=INTEGER}, #{item.couponMinOrderAmount,jdbcType=INTEGER},
+            #{item.couponDiscount,jdbcType=INTEGER}, #{item.couponTotalQuantity,jdbcType=INTEGER},
+            #{item.couponRemainQuantity,jdbcType=INTEGER}, #{item.couponEndTime,jdbcType=BIGINT},
+            #{item.couponStartTime,jdbcType=BIGINT}, #{item.promotionRate,jdbcType=INTEGER},
+            #{item.goodsEvalScore,jdbcType=DOUBLE}, #{item.goodsEvalCount,jdbcType=INTEGER},
+            #{item.avgDesc,jdbcType=INTEGER}, #{item.avgLgst,jdbcType=INTEGER},
+            #{item.avgServ,jdbcType=INTEGER}, #{item.catIds,jdbcType=VARCHAR},
+            #{item.descPct,jdbcType=DOUBLE}, #{item.lgstPct,jdbcType=DOUBLE},
+            #{item.servPct,jdbcType=DOUBLE}, #{item.optIds,jdbcType=VARCHAR},
+            #{item.isHot,jdbcType=INTEGER}, #{item.isNormal,jdbcType=INTEGER},
+            #{item.createAt,jdbcType=BIGINT}, #{item.createTime,jdbcType=TIMESTAMP}
+            )
+        </foreach>
+    </insert>
+
+    <delete id="deleteAllRecommendGoods" parameterType="java.util.Map">
+        DELETE FROM TBL_RECOMMEND_GOODS
+    </delete>
+
 </mapper>

@@ -49,4 +49,16 @@ public class GoodsMapper extends MyBatisDao {
     public int updateBatch(List<Goods> goodsList){
         return super.update("updateBatch", goodsList);
     }
+
+    public List<Goods> findRecommendGoodsList(Goods record) {
+        return super.queryForList("findRecommendGoodsList", record);
+    }
+
+    public int insertBatchRecommend(List<Goods> goodsList){
+        return super.insert("insertBatchRecommend", goodsList);
+    }
+
+    public int deleteAllRecommendGoods(Map<String, Object> params){
+        return super.delete("deleteAllRecommendGoods", params);
+    }
 }

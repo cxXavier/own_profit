@@ -17,6 +17,17 @@ import com.xavier.fast.model.goods.*;
 public interface IGoodsService {
 
     /**
+     * 更新推荐商品（置顶的商品池）
+     * @author      Wang
+     * @param       recommendGoodsRequest
+     * @return
+     * @exception
+     * @date        2019/8/3 11:07
+     */
+    public RopResponse<RopRecommendGoodsResponse> updateRecommendGoods(
+            RopRequestBody<RopRecommendGoodsRequest> recommendGoodsRequest);
+
+    /**
     * 获取商品类目
     * @author      Wang
     * @param       goodsCatsRequest

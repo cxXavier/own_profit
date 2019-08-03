@@ -5,10 +5,9 @@ import com.xavier.fast.dao.TagMapper;
 import com.xavier.fast.entity.goods.Goods;
 import com.xavier.fast.entity.pdd.*;
 import com.xavier.fast.entity.tag.Tag;
-import com.xavier.fast.model.base.RopResponse;
 import com.xavier.fast.service.pdd.IpddService;
+import com.xavier.fast.utils.GoodsUtils;
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,8 +37,6 @@ public class GoodsSyncSchedule {
     private final static int HOT_PAGE_SIZE = 200;
     private final static int NORMAL_PAGE_SIZE = 100;
 
-    private final static String[] KEYWORD_FILTER = new String[]{"VIP","视频","会员","季卡","年卡","月卡","话费","充值"};
-
     @Autowired
     private IpddService pddService;
 
@@ -50,7 +47,7 @@ public class GoodsSyncSchedule {
     private TagMapper tagMapper;
 
     @Scheduled(cron = "0 0/20 * * * ?")
-//    @Scheduled(cron = "30 27 23 * * ?")
+//    @Scheduled(cron = "30 54 11 * * ?")
     private void hotGoodsSyncTasks() {
         log.info("同步拼多多热门商品开始...");
         int pageNum = 1;
@@ -95,7 +92,7 @@ public class GoodsSyncSchedule {
             goodsIdList = new ArrayList<>(HOT_PAGE_SIZE);
             for(Good good : goodList){
                 goods = new Goods();
-                goods = copyGoods(good, goods, 1);
+                goods = GoodsUtils.copyGoods(good, goods, 1, true);
                 if(goods != null){
                     goodsList.add(goods);
                     goodsIdList.add(goods.getGoodsId());
@@ -153,7 +150,7 @@ public class GoodsSyncSchedule {
             goodsIdList = new ArrayList<>(NORMAL_PAGE_SIZE);
             for(Good good : goodList){
                 goods = new Goods();
-                goods = copyGoods(good, goods, 0);
+                goods = GoodsUtils.copyGoods(good, goods, 0, true);
                 if(goods != null){
                     goodsList.add(goods);
                     goodsIdList.add(goods.getGoodsId());
@@ -247,7 +244,7 @@ public class GoodsSyncSchedule {
                 goodsIdList = new ArrayList<>(NORMAL_PAGE_SIZE);
                 for(Good good : goodList){
                     goods = new Goods();
-                    goods = copyGoods(good, goods, 0);
+                    goods = GoodsUtils.copyGoods(good, goods, 0, true);
                     if(goods != null){
                         goodsList.add(goods);
                         goodsIdList.add(goods.getGoodsId());
@@ -260,94 +257,6 @@ public class GoodsSyncSchedule {
             }
         }
         log.info("根据类目ID同步拼多多普通商品结束...");
-    }
-
-    /**
-     * 商品copy
-     * @param source
-     * @param target
-     * @return
-     */
-    private Goods copyGoods(Good source, Goods target, int goodsType){
-        //过滤佣金比例小于30%、不含需屏蔽关键字的商品
-        if(source.getPromotionRate() == null || source.getPromotionRate() < 300
-                || containFilterKeyword(source.getGoodsName())){
-            return null;
-        }
-        target.setGoodsId(source.getGoodsId());
-        target.setGoodsName(source.getGoodsName());
-        target.setGoodsDesc(source.getGoodsDesc());
-        target.setGoodsThumbnailUrl(source.getGoodsThumbnailUrl());
-        target.setGoodsImageUrl(source.getGoodsImageUrl());
-        target.setGoodsGalleryUrls(this.convertStrListToString(source.getGoodsGalleryUrls()));
-        target.setSoldQuantity(source.getSoldNum());
-        target.setMinGroupPrice(source.getMinGroupPrice());
-        target.setMinNormalPrice(source.getMinNormalPrice());
-        target.setMallId(source.getMallId());
-        target.setMallName(source.getMallName());
-        target.setMallRate(source.getMallRate());
-        target.setMerchantType(source.getMerchantType());
-        target.setCategoryId(source.getCategoryId());
-        target.setCategoryName(source.getCategoryName());
-        target.setOptId(source.getOptId());
-        target.setOptName(source.getOptName());
-        target.setMallCps(source.getMallCps());
-        target.setHasCoupon(source.isHasCoupon() == true ? 1 : 0);
-        target.setCouponMinOrderAmount(source.getCouponMinOrderAmount());
-        target.setCouponDiscount(source.getCouponDiscount());
-        target.setCouponTotalQuantity(source.getCouponTotalQuantity());
-        target.setCouponRemainQuantity(source.getCouponRemainQuantity());
-        target.setCouponEndTime(source.getCouponEndTime());
-        target.setCouponStartTime(source.getCouponStartTime());
-        target.setPromotionRate(source.getPromotionRate());
-        target.setGoodsEvalScore(source.getGoodsEvalScore());
-        target.setGoodsEvalCount(source.getGoods_eval_count());
-        target.setAvgDesc(getScore(source.getAvgDesc()));
-        target.setAvgLgst(getScore(source.getAvgLgst()));
-        target.setAvgServ(getScore(source.getAvgServ()));
-        target.setCatIds(this.convertIntListToString(source.getCatIds()));
-        target.setDescPct(source.getDescPct());
-        target.setLgstPct(source.getLgstPct());
-        target.setServPct(source.getServPct());
-        target.setOptIds(this.convertIntListToString(source.getOptIds()));
-        if(goodsType == 1){
-            target.setIsHot(1);
-        }else{
-            target.setIsNormal(1);
-        }
-        target.setCreateAt(source.getCreateAt());
-        target.setCreateTime(new Date());
-        return target;
-    }
-
-    private String convertStrListToString(List<String> strList){
-        StringBuffer result = new StringBuffer();
-        if(CollectionUtils.isEmpty(strList)){
-            return null;
-        }
-        for(int i = 0; i < strList.size(); i++){
-            if(i == (strList.size() - 1)){
-                result.append(strList.get(i));
-            }else{
-                result.append(strList.get(i)).append(",");
-            }
-        }
-        return result.toString();
-    }
-
-    private String convertIntListToString(List<Integer> intList){
-        StringBuffer result = new StringBuffer();
-        if(CollectionUtils.isEmpty(intList)){
-            return null;
-        }
-        for(int i = 0; i < intList.size(); i++){
-            if(i == (intList.size() - 1)){
-                result.append(intList.get(i));
-            }else{
-                result.append(intList.get(i)).append(",");
-            }
-        }
-        return result.toString();
     }
 
     private void insertOrUpdate(List<Goods> goodsList, List<Long> goodsIdList){
@@ -391,29 +300,6 @@ public class GoodsSyncSchedule {
             }
         }
         return null;
-    }
-
-    private boolean containFilterKeyword(String goodsName){
-        if(StringUtils.isBlank(goodsName)){
-            return false;
-        }
-        for(String str : KEYWORD_FILTER){
-            if(goodsName.contains(str)){
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private Long getScore(String scoreCnName){
-        if("高".equals(scoreCnName)){
-            return 3L;
-        }else if("中".equals(scoreCnName)){
-            return 2L;
-        }else if("低".equals(scoreCnName)){
-            return 1L;
-        }
-        return 0L;
     }
 
 }
