@@ -870,4 +870,11 @@
         DELETE FROM TBL_RECOMMEND_GOODS
     </delete>
 
+    <delete id="deleteGoodsByGoodsIds" parameterType="java.util.List">
+        DELETE FROM TBL_GOODS WHERE GOODS_ID IN
+        <foreach item="id" collection="list" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
 </mapper>

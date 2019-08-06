@@ -1,13 +1,18 @@
 package com.xavier.fast.schedule.goods;
 
+import com.alibaba.fastjson.JSONArray;
 import com.xavier.fast.dao.GoodsMapper;
+import com.xavier.fast.dao.OrderMapper;
 import com.xavier.fast.dao.TagMapper;
 import com.xavier.fast.entity.goods.Goods;
+import com.xavier.fast.entity.order.Order;
 import com.xavier.fast.entity.pdd.*;
 import com.xavier.fast.entity.tag.Tag;
 import com.xavier.fast.service.pdd.IpddService;
+import com.xavier.fast.utils.GoodsFilter;
 import com.xavier.fast.utils.GoodsUtils;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.MapUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +21,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.Resource;
 import java.util.*;
 
 /**
@@ -45,6 +51,9 @@ public class GoodsSyncSchedule {
 
     @Autowired
     private TagMapper tagMapper;
+
+    @Resource
+    private OrderMapper orderMapper;
 
     @Scheduled(cron = "0 0/20 * * * ?")
 //    @Scheduled(cron = "30 54 11 * * ?")
@@ -257,6 +266,99 @@ public class GoodsSyncSchedule {
             }
         }
         log.info("根据类目ID同步拼多多普通商品结束...");
+    }
+
+    /**
+     * 清除商品数据
+     * 背景：商品定时入库，
+     */
+    @Scheduled(cron = "0 0 1 * * ?")
+//    @Scheduled(cron = "0 2 2 * * ?")
+    private void deleteGoodsTasks() {
+        log.info("清除不满足条件的商品开始...");
+        Map<String, Object> params = new HashMap<>();
+        int pageNum = 1;
+        int startRow;
+        List<Goods> goodsList;
+        List<String> goodsIds;
+        List<Long> needRemoveIds = new ArrayList<>();
+        List<Good> pddGoodList;
+
+        GoodsQueryRo goodsQueryRo;
+        GoodsList.GoodsSearchResponse goodsSearchResponse;
+
+        Map<Long, Long> goodsMap = new HashMap<>();
+
+        Order record;
+
+        while (true) {
+            params.clear();
+            goodsMap.clear();
+            startRow = pageNum == 1 ? 0 : (pageNum - 1) * NORMAL_PAGE_SIZE;
+            params.put("startRow", startRow);
+            params.put("endRow", NORMAL_PAGE_SIZE);
+            goodsList = goodsMapper.findGoodsListByParams(params);
+            if(CollectionUtils.isEmpty(goodsList)){
+                break;
+            }
+            goodsIds = new ArrayList<>();
+            for(Goods goods : goodsList){
+                goodsIds.add(goods.getGoodsId().toString());
+                goodsMap.put(goods.getGoodsId(), goods.getId());
+            }
+            //根据商品ids查询
+            goodsQueryRo = new GoodsQueryRo();
+            goodsQueryRo.setGoodsIdList(goodsIds);
+            goodsSearchResponse = pddService.queryGoodsList(goodsQueryRo);
+            if (goodsSearchResponse == null || CollectionUtils.isEmpty(goodsSearchResponse.getGoodsList())) {
+                log.error("deleteGoodsTasks fail,查询普通商品数据失败");
+                continue;
+            }
+            pddGoodList = goodsSearchResponse.getGoodsList();
+            for(Good pddGoods : pddGoodList){
+                Long priceAfterCoupon = pddGoods.getPriceAfterCoupon();
+                if(GoodsFilter.goodsValidate(pddGoods.getPromotionRate(),
+                        pddGoods.getGoodsName(), priceAfterCoupon)){
+                    //必须是未下单的商品
+                    record = new Order();
+                    record.setGoodsId(pddGoods.getGoodsId().toString());
+                    int orderCount = orderMapper.queryTotalCount(record);
+                    Long id = goodsMap.get(pddGoods.getGoodsId());
+                    if(id != null && orderCount <= 0){
+                        needRemoveIds.add(id);
+                    }
+                }
+                //移除掉已存在，不存在的删除
+                goodsMap.remove(pddGoods.getGoodsId());
+            }
+            if(MapUtils.isNotEmpty(goodsMap)){
+                for(Map.Entry entry : goodsMap.entrySet()){
+                    needRemoveIds.add((Long)entry.getKey());
+                }
+            }
+            pageNum++;
+        }
+        if(CollectionUtils.isNotEmpty(needRemoveIds)){
+            //分批次删除，一次100个
+            int startIndex = 0;
+            int endIndex = needRemoveIds.size() > 100 ? 100 : needRemoveIds.size();
+            List<Long> removeList;
+            int count = 0;
+            while (true) {
+                removeList = needRemoveIds.subList(startIndex, endIndex);
+                startIndex = endIndex;
+                endIndex += needRemoveIds.size() > 100 ? 100 : needRemoveIds.size();
+                if(endIndex >= needRemoveIds.size()){
+                    endIndex = needRemoveIds.size();
+                }
+                if(CollectionUtils.isEmpty(removeList)){
+                    break;
+                }
+                count += goodsMapper.deleteGoodsByGoodsIds(removeList);
+            }
+            log.info("本次删除商品【" + count + "】个");
+        }
+        log.info("清除不满足条件的商品结束...");
     }
 
     private void insertOrUpdate(List<Goods> goodsList, List<Long> goodsIdList){

@@ -61,4 +61,8 @@ public class GoodsMapper extends MyBatisDao {
     public int deleteAllRecommendGoods(Map<String, Object> params){
         return super.delete("deleteAllRecommendGoods", params);
     }
+
+    public int deleteGoodsByGoodsIds(List<Long> ids){
+        return super.delete("deleteGoodsByGoodsIds", ids);
+    }
 }
